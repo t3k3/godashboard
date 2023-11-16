@@ -1,0 +1,266 @@
+[
+  {
+    "attributeid": "47",
+    "required": "1",
+    "allowcustom": "1",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Renk"
+  },
+  {
+    "attributeid": "338",
+    "required": "1",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Beden"
+  },
+  {
+    "attributeid": "343",
+    "required": "1",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Cinsiyet"
+  },
+  {
+    "attributeid": "346",
+    "required": "1",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Ya\u015f Grubu"
+  },
+  {
+    "attributeid": "1",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Bel"
+  },
+  {
+    "attributeid": "12",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Kol Tipi"
+  },
+  {
+    "attributeid": "14",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Materyal"
+  },
+  {
+    "attributeid": "18",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Par\u00e7a Say\u0131s\u0131"
+  },
+  {
+    "attributeid": "22",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Yaka Tipi"
+  },
+  {
+    "attributeid": "33",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Desen"
+  },
+  {
+    "attributeid": "48",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Boy"
+  },
+  {
+    "attributeid": "66",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Paket \u0130\u00e7eri\u011fi"
+  },
+  {
+    "attributeid": "101",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Cep"
+  },
+  {
+    "attributeid": "117",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Dokuma Tipi"
+  },
+  {
+    "attributeid": "124",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Ek \u00d6zellik"
+  },
+  {
+    "attributeid": "178",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Kal\u0131nl\u0131k"
+  },
+  {
+    "attributeid": "179",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Kal\u0131p"
+  },
+  {
+    "attributeid": "191",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Kol Boyu"
+  },
+  {
+    "attributeid": "200",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Kuma\u015f Tipi"
+  },
+  {
+    "attributeid": "250",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Stil"
+  },
+  {
+    "attributeid": "561",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Set \u0130\u00e7erik Adeti"
+  },
+  {
+    "attributeid": "634",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Kuma\u015f/\u0130plik \u00d6zellik"
+  },
+  {
+    "attributeid": "636",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Teknik"
+  },
+  {
+    "attributeid": "710",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Koleksiyon"
+  },
+  {
+    "attributeid": "870",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Persona"
+  },
+  {
+    "attributeid": "880",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Siluet"
+  },
+  {
+    "attributeid": "881",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Ortam"
+  },
+  {
+    "attributeid": "891",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Bask\u0131/Nak\u0131\u015f Tekni\u011fi"
+  },
+  {
+    "attributeid": "892",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "S\u00fcrd\u00fcr\u00fclebilirlik Detay\u0131"
+  },
+  {
+    "attributeid": "893",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Kemer/Ku\u015fak Durumu"
+  },
+  {
+    "attributeid": "896",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Deri Kalitesi"
+  },
+  {
+    "attributeid": "1060",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "G\u00f6\u011f\u00fcs"
+  },
+  {
+    "attributeid": "1061",
+    "required": "0",
+    "allowcustom": "0",
+    "pcategory": "2978",
+    "pazaryeri": "1",
+    "name": "Kal\u00e7a"
+  }
+]

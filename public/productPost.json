@@ -1,0 +1,162 @@
+{
+  "product_description": {
+    "5": {
+      "name": "Deneme \u00dcr\u00fcn 2",
+      "description": "<p><strong>Lorem Ipsum</strong>, dizgi ve bask\u0131 end\u00fcstrisinde kullan\u0131lan \r\nm\u0131g\u0131r metinlerdir. Lorem Ipsum, ad\u0131 bilinmeyen bir matbaac\u0131n\u0131n bir \r\nhurufat numune kitab\u0131 olu\u015fturmak \u00fczere bir yaz\u0131 galerisini alarak \r\nkar\u0131\u015ft\u0131rd\u0131\u011f\u0131 1500'lerden beri end\u00fcstri standard\u0131 sahte metinler olarak \r\nkullan\u0131lm\u0131\u015ft\u0131r. Be\u015fy\u00fcz y\u0131l boyunca varl\u0131\u011f\u0131n\u0131 s\u00fcrd\u00fcrmekle kalmam\u0131\u015f, ayn\u0131 \r\nzamanda pek de\u011fi\u015fmeden elektronik dizgiye de s\u0131\u00e7ram\u0131\u015ft\u0131r. 1960'larda \r\nLorem Ipsum pasajlar\u0131 da i\u00e7eren Letraset yapraklar\u0131n\u0131n yay\u0131nlanmas\u0131 ile \r\nve yak\u0131n zamanda Aldus PageMaker gibi Lorem Ipsum s\u00fcr\u00fcmleri i\u00e7eren \r\nmasa\u00fcst\u00fc yay\u0131nc\u0131l\u0131k yaz\u0131l\u0131mlar\u0131 ile pop\u00fcler olmu\u015ftur.<br></p>",
+      "meta_title": "Deneme \u00dcr\u00fcn",
+      "meta_description": "",
+      "meta_keyword": "",
+      "tag": "",
+      "videolink": ""
+    }
+  },
+  "model": "85236",
+  "sku": "",
+  "upc": "",
+  "ean": "",
+  "jan": "",
+  "isbn": "",
+  "mpn": "",
+  "price": "250.0000",
+  "price_currency_code": "TRY",
+  "tax_class_id": "0",
+  "quantity": "10",
+  "minimum": "1",
+  "subtract": "1",
+  "stock_status_id": "6",
+  "shipping": "1",
+  "keyword": "deneme-urun-2-85236",
+  "date_available": "2023-03-04",
+  "length": "250.00000000",
+  "width": "250.00000000",
+  "height": "200.00000000",
+  "length_class_id": "1",
+  "weight": "120.00000000",
+  "weight_class_id": "1",
+  "status": "1",
+  "sort_order": "1",
+  "yayinevi": "",
+  "yayinevi_id": "0",
+  "yazar": "",
+  "yazar_id": "0",
+  "manufacturer": "",
+  "manufacturer_id": "0",
+  "category": "",
+  "product_category": ["1"],
+  "related": "",
+  "product_related": ["3"],
+  "product_attribute": [
+    {
+      "name": "RAM",
+      "attribute_id": "12",
+      "product_attribute_description": { "5": { "text": "650BG" } }
+    },
+    {
+      "name": "C-PU",
+      "attribute_id": "13",
+      "product_attribute_description": { "5": { "text": "S350" } }
+    }
+  ],
+  "option": "",
+  "product_option": [
+    {
+      "product_option_id": "761",
+      "name": "Numara",
+      "option_id": "26",
+      "type": "radio",
+      "required": "0",
+      "product_option_value": [
+        {
+          "option_value_id": "287",
+          "product_option_value_id": "2341",
+          "quantity": "5",
+          "subtract": "0",
+          "price_prefix": "+",
+          "price": "0.0000",
+          "points_prefix": "+",
+          "points": "0",
+          "weight_prefix": "+",
+          "weight": "0.00000000"
+        },
+        {
+          "option_value_id": "173",
+          "product_option_value_id": "2344",
+          "quantity": "5",
+          "subtract": "1",
+          "price_prefix": "+",
+          "price": "0.0000",
+          "points_prefix": "+",
+          "points": "0",
+          "weight_prefix": "+",
+          "weight": "0.00000000"
+        },
+        {
+          "option_value_id": "358",
+          "product_option_value_id": "2345",
+          "quantity": "5",
+          "subtract": "1",
+          "price_prefix": "+",
+          "price": "0.0000",
+          "points_prefix": "+",
+          "points": "0",
+          "weight_prefix": "+",
+          "weight": "0.00000000"
+        },
+        {
+          "option_value_id": "359",
+          "product_option_value_id": "2346",
+          "quantity": "5",
+          "subtract": "1",
+          "price_prefix": "+",
+          "price": "0.0000",
+          "points_prefix": "+",
+          "points": "0",
+          "weight_prefix": "+",
+          "weight": "0.00000000"
+        }
+      ]
+    }
+  ],
+  "product_special": [
+    {
+      "customer_group_id": "1",
+      "priority": "0",
+      "price": "230.0000",
+      "date_start": "",
+      "date_end": ""
+    }
+  ],
+  "image": "catalog/products/2.jpg",
+  "product_pazaryeri": {
+    "1": {
+      "pazaryeriAdi": "Trendyol",
+      "pazaryeriId": "1",
+      "batchrequestid": "92715974",
+      "pazaryeriyaniti": "",
+      "listefiyati": "398.75",
+      "satisfiyati": "362.50",
+      "kargoucreti": "25.00",
+      "barkod": "85236T",
+      "satisdurumu": "1",
+      "pazaryerimarkaadi": "",
+      "pazaryerimarkaid": "0",
+      "pazaryerikategoriadi": "Aksesuar > Alt\u0131n > \u00c7eyrek Alt\u0131n",
+      "pazaryerikategoriid": "1231",
+      "PazaryeriId": "1",
+      "ozellikler": {
+        "44": {
+          "attributeName": "A\u011f\u0131rl\u0131k",
+          "name": "",
+          "id": "",
+          "allowcustom": "0"
+        },
+        "69": {
+          "attributeName": "Alt\u0131n Ayar",
+          "name": "",
+          "id": "",
+          "allowcustom": "0"
+        }
+      }
+    }
+  }
+}

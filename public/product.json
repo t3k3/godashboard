@@ -1,0 +1,586 @@
+{
+  "heading_title": "Products",
+  "text_form": "Edit Product",
+  "text_enabled": "Enabled",
+  "text_disabled": "Disabled",
+  "text_none": " --- None --- ",
+  "text_yes": "Yes",
+  "text_no": "No",
+  "text_plus": "+",
+  "text_minus": "-",
+  "text_default": "Default",
+  "text_option": "Option",
+  "text_option_value": "Option Value",
+  "text_select": " --- Please Select --- ",
+  "text_percent": "Percentage",
+  "text_amount": "Fixed Amount",
+  "entry_name": "Product Name",
+  "entry_description": "Description",
+  "entry_meta_title": "Meta Tag Title",
+  "entry_meta_description": "Meta Tag Description",
+  "entry_meta_keyword": "Meta Tag Keywords",
+  "entry_keyword": "SEO URL",
+  "entry_model": "Model",
+  "entry_sku": "SKU",
+  "entry_upc": "UPC",
+  "entry_ean": "EAN",
+  "entry_jan": "JAN",
+  "entry_isbn": "ISBN",
+  "entry_mpn": "MPN",
+  "entry_location": "Location",
+  "entry_minimum": "Minimum Quantity",
+  "entry_shipping": "Requires Shipping",
+  "entry_date_available": "Date Available",
+  "entry_quantity": "Quantity",
+  "entry_stock_status": "Out Of Stock Status",
+  "entry_price": "Price",
+  "entry_tax_class": "Tax Class",
+  "entry_points": "Points",
+  "entry_option_points": "Points",
+  "entry_subtract": "Subtract Stock",
+  "entry_weight_class": "Weight Class",
+  "entry_weight": "Weight",
+  "entry_dimension": "Dimensions (L x W x H)",
+  "entry_length_class": "Length Class",
+  "entry_length": "Length",
+  "entry_width": "Width",
+  "entry_height": "Height",
+  "entry_image": "Image",
+  "entry_additional_image": "Additional Images",
+  "entry_store": "Stores",
+  "entry_manufacturer": "Manufacturer",
+  "entry_yayinevi": "Publishers",
+  "entry_yazar": "Authors",
+  "entry_download": "Downloads",
+  "entry_category": "Categories",
+  "entry_filter": "Filters",
+  "entry_related": "Related Products",
+  "entry_attribute": "Attribute",
+  "entry_text": "Text",
+  "entry_option": "Option",
+  "entry_option_value": "Option Value",
+  "entry_required": "Required",
+  "entry_sort_order": "Sort Order",
+  "entry_status": "Status",
+  "entry_date_start": "Date Start",
+  "entry_date_end": "Date End",
+  "entry_priority": "Priority",
+  "entry_tag": "Product Tags",
+  "entry_videolink": "Video Link",
+  "entry_customer_group": "Customer Group",
+  "entry_reward": "Reward Points",
+  "entry_layout": "Layout Override",
+  "entry_recurring": "Recurring Profile",
+  "help_keyword": "Do not use spaces, instead replace spaces with - and make sure the SEO URL is globally unique.",
+  "help_sku": "Stock Keeping Unit",
+  "help_upc": "Universal Product Code",
+  "help_ean": "European Article Number",
+  "help_jan": "Japanese Article Number",
+  "help_isbn": "International Standard Book Number",
+  "help_mpn": "Manufacturer Part Number",
+  "help_minimum": "Force a minimum ordered amount",
+  "help_manufacturer": "(Autocomplete)",
+  "help_yayinevi": "help_yayinevi",
+  "help_yazar": "help_yazar",
+  "help_stock_status": "Status shown when a product is out of stock",
+  "help_points": "Number of points needed to buy this item. If you don't want this product to be purchased with points leave as 0.",
+  "help_category": "(Autocomplete)",
+  "help_filter": "(Autocomplete)",
+  "help_download": "(Autocomplete)",
+  "help_related": "(Autocomplete)",
+  "help_tag": "Comma separated",
+  "button_save": "Save",
+  "button_cancel": "Cancel",
+  "button_attribute_add": "Add Attribute",
+  "button_option_add": "Add Option",
+  "button_option_value_add": "Add Option Value",
+  "button_discount_add": "Add Discount",
+  "button_special_add": "Add Special",
+  "button_image_add": "Add Image",
+  "button_remove": "Remove",
+  "button_recurring_add": "Add Recurring",
+  "tab_general": "General",
+  "tab_data": "Data",
+  "tab_attribute": "Attribute",
+  "tab_option": "Option",
+  "tab_recurring": "Recurring",
+  "tab_discount": "Discount",
+  "tab_special": "Special",
+  "tab_image": "Image",
+  "tab_links": "Links",
+  "tab_reward": "Reward Points",
+  "tab_design": "Design",
+  "pazaryerleri": [
+    {
+      "id": "1",
+      "pazaryeriadi": "Trendyol",
+      "marka": "1",
+      "name": "Trendyol",
+      "status": "1"
+    }
+  ],
+  "urunId": "1",
+  "languages": {
+    "tr-tr": {
+      "language_id": "5",
+      "name": "Turkish",
+      "code": "tr-tr",
+      "locale": "tr_TR.UTF-8,tr_TR,tr-tr,tr_tr,turkish",
+      "image": "",
+      "directory": "",
+      "sort_order": "1",
+      "status": "1"
+    },
+    "en-gb": {
+      "language_id": "8",
+      "name": "\u0130ngilizce",
+      "code": "en-gb",
+      "locale": "en_US.UTF-8,en_US,en-gb,en_gb,english",
+      "image": "",
+      "directory": "",
+      "sort_order": "2",
+      "status": "1"
+    }
+  },
+  "product_description": {
+    "5": {
+      "name": "Deneme \u00dcr\u00fcn",
+      "description": "<p><strong>Lorem Ipsum</strong>, dizgi ve bask\u0131 end\u00fcstrisinde kullan\u0131lan \r\nm\u0131g\u0131r metinlerdir. Lorem Ipsum, ad\u0131 bilinmeyen bir matbaac\u0131n\u0131n bir \r\nhurufat numune kitab\u0131 olu\u015fturmak \u00fczere bir yaz\u0131 galerisini alarak \r\nkar\u0131\u015ft\u0131rd\u0131\u011f\u0131 1500'lerden beri end\u00fcstri standard\u0131 sahte metinler olarak \r\nkullan\u0131lm\u0131\u015ft\u0131r. Be\u015fy\u00fcz y\u0131l boyunca varl\u0131\u011f\u0131n\u0131 s\u00fcrd\u00fcrmekle kalmam\u0131\u015f, ayn\u0131 \r\nzamanda pek de\u011fi\u015fmeden elektronik dizgiye de s\u0131\u00e7ram\u0131\u015ft\u0131r. 1960'larda \r\nLorem Ipsum pasajlar\u0131 da i\u00e7eren Letraset yapraklar\u0131n\u0131n yay\u0131nlanmas\u0131 ile \r\nve yak\u0131n zamanda Aldus PageMaker gibi Lorem Ipsum s\u00fcr\u00fcmleri i\u00e7eren \r\nmasa\u00fcst\u00fc yay\u0131nc\u0131l\u0131k yaz\u0131l\u0131mlar\u0131 ile pop\u00fcler olmu\u015ftur.<br></p>",
+      "meta_title": "Deneme \u00dcr\u00fcn",
+      "meta_description": "",
+      "meta_keyword": "",
+      "videolink": "MsqPKmdEETY",
+      "tag": ""
+    },
+    "7": {
+      "name": "Deneme \u00dcr\u00fcn",
+      "description": "<p><strong>Lorem Ipsum</strong>, dizgi ve bask\u0131 end\u00fcstrisinde kullan\u0131lan \r\nm\u0131g\u0131r metinlerdir. Lorem Ipsum, ad\u0131 bilinmeyen bir matbaac\u0131n\u0131n bir \r\nhurufat numune kitab\u0131 olu\u015fturmak \u00fczere bir yaz\u0131 galerisini alarak \r\nkar\u0131\u015ft\u0131rd\u0131\u011f\u0131 1500'lerden beri end\u00fcstri standard\u0131 sahte metinler olarak \r\nkullan\u0131lm\u0131\u015ft\u0131r. Be\u015fy\u00fcz y\u0131l boyunca varl\u0131\u011f\u0131n\u0131 s\u00fcrd\u00fcrmekle kalmam\u0131\u015f, ayn\u0131 \r\nzamanda pek de\u011fi\u015fmeden elektronik dizgiye de s\u0131\u00e7ram\u0131\u015ft\u0131r. 1960'larda \r\nLorem Ipsum pasajlar\u0131 da i\u00e7eren Letraset yapraklar\u0131n\u0131n yay\u0131nlanmas\u0131 ile \r\nve yak\u0131n zamanda Aldus PageMaker gibi Lorem Ipsum s\u00fcr\u00fcmleri i\u00e7eren \r\nmasa\u00fcst\u00fc yay\u0131nc\u0131l\u0131k yaz\u0131l\u0131mlar\u0131 ile pop\u00fcler olmu\u015ftur.<br></p>",
+      "meta_title": "Deneme \u00dcr\u00fcn",
+      "meta_description": "",
+      "meta_keyword": "",
+      "videolink": "",
+      "tag": ""
+    },
+    "8": {
+      "name": "Deneme \u00dcr\u00fcn",
+      "description": "<p><strong>Lorem Ipsum</strong>, dizgi ve bask\u0131 end\u00fcstrisinde kullan\u0131lan \r\nm\u0131g\u0131r metinlerdir. Lorem Ipsum, ad\u0131 bilinmeyen bir matbaac\u0131n\u0131n bir \r\nhurufat numune kitab\u0131 olu\u015fturmak \u00fczere bir yaz\u0131 galerisini alarak \r\nkar\u0131\u015ft\u0131rd\u0131\u011f\u0131 1500'lerden beri end\u00fcstri standard\u0131 sahte metinler olarak \r\nkullan\u0131lm\u0131\u015ft\u0131r. Be\u015fy\u00fcz y\u0131l boyunca varl\u0131\u011f\u0131n\u0131 s\u00fcrd\u00fcrmekle kalmam\u0131\u015f, ayn\u0131 \r\nzamanda pek de\u011fi\u015fmeden elektronik dizgiye de s\u0131\u00e7ram\u0131\u015ft\u0131r. 1960'larda \r\nLorem Ipsum pasajlar\u0131 da i\u00e7eren Letraset yapraklar\u0131n\u0131n yay\u0131nlanmas\u0131 ile \r\nve yak\u0131n zamanda Aldus PageMaker gibi Lorem Ipsum s\u00fcr\u00fcmleri i\u00e7eren \r\nmasa\u00fcst\u00fc yay\u0131nc\u0131l\u0131k yaz\u0131l\u0131mlar\u0131 ile pop\u00fcler olmu\u015ftur.<br></p>",
+      "meta_title": "Deneme \u00dcr\u00fcn",
+      "meta_description": "",
+      "meta_keyword": "",
+      "videolink": "",
+      "tag": ""
+    }
+  },
+  "product_pazaryeri": {
+    "1": {
+      "pazaryeriId": "1",
+      "listefiyati": "398.75",
+      "satisfiyati": "362.50",
+      "kargoucreti": "25.00",
+      "barkod": "TRE-325",
+      "satisdurumu": "0",
+      "pazaryerimarkaadi": "NEBU",
+      "pazaryerimarkaid": "969766",
+      "pazaryerikategoriadi": "Giyim > B\u00fcy\u00fck Beden > B\u00fcy\u00fck Beden Kazak",
+      "pazaryerikategoriid": "2978",
+      "pazaryeridurumu": "0",
+      "batchrequestid": "0",
+      "pazaryeriyaniti": "",
+      "ozellikler": {
+        "47": {
+          "id": "47",
+          "attributeName": "Renk",
+          "allowcustom": "1",
+          "name": "Mavi"
+        },
+        "338": {
+          "attributeName": "Beden",
+          "name": "18-24 AY",
+          "id": "5000",
+          "allowcustom": "0"
+        },
+        "343": {
+          "attributeName": "Cinsiyet",
+          "name": "Kadın",
+          "id": "4294",
+          "allowcustom": "0"
+        },
+        "346": {
+          "attributeName": "Ya\u015f Grubu",
+          "name": "Yeti\u015fkin",
+          "id": "4293",
+          "allowcustom": "0"
+        },
+        "1": {
+          "attributeName": "Bel",
+          "name": "101",
+          "id": "1200280",
+          "allowcustom": "0"
+        },
+        "12": {
+          "attributeName": "Kol Tipi",
+          "name": "Ay",
+          "id": "4020",
+          "allowcustom": "0"
+        },
+        "14": {
+          "attributeName": "Materyal",
+          "name": "%100 Bambu",
+          "id": "16667",
+          "allowcustom": "0"
+        },
+        "18": {
+          "attributeName": "Par\u00e7a Say\u0131s\u0131",
+          "name": "3",
+          "id": "314394",
+          "allowcustom": "0"
+        },
+        "22": {
+          "attributeName": "Yaka Tipi",
+          "name": "Apa\u015f Yaka",
+          "id": "260637",
+          "allowcustom": "0"
+        },
+        "33": {
+          "attributeName": "Desen",
+          "name": "Ajurlu",
+          "id": "197047",
+          "allowcustom": "0"
+        },
+        "48": {
+          "attributeName": "Boy",
+          "name": "100 - 200 ML",
+          "id": "4000",
+          "allowcustom": "0"
+        },
+        "66": {
+          "attributeName": "Paket \u0130\u00e7eri\u011fi",
+          "name": "1 - 39",
+          "id": "1042542",
+          "allowcustom": "0"
+        },
+        "101": {
+          "attributeName": "Cep",
+          "name": "4 Cep",
+          "id": "1604",
+          "allowcustom": "0"
+        },
+        "117": {
+          "attributeName": "Dokuma Tipi",
+          "name": "2 \u0130plik \u015eardonlu",
+          "id": "1178027",
+          "allowcustom": "0"
+        },
+        "124": {
+          "attributeName": "Ek \u00d6zellik",
+          "name": "Alkol \u0130\u00e7ermeyen",
+          "id": "18685",
+          "allowcustom": "0"
+        },
+        "178": {
+          "attributeName": "Kal\u0131nl\u0131k",
+          "name": "Kal\u0131n",
+          "id": "3942",
+          "allowcustom": "0"
+        },
+        "179": {
+          "attributeName": "Kal\u0131p",
+          "name": "7/8 Boy",
+          "id": "194589",
+          "allowcustom": "0"
+        },
+        "191": {
+          "attributeName": "Kol Boyu",
+          "name": "Ask\u0131l\u0131",
+          "id": "2144",
+          "allowcustom": "0"
+        },
+        "200": {
+          "attributeName": "Kuma\u015f Tipi",
+          "name": "Denim",
+          "id": "2189",
+          "allowcustom": "0"
+        },
+        "250": {
+          "attributeName": "Stil",
+          "name": "G\u00fcnl\u00fck",
+          "id": "2173",
+          "allowcustom": "0"
+        },
+        "561": {
+          "attributeName": "Set \u0130\u00e7erik Adeti",
+          "name": "2",
+          "id": "314854",
+          "allowcustom": "0"
+        },
+        "634": {
+          "attributeName": "Kuma\u015f/\u0130plik \u00d6zellik",
+          "name": "2 \u0130plik Rejenere",
+          "id": "440916",
+          "allowcustom": "0"
+        },
+        "636": {
+          "attributeName": "Teknik",
+          "name": "Asit/Kar/Random Y\u0131kama",
+          "id": "197251",
+          "allowcustom": "0"
+        },
+        "710": {
+          "attributeName": "Koleksiyon",
+          "name": "Authentic Platform 2.0",
+          "id": "1184040",
+          "allowcustom": "0"
+        },
+        "870": {
+          "attributeName": "Persona",
+          "name": "Fashion Forward",
+          "id": "902402",
+          "allowcustom": "0"
+        },
+        "880": {
+          "attributeName": "Siluet",
+          "name": "A-line",
+          "id": "998340",
+          "allowcustom": "0"
+        },
+        "881": {
+          "attributeName": "Ortam",
+          "name": "Casual&Comfort",
+          "id": "998410",
+          "allowcustom": "0"
+        },
+        "891": {
+          "attributeName": "Bask\u0131/Nak\u0131\u015f Tekni\u011fi",
+          "name": "Animal",
+          "id": "1178279",
+          "allowcustom": "0"
+        },
+        "892": {
+          "attributeName": "S\u00fcrd\u00fcr\u00fclebilirlik Detay\u0131",
+          "name": "Recycle+Organik",
+          "id": "1178726",
+          "allowcustom": "0"
+        },
+        "893": {
+          "attributeName": "Kemer/Ku\u015fak Durumu",
+          "name": "Kemersiz",
+          "id": "1178507",
+          "allowcustom": "0"
+        },
+        "896": {
+          "attributeName": "Deri Kalitesi",
+          "name": "\u0130mitasyon Deri",
+          "id": "1178232",
+          "allowcustom": "0"
+        },
+        "1060": {
+          "attributeName": "G\u00f6\u011f\u00fcs",
+          "name": "102",
+          "id": "1200221",
+          "allowcustom": "0"
+        },
+        "1061": {
+          "attributeName": "Kal\u00e7a",
+          "name": "102",
+          "id": "1200319",
+          "allowcustom": "0"
+        }
+      }
+    }
+  },
+  "model": "852369456",
+  "sku": "",
+  "upc": "",
+  "ean": "",
+  "jan": "",
+  "isbn": "",
+  "mpn": "",
+  "keyword": "dENEME-852369456",
+  "shipping": "1",
+  "price": "250.0000",
+  "tax_classes": [
+    {
+      "tax_class_id": "9",
+      "title": "KDV + %18",
+      "description": "KDV",
+      "date_added": "2009-01-06 23:21:53",
+      "date_modified": "2017-09-13 03:38:56"
+    },
+    {
+      "tax_class_id": "11",
+      "title": "KDV + %8",
+      "description": "KDV",
+      "date_added": "2017-09-13 03:39:13",
+      "date_modified": "2023-02-20 00:35:22"
+    }
+  ],
+  "tax_class_id": "0",
+  "date_available": "2023-03-04",
+  "quantity": "10",
+  "minimum": "1",
+  "subtract": "1",
+  "sort_order": "1",
+  "stock_statuses": [
+    { "stock_status_id": "6", "name": "3-5 G\u00fcn" },
+    { "stock_status_id": "8", "name": "\u00d6n Sipari\u015f" },
+    { "stock_status_id": "7", "name": "Stokta Var" },
+    { "stock_status_id": "5", "name": "T\u00fckendi" }
+  ],
+  "stock_status_id": "6",
+  "status": "1",
+  "weight": "120.00000000",
+  "weight_classes": [
+    {
+      "weight_class_id": "1",
+      "value": "1.00000000",
+      "language_id": "8",
+      "title": "Kilogram",
+      "unit": " kg"
+    },
+    {
+      "weight_class_id": "2",
+      "value": "1000.00000000",
+      "language_id": "8",
+      "title": "Gram",
+      "unit": "g"
+    },
+    {
+      "weight_class_id": "5",
+      "value": "2.20460000",
+      "language_id": "8",
+      "title": "Pound ",
+      "unit": "lb"
+    },
+    {
+      "weight_class_id": "6",
+      "value": "35.27400000",
+      "language_id": "8",
+      "title": "Ounce",
+      "unit": "oz"
+    }
+  ],
+  "weight_class_id": "1",
+  "length": "250.00000000",
+  "width": "250.00000000",
+  "height": "200.00000000",
+  "length_classes": [
+    {
+      "length_class_id": "1",
+      "value": "1.00000000",
+      "language_id": "8",
+      "title": "Santimetre",
+      "unit": "cm"
+    },
+    {
+      "length_class_id": "2",
+      "value": "10.00000000",
+      "language_id": "8",
+      "title": "Milimetre",
+      "unit": "mm"
+    },
+    {
+      "length_class_id": "3",
+      "value": "0.39370000",
+      "language_id": "8",
+      "title": "Inch",
+      "unit": "in"
+    }
+  ],
+  "length_class_id": "1",
+  "manufacturer_id": "0",
+  "manufacturer": "",
+  "yayinevi_id": "0",
+  "yayinevi": "",
+  "yazar_id": "0",
+  "yazar": "",
+  "product_categories": [
+    { "category_id": "1", "name": "Elektronik TR" },
+    { "category_id": "2", "name": "Bilgisayar" }
+  ],
+  "product_attributes": [],
+  "product_options": [
+    {
+      "product_option_id": "760",
+      "product_option_value": [
+        {
+          "product_option_value_id": "2340",
+          "option_value_id": "287",
+          "quantity": "5",
+          "subtract": "0",
+          "price": "0.0000",
+          "price_prefix": "+",
+          "points": "0",
+          "points_prefix": "+",
+          "weight": "0.00000000",
+          "weight_prefix": "+"
+        }
+      ],
+      "option_id": "26",
+      "name": "Size",
+      "type": "radio",
+      "value": "",
+      "required": "0"
+    }
+  ],
+  "option_values": {
+    "26": [
+      {
+        "option_value_id": "287",
+        "name": "36",
+        "image": "",
+        "sort_order": "1"
+      },
+      {
+        "option_value_id": "173",
+        "name": "37",
+        "image": "",
+        "sort_order": "2"
+      },
+      {
+        "option_value_id": "358",
+        "name": "38",
+        "image": "",
+        "sort_order": "3"
+      },
+      { "option_value_id": "359", "name": "40", "image": "", "sort_order": "4" }
+    ]
+  },
+  "customer_groups": [
+    {
+      "customer_group_id": "1",
+      "approval": "1",
+      "sort_order": "1",
+      "language_id": "8",
+      "name": "Default",
+      "description": "test"
+    }
+  ],
+  "product_specials": [],
+  "image": "catalog/products/2.jpg",
+  "thumb": "HTTP_CATALOGimage/cache/catalog/products/2-100x100.jpg",
+  "placeholder": "HTTP_CATALOGimage/cache/no_image-100x100.png",
+  "product_images": [],
+  "product_relateds": [
+    { "product_id": "3", "name": "Deneme \u00dcr\u00fcn EN" }
+  ],
+  "points": "0",
+  "product_layout": [],
+  "price_currencies": [
+    { "currency_code": "TRY", "currency_title": "T\u00fcrk Liras\u0131" }
+  ],
+  "price_currency_code": "TRY",
+  "layouts": [
+    { "layout_id": "3", "name": "Category" },
+    { "layout_id": "7", "name": "Checkout" },
+    { "layout_id": "12", "name": "Compare" },
+    { "layout_id": "8", "name": "Contact" },
+    { "layout_id": "4", "name": "Default" },
+    { "layout_id": "1", "name": "Home" },
+    { "layout_id": "11", "name": "Information" },
+    { "layout_id": "14", "name": "Login Page" },
+    { "layout_id": "5", "name": "Manufacturer" },
+    { "layout_id": "2", "name": "Product" },
+    { "layout_id": "13", "name": "Search" },
+    { "layout_id": "9", "name": "Sitemap" }
+  ]
+}

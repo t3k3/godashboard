@@ -1,0 +1,32 @@
+[
+  {
+    "category_id": "1",
+    "name": "Elektronik",
+    "parent_id": "0",
+    "sort_order": "0"
+  },
+  {
+    "category_id": "4",
+    "name": "Bilgisayarlar  >  Diz\u00fcst\u00fc Bilgisayar",
+    "parent_id": "2",
+    "sort_order": "0"
+  },
+  {
+    "category_id": "5",
+    "name": "Cep Telefonu  >  Ak\u0131ll\u0131 Telefonlar",
+    "parent_id": "3",
+    "sort_order": "0"
+  },
+  {
+    "category_id": "2",
+    "name": "Bilgisayarlar",
+    "parent_id": "0",
+    "sort_order": "2"
+  },
+  {
+    "category_id": "3",
+    "name": "Cep Telefonu",
+    "parent_id": "0",
+    "sort_order": "3"
+  }
+]

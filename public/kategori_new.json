@@ -1,0 +1,92 @@
+{
+  "token": "lF7jVfDT5nscMzmF59KASbgzIenWs3wG",
+  "category_id": "1",
+  "text_name": "Kategori Adı",
+
+  "pazaryerleri": [
+    {
+      "id": "1",
+      "pazaryeriadi": "Trendyol",
+      "marka": "1",
+      "name": "Trendyol",
+      "status": "1"
+    }
+  ],
+  "category_description": {
+    "id": 5,
+    "name": "Elektronik",
+    "meta_title": "Elektronik",
+    "meta_description": "",
+    "meta_keyword": "",
+    "description": ""
+  },
+  "category_pazaryeri": {
+    "1": {
+      "kategori": "Ev & Mobilya > Mobilya > \u00c7al\u0131\u015fma Odas\u0131 > Kitapl\u0131k",
+      "PKategoriId": "915",
+      "komisyon": "0.00",
+      "ozellikler": {
+        "14": {
+          "attributeName": "Materyal",
+          "name": "Cam",
+          "id": "81",
+          "allowcustom": "0"
+        },
+        "47": { "attributeName": "Renk", "allowcustom": "1", "name": "Mavi" },
+        "115": {
+          "attributeName": "Derinlik",
+          "name": "100 cm",
+          "id": "248778",
+          "allowcustom": "0"
+        },
+        "146": {
+          "attributeName": "Geni\u015flik",
+          "name": "102 cm",
+          "id": "248922",
+          "allowcustom": "0"
+        },
+        "231": {
+          "attributeName": "Raf Say\u0131s\u0131",
+          "name": "11",
+          "id": "266084",
+          "allowcustom": "0"
+        },
+        "286": {
+          "attributeName": "Y\u00fckseklik",
+          "name": "100 cm",
+          "id": "256076",
+          "allowcustom": "0"
+        },
+        "668": {
+          "attributeName": "G\u00f6vde Materyali",
+          "name": "Has\u0131r",
+          "id": "309644",
+          "allowcustom": "0"
+        },
+        "34": {
+          "attributeName": "Tip",
+          "name": "Klasik",
+          "id": "4096",
+          "allowcustom": "0"
+        },
+        "433": {
+          "attributeName": "Garanti S\u00fcresi",
+          "name": "3 Y\u0131l",
+          "id": "20638",
+          "allowcustom": "0"
+        }
+      }
+    }
+  },
+  "path": null,
+  "parent_id": "0",
+  "keyword": "elektronik",
+  "image": "",
+  "thumb": "http://192.168.1.12/opencart/image/cache/no_image-100x100.png",
+  "placeholder": "http://192.168.1.12/opencart/image/cache/no_image-100x100.png",
+  "top": "1",
+  "sort_order": "0",
+  "status": "1",
+  "category_layout": [],
+  "KategoriId": "1"
+}

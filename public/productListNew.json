@@ -1,0 +1,72 @@
+{
+  "filter": {
+    "filter_name": null,
+    "filter_model": null,
+    "filter_price": null,
+    "filter_quantity": null,
+    "filter_status": null,
+    "filter_image": null,
+    "sort": null,
+    "order": null,
+    "start": -20,
+    "limit": "20"
+  },
+  "totalProducts": "5",
+  "products": [
+    {
+      "product_id": "3",
+      "image": "catalog/products/2.jpg",
+      "name": "Deneme \u00dcr\u00fcn",
+      "model": "85236ANK111",
+      "price": "250.0000",
+      "special": false,
+      "quantity": "10",
+      "status": "1",
+      "edit": "catalog/product/edit"
+    },
+    {
+      "product_id": "9",
+      "image": "catalog/products/2.jpg",
+      "name": "Deneme \u00dcr\u00fcn 2",
+      "model": "85236TT",
+      "price": "250.0000",
+      "special": false,
+      "quantity": "10",
+      "status": "0",
+      "edit": "catalog/product/edit"
+    },
+    {
+      "product_id": "4",
+      "image": "catalog/products/2.jpg",
+      "name": "Deneme \u00dcr\u00fcn 2",
+      "model": "85236TT",
+      "price": "250.0000",
+      "special": false,
+      "quantity": "10",
+      "status": "1",
+      "edit": "catalog/product/edit"
+    },
+    {
+      "product_id": "8",
+      "image": "catalog/products/2.jpg",
+      "name": "Deneme \u00dcr\u00fcn 2",
+      "model": "85236TT",
+      "price": "250.0000",
+      "special": false,
+      "quantity": "10",
+      "status": "0",
+      "edit": "catalog/product/edit"
+    },
+    {
+      "product_id": "6",
+      "image": "catalog/products/2.jpg",
+      "name": "Deneme \u00dcr\u00fcn 2",
+      "model": "85236TT",
+      "price": "250.0000",
+      "special": false,
+      "quantity": "10",
+      "status": "0",
+      "edit": "catalog/product/edit"
+    }
+  ]
+}
