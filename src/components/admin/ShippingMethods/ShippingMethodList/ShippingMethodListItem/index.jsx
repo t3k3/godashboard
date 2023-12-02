@@ -25,7 +25,15 @@ function ShippingListItem({ shippingMethod, handleShippingMethodEdit }) {
           </span>
         </td>
         <td className='px-6 py-1'>
-          <span className='text-xs'>{shippingMethod.status}</span>
+          <span className='text-xs'>{shippingMethod.price}</span>
+        </td>
+        <td className='px-6 py-1'>
+          <span className='text-xs'>{shippingMethod.minimum_order_amount}</span>
+        </td>
+        <td className='px-6 py-1'>
+          <span className='text-xs'>
+            {shippingMethod.status ? 'Açık' : 'Kapalı'}
+          </span>
         </td>
 
         <td className='px-6 py-1'>

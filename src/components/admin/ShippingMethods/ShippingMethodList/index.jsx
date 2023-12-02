@@ -52,6 +52,12 @@ function ShippingMethodList(props) {
                   LOGO
                 </th>
                 <th scope='col' className='px-6 py-3'>
+                  ÜCRET
+                </th>
+                <th scope='col' className='px-6 py-3'>
+                  ÜCRETSİZ KARGO LİMİTİ
+                </th>
+                <th scope='col' className='px-6 py-3'>
                   DURUM
                 </th>
 
@@ -63,7 +69,7 @@ function ShippingMethodList(props) {
                 shippingMethods.map((shippingMethod) => {
                   return (
                     <ShippingMethodListItem
-                      key={shippingMethod.name}
+                      key={shippingMethod.ID}
                       shippingMethod={shippingMethod}
                       handleShippingMethodEdit={handleShippingMethodEdit}
                     />

@@ -1,6 +1,6 @@
 import OrderListItem from './OrderListItem';
 
-function OrderList({ orders, order_total }) {
+function OrderList({ orders, order_statuses }) {
   return (
     <div className='relative overflow-x-auto shadow-md sm:rounded-lg py-2 px-4'>
       <div className='flex items-center py-4 bg-white '>
@@ -104,9 +104,6 @@ function OrderList({ orders, order_total }) {
               ID
             </th>
             <th scope='col' className='px-6 py-3'>
-              Ürünler
-            </th>
-            <th scope='col' className='px-6 py-3'>
               İSİM
             </th>
             <th scope='col' className='px-6 py-3'>
@@ -123,7 +120,13 @@ function OrderList({ orders, order_total }) {
         </thead>
         <tbody>
           {orders.map((order) => {
-            return <OrderListItem key={order.order_id} order={order} />;
+            return (
+              <OrderListItem
+                key={order.ID}
+                order={order}
+                order_statuses={order_statuses}
+              />
+            );
           })}
         </tbody>
       </table>
@@ -136,10 +139,7 @@ function OrderList({ orders, order_total }) {
       >
         <span className='text-sm font-normal text-gray-500'>
           <span className='font-semibold text-gray-900 '> 1-10</span> arasi{' '}
-          <span className='font-semibold text-gray-900 '>
-            {' '}
-            Toplam {order_total}
-          </span>
+          <span className='font-semibold text-gray-900 '> Toplam 1</span>
         </span>
         <ul className='inline-flex items-center -space-x-px'>
           <li>

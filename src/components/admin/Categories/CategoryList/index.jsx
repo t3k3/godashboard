@@ -79,12 +79,9 @@ function CategoryList({ categories }) {
             </thead>
             <tbody>
               {categories &&
-                categories.map((kategori) => {
+                categories.map((category) => {
                   return (
-                    <CategoryListItem
-                      key={kategori.category_id}
-                      kategori={kategori}
-                    />
+                    <CategoryListItem key={category.ID} category={category} />
                   );
                 })}
             </tbody>

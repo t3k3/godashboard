@@ -9,8 +9,8 @@ async function Manufacturer() {
   return (
     manufacturers && (
       <ManufacturerList
-        manufacturers={manufacturers.manufacturers}
-        manufacturer_total={manufacturers.manufacturer_total}
+        manufacturers={manufacturers}
+        // manufacturer_total={manufacturers.manufacturer_total}
       />
     )
   );

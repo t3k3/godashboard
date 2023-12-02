@@ -10,18 +10,18 @@ import Link from 'next/link';
 function OrderComp(props) {
   const [order, setOrder] = useState(props.order);
   const [orderHistoryEditModal, setOrderHistoryEditModal] = useState(false);
+
   // const orderHistory = props.orderHistory;
+
   const [selectedStatus, setSelectedStatus] = useState(
-    order.order_statuses.find(
-      (statuse) => statuse.order_status_id === order.order_status_id
-    )
+    props.order_statuses.find((status) => status.ID === order.order_status_id)
   );
 
   const [orderHistory, setOrderHistory] = useState(false);
 
   useEffect(() => {
     async function getOrderHistoryHandle() {
-      const orderHistoryTemp = await getOrderHistory(order.order_id);
+      const orderHistoryTemp = await getOrderHistory(order.ID);
 
       setOrderHistory(orderHistoryTemp);
     }
@@ -37,7 +37,7 @@ function OrderComp(props) {
       {/* ORDER HISTORY EDIT MODAL */}
       {orderHistoryEditModal ? (
         <OrderHistoryEditModal
-          orderId={order.order_id}
+          orderId={order.ID}
           selectedStatus={selectedStatus}
           closeModal={setOrderHistoryEditModal}
         />
@@ -48,9 +48,7 @@ function OrderComp(props) {
         <div className='sm:flex sm:items-center mx-4'>
           <h2 className='text-lg font-medium text-gray-900'>Sipariş No:</h2>
           <div className='sm:ml-2 flex items-center sm:mt-0 mt-1'>
-            <h1 className='text-lg font-medium text-gray-900'>
-              #{order.order_id}
-            </h1>
+            <h1 className='text-lg font-medium text-gray-900'>#{order.ID}</h1>
           </div>
           <div className='sm:ml-6 flex items-center sm:mt-0 mt-1'>
             <h1 className='text-lg font-medium text-gray-900'>
@@ -130,7 +128,6 @@ function OrderComp(props) {
                   </tr>
                 </thead>
                 <tbody>
-                  {console.log('ORDER: ', order)}
                   {order.order_products.map((order_product, index) => {
                     return (
                       <tr key={index} className='bg-white border-b '>
@@ -150,7 +147,7 @@ function OrderComp(props) {
                           className='px-6 py-4 font-medium text-gray-900 whitespace-nowrap'
                         >
                           <Link
-                            href={`/admin/urunler/${order_product.product_id}`}
+                            href={`/admin/urunler/${order_product.ID}`}
                             className='hover:text-blue-500'
                           >
                             {order_product.name}
@@ -288,30 +285,38 @@ function OrderComp(props) {
               </div>
               <div className='mx-2 my-4'>
                 <ol className='relative border-l border-gray-200 dark:border-gray-700'>
-                  {orderHistory &&
-                    orderHistory.histories.map((history, index) => {
-                      return (
-                        <li key={index} className='mb-10 ml-4'>
-                          <div className='absolute w-3 h-3 bg-green-600 rounded-full mt-1.5 -left-1.5 border border-white'></div>
-                          <time className='mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500'>
-                            {history.date_added}
-                          </time>
-                          <div className='flex items-center justify-between'>
-                            <h3 className='text-lg font-semibold text-gray-900'>
-                              {history.status}
-                            </h3>
+                  {order.order_status_histories.map((history, index) => {
+                    console.log('history54654: ', history);
+                    console.log('props.order_statuses: ', props.order_statuses);
+                    return (
+                      <li key={index} className='mb-10 ml-4'>
+                        <div className='absolute w-3 h-3 bg-green-600 rounded-full mt-1.5 -left-1.5 border border-white'></div>
+                        <h3 className='text-lg font-semibold text-gray-900'>
+                          {
+                            props.order_statuses.find(
+                              (status) => status.ID == history.order_status_id
+                            )?.name
+                          }
+                        </h3>
+                        <time className='mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500'>
+                          {history.CreatedAt}
+                        </time>
+                        <div className='flex items-center justify-between'>
+                          <h3 className='text-lg font-semibold text-gray-900'>
+                            {history.status}
+                          </h3>
 
-                            <span>
-                              <h3>Müşteri Bildirimi:</h3>
-                              <b>{history.notify}</b>
-                            </span>
-                          </div>
-                          <p className='mb-4 text-base font-normal text-gray-500'>
-                            {history.comment}
-                          </p>
-                        </li>
-                      );
-                    })}
+                          <span>
+                            <h3>Müşteri Bildirimi:</h3>
+                            <b>{history.notify ? 'Var' : 'Yok'}</b>
+                          </span>
+                        </div>
+                        <p className='mb-4 text-base font-normal text-gray-500'>
+                          {history.comment}
+                        </p>
+                      </li>
+                    );
+                  })}
                 </ol>
               </div>
             </div>
@@ -324,8 +329,8 @@ function OrderComp(props) {
             <div>
               <Menu.Button className='ml-2 pl-2 pr-2 py-2 h-10 rounded-sm flex w-full justify-center gap-x-1.5  bg-blue-600 hover:bg-blue-500 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-white'>
                 {
-                  order.order_statuses.find(
-                    (status) => status.order_status_id === order.order_status_id
+                  props.order_statuses.find(
+                    (status) => status.ID == order.order_status_id
                   )?.name
                 }
                 <ChevronDownIcon
@@ -346,9 +351,9 @@ function OrderComp(props) {
             >
               <Menu.Items className='absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none '>
                 <div className='py-1'>
-                  {order.order_statuses.map((status) => {
+                  {props.order_statuses?.map((status) => {
                     return (
-                      <Menu.Item key={status.order_status_id}>
+                      <Menu.Item key={status.ID}>
                         {({ active }) => (
                           <span
                             onClick={() => {
@@ -421,7 +426,7 @@ function OrderComp(props) {
             <div className=' flex justify-between h-10 border text-gray-600 font-medium'>
               <span className='px-2 py-2 font-semibold'>Sipariş Detayları</span>
               <span className='px-2 py-2 font-semibold text-gray-500'>
-                #{order.order_id}
+                #{order.ID}
               </span>
             </div>
             <div className=' mb-4 border-r border-l text-xs'>
@@ -491,11 +496,11 @@ function OrderComp(props) {
               <div className='flex justify-between px-2 pt-4'>
                 <span className='font-medium'>Adres:</span>
                 <span className='ml-12'>
-                  {order.shipping_address_1 +
+                  {order.shipping_address +
                     ' ' +
                     order.shipping_city +
                     ' ' +
-                    order.countries.find(
+                    order.countries?.find(
                       (country) =>
                         country.country_id == order.shipping_country_id
                     )?.name}
@@ -557,11 +562,11 @@ function OrderComp(props) {
               <div className='flex justify-between px-2 pt-4'>
                 <span className='font-medium'>Adres:</span>
                 <span className='ml-12'>
-                  {order.payment_address_1 +
+                  {order.payment_address +
                     ' ' +
                     order.payment_city +
                     ' ' +
-                    order.countries.find(
+                    order.countries?.find(
                       (country) =>
                         country.country_id === order.payment_country_id
                     )?.name}

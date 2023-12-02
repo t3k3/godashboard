@@ -58,13 +58,13 @@ function CustomerComp(props) {
           </h2>
           <div className='sm:ml-6 flex items-center sm:mt-0 mt-1'>
             <h1 className='text-lg font-medium text-gray-900'>
-              #{customer?.customer_id}
+              #{customer?.ID}
             </h1>
           </div>
           <span
             className={`bg-emerald-100 text-emerald-600 text-xs font-medium mr-1 ml-2 px-2 py-0.5 rounded`}
           >
-            {customer?.status == 'Açık' ? 'Aktif' : 'Kapalı'}
+            {customer?.status ? 'Aktif' : 'Kapalı'}
           </span>
           <span className='bg-cyan-100 text-cyan-600 text-xs font-medium mr-1 ml-2 px-2 py-0.5 rounded'>
             Aktif
@@ -229,16 +229,16 @@ function CustomerComp(props) {
                   <span className='px-2 text-sm font-semibold'>Adresler</span>
                 </div>
 
-                {Object.keys(customer.addresses).map((id) => {
+                {customer?.addresses?.map((id) => {
                   let address = customer.addresses[id];
 
                   return (
                     <div
-                      key={address.address_id}
+                      key={address.ID}
                       className=' text-xs border border-dashed m-2 pr-2 shadow'
                     >
                       <h4 className='text-sm italic mt-2 ml-2'>
-                        Adres {address.address_id}
+                        Adres {address.ID}
                       </h4>
                       <div className='flex  justify-between'>
                         <div className='flex w-42 min-h-16 px-4'>
@@ -632,14 +632,14 @@ function CustomerComp(props) {
               <div className='flex items-center justify-between px-2 pt-3 '>
                 <span className='font-medium'>Bülten Aboneliği:</span>
                 <span className=' pr-2'>
-                  {customer.newsletter == '1' ? 'Açık' : 'Kapalı'}
+                  {customer.newsletter ? 'Açık' : 'Kapalı'}
                 </span>
               </div>
               <div className='flex items-center justify-between px-2 pt-3 '>
                 <span className='font-medium'>Müşteri Grubu:</span>
                 <span className=' pr-2'>
                   {
-                    customer.customer_groups.find(
+                    customer.customer_groups?.find(
                       (group) =>
                         group.customer_group_id == customer.customer_group_id
                     ).name

@@ -1,4 +1,4 @@
-import { API_URL_ADMIN } from '@/config/apiConfig';
+import { API_URL_ADMIN, _API_URL_ADMIN, _BASE_URL } from '@/config/apiConfig';
 import axios from 'axios';
 import { cookies } from 'next/headers';
 
@@ -84,24 +84,18 @@ export async function PUT(request, { params }) {
     const response = await axios({
       method: 'POST',
       mode: 'no-cors',
-      url: `${API_URL_ADMIN}/sale/order/addHistory&order_id=${id}&token=${
-        nextCookies.get('token').value
-      }`,
+      url: `${_API_URL_ADMIN}/orders/statusupdate`,
 
       headers: {
-        'Content-Type': 'multipart/form-data',
-        // 'Content-Type': 'application/json',
-        Cookie: `default=${nextCookies.get('default').value}; PHPSESSID=${
-          nextCookies.get('PHPSESSID').value
-        }; language=${nextCookies.get('language').value}; currency=${
-          nextCookies.get('currency').value
-        }`,
+        'Content-Type': 'application/json',
       },
       data: data,
     });
 
+    console.log('response.status: ', response.status);
+
     //TODO: RESPONSE.STATUS 201 olmalı.
-    if (response && response.status === 200) {
+    if (response && response.status === 201) {
       // console.log('response.status: ', response.status);
       return new Response(
         JSON.stringify({
@@ -122,6 +116,62 @@ export async function PUT(request, { params }) {
       })
     );
   }
+
+  // export async function PUT(request, { params }) {
+  //   // console.log('PUT ISTEK GELDİ orderHistory');
+  //   const { id } = params;
+  //   console.log('PUT ISTEK id', id);
+
+  //   const data = await request.json();
+
+  //   // const data = { notify: 'false', order_status_id: '13' };
+
+  //   console.log('data: ', data);
+
+  //   const nextCookies = cookies();
+
+  //   try {
+  //     const response = await axios({
+  //       method: 'POST',
+  //       mode: 'no-cors',
+  //       url: `${API_URL_ADMIN}/sale/order/addHistory&order_id=${id}&token=${
+  //         nextCookies.get('token').value
+  //       }`,
+
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //         // 'Content-Type': 'application/json',
+  //         Cookie: `default=${nextCookies.get('default').value}; PHPSESSID=${
+  //           nextCookies.get('PHPSESSID').value
+  //         }; language=${nextCookies.get('language').value}; currency=${
+  //           nextCookies.get('currency').value
+  //         }`,
+  //       },
+  //       data: data,
+  //     });
+
+  //     //TODO: RESPONSE.STATUS 201 olmalı.
+  //     if (response && response.status === 200) {
+  //       // console.log('response.status: ', response.status);
+  //       return new Response(
+  //         JSON.stringify({
+  //           status: response.status,
+  //           statusText: response.statusText,
+  //           data: response.data,
+  //         })
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.log('response.error: ', error);
+  //     // console.log('response.status: ', error.response.status);
+  //     return new Response(
+  //       JSON.stringify({
+  //         status: error.response.status,
+  //         statusText: error.response.statusText,
+  //         data: error.response.data,
+  //       })
+  //     );
+  //   }
 
   // console.log('RES: ', res);
 }

@@ -4,45 +4,21 @@ import { editProduct } from '@/services/product';
 
 function ProductVideoEditModal(props) {
   const [product, setProduct] = useState(props.product);
+  const [changedFields, setChangedFields] = useState({});
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
-    setProduct((prev) => {
-      return {
-        ...prev,
-        product_description: {
-          5: {
-            ...prev.product_description[5],
-            [e.target.name]: e.target.value,
-          },
-        },
-        [e.target.name]: e.target.value,
-      };
-    });
+    const { name, value } = e.target;
+
+    // Eğer yeni değer eski değerden farklıysa, değişikliği kaydet
+    if (value !== product[name]) {
+      setChangedFields({ ...changedFields, [name]: value });
+    }
+
+    // Ürün state'ini güncelle
+    setProduct({ ...product, [name]: value });
   };
-
-  // const handleSubmit = (e) => {
-  //   setSuccess(false);
-  //   setIsUpdate(true);
-  //   // Prevent the default submit and page reload
-  //   e.preventDefault();
-
-  //   // Handle validations
-  //   axios({
-  //     method: 'post',
-  //     mode: 'no-cors',
-  //     url: `http://demo.actsistem.com/api/v1/admin/index.php?route=catalog/product/edit&product_id=${product.urunId}`,
-  //     data: product,
-  //     headers: { 'Content-Type': 'multipart/form-data' },
-  //   }).then((response) => {
-  //     console.log(response);
-  //     setIsUpdate(false);
-  //     setSuccess(true);
-  //     props.setProduct(product);
-  //     // Handle response
-  //   });
-  // };
 
   const handleSubmit = async (e) => {
     setSuccess(false);
@@ -50,16 +26,31 @@ function ProductVideoEditModal(props) {
     // Prevent the default submit and page reload
     e.preventDefault();
 
+    // Eğer changedFields boşsa, herhangi bir backend isteği yapma
+    if (Object.keys(changedFields).length === 0) {
+      console.log('Hiçbir değişiklik yapılmadı, backend isteği yapılmayacak.');
+      setIsUpdate(false);
+      props.closeModal(false);
+      return;
+    }
+
     // Handle validations
     console.log('ÜRÜN EDİTİNDEN GÖNDERİLEN PRODUCT DATA:: ', product);
     // Handle validations
 
-    const response = await editProduct(product, product.urunId);
+    // const response = await editProduct(product, product.urunId);
+    const response = await editProduct(changedFields, product.ID);
 
-    //TODO: Response Status 201 olmalı.
     if (response.status === 200) {
       setSuccess(true);
-      props.setProduct(product);
+
+      // Başarılı güncelleme sonrasında ana product state'ini güncelle
+      props.setProduct((prevProduct) => {
+        // prevProduct içindeki değerleri changedFields ile birleştir
+        return { ...prevProduct, ...changedFields };
+      });
+
+      props.closeModal(false);
     }
     setIsUpdate(false);
   };
@@ -102,11 +93,9 @@ function ProductVideoEditModal(props) {
                             Youtube Video ID
                           </label>
                           <input
-                            value={
-                              product?.product_description[5].videolink || ''
-                            }
+                            value={product?.video_link || ''}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-300 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
-                            name='videolink'
+                            name='video_link'
                             type='text'
                             onChange={handleChange}
                           />
@@ -117,9 +106,8 @@ function ProductVideoEditModal(props) {
                           <iframe
                             width='100%'
                             height='300'
-                            src={`https://www.youtube.com/embed/${product?.product_description[5].videolink}`}
-                            title='Summer Mix 2023 🍓 Best Popular Songs Remixes 2023 🍓Titanium, Paris, I&#39;m Blue, Mistletoe, My Way 🍓'
-                            frameBorder='0'
+                            src={`https://www.youtube.com/embed/${product?.video_link}`}
+                            title='Winter Night Jazz 2023 ~ Relaxing Jazz Piano Music and Snow Ambience in Winter ~ Soft Jazz Music'
                             allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
                             allowFullScreen
                           ></iframe>

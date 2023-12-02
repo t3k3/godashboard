@@ -92,10 +92,7 @@ function CategoryMetaEditModal({ category, setCategory, closeModal }) {
                             Meta Açıklaması
                           </label>
                           <textarea
-                            value={
-                              category?.category_description[5]
-                                .meta_description || ''
-                            }
+                            value={category?.meta_description || ''}
                             rows='4'
                             name='meta_description'
                             className='block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-200 focus:ring-blue-500 focus:border-blue-500'
@@ -113,10 +110,7 @@ function CategoryMetaEditModal({ category, setCategory, closeModal }) {
                             Meta Kelimeleri
                           </label>
                           <input
-                            value={
-                              category?.category_description[5].meta_keyword ||
-                              ''
-                            }
+                            value={category?.meta_keyword || ''}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
                             name='meta_keyword'
                             type='text'

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 
 import Image from 'next/image';
-import { editProduct } from '@/services/product';
+import { editProduct, editProductStatus } from '@/services/product';
 import Link from 'next/link';
 import ProductImages from '../Modals/Product/ProductImages';
 import { DndProvider } from 'react-dnd';
@@ -75,31 +75,47 @@ function ProductComp(props) {
     useState(false);
   const [orderProductState, setOrderProductState] = useState(false);
 
-  useEffect(() => {
-    async function getOrderProductsHandle() {
-      const orderProducts = await getProductOrderHistory(product.urunId);
-      setOrderProductState(orderProducts);
-      // console.log('orderProducts', orderProducts);
-    }
-    getOrderProductsHandle();
-  }, [product]);
+  //TODO: ORDER PRODUCTS aktif edilecek
+  // useEffect(() => {
+  //   async function getOrderProductsHandle() {
+  //     const orderProducts = await getProductOrderHistory(product.urunId);
+  //     setOrderProductState(orderProducts);
+  //     // console.log('orderProducts', orderProducts);
+  //   }
+  //   getOrderProductsHandle();
+  // }, [product]);
 
   const handleChange = async (e) => {
     console.log('ÜRÜN EDİTİNDEN GÖNDERİLEN PRODUCT DATA:: ', product);
 
-    let prod = { ...product };
+    let data = {
+      status: e.target.value === 'true', // 'true' stringini boolean değere dönüştürür
+    };
 
-    prod.status = e.target.value;
-
-    const response = await editProduct(prod, product.urunId);
+    const response = await editProductStatus(data, product.ID);
     if (response.status === 200) {
+      let prod = { ...product };
+      prod.status = data.status;
       setProduct(prod);
     }
   };
 
+  // const handleChange = async (e) => {
+  //   console.log('ÜRÜN EDİTİNDEN GÖNDERİLEN PRODUCT DATA:: ', product);
+
+  //   let prod = { ...product };
+
+  //   prod.status = e.target.value;
+
+  //   const response = await editProductStatus(prod, product.ID);
+  //   if (response.status === 200) {
+  //     setProduct(prod);
+  //   }
+  // };
+
   useEffect(() => {
     // Update the document title using the browser API
-    document.title = 'Düzenle - ' + product?.product_description[5]?.name;
+    document.title = 'Düzenle - ' + product?.name;
   });
 
   return (
@@ -170,22 +186,20 @@ function ProductComp(props) {
       {/* Top Nav */}
       <div className='flex items-center justify-between py-2'>
         <div className='sm:flex sm:items-center mx-4'>
-          <h2 className='text-lg font-medium text-gray-900'>
-            {product?.product_description[5]?.name}
-          </h2>
+          <h2 className='text-lg font-medium text-gray-900'>{product?.name}</h2>
           <div className='sm:ml-6 flex items-center sm:mt-0 mt-1'>
             <h1 className='text-lg font-medium text-gray-900'>
-              #{product?.urunId}
+              #{product?.ID}
             </h1>
           </div>
           <span
             className={`${
-              product?.status > 0
+              product?.status
                 ? 'bg-emerald-200 text-emerald-600'
                 : 'bg-red-200 text-red-900'
             }   text-lg font-medium mr-1 ml-2 px-2 py-0.5 rounded`}
           >
-            {product?.status > 0 ? 'Aktif' : 'Kapalı'}
+            {product?.status ? 'Aktif' : 'Kapalı'}
           </span>
           <span className='bg-cyan-100 text-cyan-600 text-lg font-medium mr-1 ml-2 px-2 py-0.5 rounded'>
             Trendyol
@@ -822,17 +836,16 @@ function ProductComp(props) {
 
           <select
             className={`${
-              product.status == 1 ? 'bg-green-500' : 'bg-red-500'
+              product.status ? 'bg-green-500' : 'bg-red-500'
             } border border-gray-300 text-white text-xl rounded-sm focus:ring-green-500 focus:border-green-500 block w-24 ml-2 p-2.5 `}
             name='status'
             id='status'
-            value={product.status}
+            value={product.status.toString()}
             onChange={(e) => handleChange(e)}
           >
-            <option value={0}>Kapalı</option>
-            <option value={1}>Aktif</option>
+            <option value={true}>Aktif</option>
+            <option value={false}>Kapalı</option>
           </select>
-
           {/* Product Info */}
           <div className='mx-2 my-2 bg-white text-gray-600 max-w-sm rounded overflow-hidden shadow-lg'>
             <div className=' flex justify-between h-10 border text-gray-600 font-medium'>
@@ -843,7 +856,7 @@ function ProductComp(props) {
                 <span className=' font-medium'>Link:</span>
                 <span className='ml-12'>
                   <Link
-                    href={`/urun/${product?.keyword}`}
+                    href={`/urun/${product?.meta_keyword}`}
                     className=' flex items-center font-semibold text-blue-500'
                     target='_blank'
                   >
@@ -867,17 +880,12 @@ function ProductComp(props) {
               </div>
               <div className='flex items-center justify-between px-2  pt-2'>
                 <span className='font-medium '>Ürün Adı:</span>
-                <span className=' pr-2'>
-                  {product?.product_description !== undefined &&
-                  product?.product_description[5]?.name !== ''
-                    ? product?.product_description[5]?.name
-                    : ''}
-                </span>
+                <span className=' pr-2'>{product?.name}</span>
               </div>
               <div className='flex items-center justify-between px-2 pt-3 '>
                 <span className='font-medium'>Ürün Kodu:</span>
                 <span className=' pr-2'>
-                  {product.model !== '' ? product.model : ''}
+                  {product.productCode !== '' ? product.productCode : ''}
                 </span>
               </div>
               <div className='flex items-center justify-between px-2 pt-3 '>
@@ -940,30 +948,24 @@ function ProductComp(props) {
               <div className='flex justify-between pl-2 pt-2 px-4'>
                 <span className=' font-medium'>Meta Başlığı:</span>
                 <span className='ml-12 line-clamp-1'>
-                  {product?.product_description !== undefined &&
-                    product?.product_description[5]?.meta_title}
+                  {product?.meta_title}
                 </span>
               </div>
               <div className='flex justify-between pl-2 pt-2 px-4'>
                 <span className=' font-medium'>Meta Açıklaması:</span>
                 <span className='ml-24 line-clamp-1'>
-                  {product?.product_description !== undefined &&
-                    product?.product_description[5]?.meta_description}
+                  {product?.meta_description}
                 </span>
               </div>
               <div className='flex justify-between pl-2 pt-2 px-4'>
                 <span className=' font-medium'>Meta Kelimeleri:</span>
                 <span className='ml-12 line-clamp-1'>
-                  {product?.product_description !== undefined &&
-                    product?.product_description[5]?.meta_keyword}
+                  {product?.meta_keyword}
                 </span>
               </div>
               <div className='flex justify-between pl-2 pt-2 px-4'>
                 <span className=' font-medium'>Ürün Etiketleri:</span>
-                <span className='ml-12 line-clamp-1'>
-                  {product?.product_description !== undefined &&
-                    product?.product_description[5]?.tag}
-                </span>
+                <span className='ml-12 line-clamp-1'>{product?.tag}</span>
               </div>
               <div className='flex justify-between pl-2 pt-2 px-4'>
                 <span className=' font-medium'>Slug (SEO Link):</span>
@@ -982,7 +984,6 @@ function ProductComp(props) {
               </button>
             </div>
           </div>
-
           {/* Category */}
           <div className='mx-2 my-2 bg-white text-gray-600 max-w-sm rounded overflow-hidden shadow-lg'>
             <div className=' flex justify-between h-10 border text-gray-600 font-medium'>
@@ -991,13 +992,13 @@ function ProductComp(props) {
             <div className=' border-r py-4 border-l text-xs'>
               <div className='flex items-center justify-between px-2'>
                 <div className=' items-center flex-wrap'>
-                  {product?.product_categories?.map((key) => {
+                  {product?.categories?.map((category) => {
                     return (
-                      <div className='space-y-0' key={key.category_id}>
+                      <div className='space-y-0' key={category.ID}>
                         <br />
                         <span className=' text-xl'>.</span>
                         <span className='bg-green-100 text-green-800 text-xs font-medium py-1.5 px-2.5 mx-2 rounded border border-green-400'>
-                          {key.name}
+                          {category.path}
                         </span>
                       </div>
                     );
@@ -1015,7 +1016,6 @@ function ProductComp(props) {
               </button>
             </div>
           </div>
-
           {/* Secenekler */}
           <div className='mx-2 my-2 bg-white text-gray-600 max-w-sm rounded overflow-hidden shadow-lg'>
             <div className=' flex justify-between h-10 border text-gray-600 font-medium'>
@@ -1070,7 +1070,6 @@ function ProductComp(props) {
               </button>
             </div>
           </div>
-
           {/* Attribute */}
           <div className='mx-2 my-2 bg-white text-gray-600 max-w-sm rounded overflow-hidden shadow-lg'>
             <div className=' flex justify-between h-10 border text-gray-600 font-medium'>
@@ -1079,23 +1078,19 @@ function ProductComp(props) {
             <div className=' border-r py-4 border-l text-xs'>
               <div className='flex  justify-between px-2'>
                 <div className='flex flex-wrap pt-2'>
-                  {product?.product_attributes !== undefined &&
-                    product?.product_attributes?.map((key) => {
-                      return (
-                        <div
-                          key={key.attribute_id}
-                          className='flex justify-between pl-2 pt-2 px-4'
-                        >
-                          <span className='font-medium'>{key.name}:</span>
-                          <span className='ml-12 line-clamp-1'>
-                            {(key?.product_attribute_description !==
-                              undefined &&
-                              key?.product_attribute_description[5]?.text) ||
-                              ''}
-                          </span>
-                        </div>
-                      );
-                    })}
+                  {product?.attributes?.map((attribute) => {
+                    return (
+                      <div
+                        key={attribute.ID}
+                        className='flex justify-between pl-2 pt-2 px-4'
+                      >
+                        <span className='font-medium'>{attribute.name}:</span>
+                        <span className='ml-12 line-clamp-1'>
+                          {attribute?.value || ''}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -1109,7 +1104,6 @@ function ProductComp(props) {
               </button>
             </div>
           </div>
-
           {/* Pazaryeri Card */}
           {/* <div className='mx-2 my-2 bg-white text-gray-600 max-w-sm rounded overflow-hidden shadow-lg'>
             <div className=' flex justify-between h-10 border text-gray-600 font-medium'>
@@ -1249,7 +1243,6 @@ function ProductComp(props) {
               </button>
             </div>
           </div> */}
-
           {/* Campaign */}
           {/* <div className='mx-2 my-2 bg-white text-gray-600 max-w-sm rounded overflow-hidden shadow-lg'>
             <div className=' flex justify-between h-10 border text-gray-600 font-medium'>
@@ -1304,7 +1297,6 @@ function ProductComp(props) {
               </button>
             </div>
           </div> */}
-
           {/* VIDEO */}
           <div className='mx-2 my-2 bg-white text-gray-600 max-w-sm rounded overflow-hidden shadow-lg'>
             <div className=' flex justify-between h-10 border text-gray-600 font-medium'>
@@ -1334,7 +1326,8 @@ function ProductComp(props) {
                 <span className=' font-medium'>Video:</span>
                 <span className='ml-12'>
                   <a
-                    href='#'
+                    href={product.video_link}
+                    target='blank'
                     className=' flex items-center font-semibold text-blue-500'
                   >
                     Videoya Git
@@ -1358,9 +1351,7 @@ function ProductComp(props) {
 
               <div className='flex justify-between pl-2 pt-2 px-4'>
                 <span className=' font-medium'>Link :</span>
-                <span className='ml-12'>
-                  {product?.product_description[5]?.videolink}
-                </span>
+                <span className='ml-12'>{product?.video_link}</span>
               </div>
             </div>
             <div className=' border text-xs pl-2 pt-2'>

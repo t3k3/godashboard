@@ -1,12 +1,12 @@
-import { BASE_URL } from '@/config/apiConfig';
+import { _API_URL_ADMIN, _BASE_URL } from '@/config/apiConfig';
 
 const getOrderService = async (nextCookies, id = '') => {
   let headers = new Headers();
-  headers.append('Cookie', `default=${nextCookies.get('default').value}`);
-  headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
-  headers.append('Cookie', `language=${nextCookies.get('language').value}`);
-  headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
-  headers.append('Cookie', `token=${nextCookies.get('token').value}`);
+  // headers.append('Cookie', `default=${nextCookies.get('default').value}`);
+  // headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
+  // headers.append('Cookie', `language=${nextCookies.get('language').value}`);
+  // headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
+  // headers.append('Cookie', `token=${nextCookies.get('token').value}`);
 
   var requestOptions = {
     cache: 'no-store',
@@ -16,10 +16,7 @@ const getOrderService = async (nextCookies, id = '') => {
   };
 
   try {
-    const res = await fetch(
-      `${BASE_URL}/api/admin/orders/${id}`,
-      requestOptions
-    );
+    const res = await fetch(`${_API_URL_ADMIN}/orders/${id}`, requestOptions);
 
     const response = await res.json();
 
@@ -37,7 +34,7 @@ const getOrderHistoryService = async (id) => {
   };
   try {
     const res = await fetch(
-      `${BASE_URL}/api/admin/orders/orderHistory/${id}`,
+      `${_API_URL_ADMIN}/orders/orderHistory/${id}`,
       requestOptions
     );
 
@@ -50,7 +47,7 @@ const getOrderHistoryService = async (id) => {
 };
 
 const postOrderService = async (data, id) => {
-  const res = await fetch(`/api/admin/orders/orderHistory/${id}`, {
+  const res = await fetch(`${_BASE_URL}/api/admin/orders/orderHistory/${id}`, {
     method: 'PUT',
     headers: {
       Accept: 'application/json, text/plain, */*',

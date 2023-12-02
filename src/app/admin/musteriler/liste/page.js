@@ -6,7 +6,7 @@ async function Liste() {
   const nextCookies = cookies();
   const customers = await getCustomers(nextCookies);
 
-  return customers && <CustomerList customers={customers.customers} />;
+  return customers && <CustomerList customers={customers} />;
 }
 
 export default Liste;

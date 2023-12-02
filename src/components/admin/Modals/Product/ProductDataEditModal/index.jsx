@@ -4,24 +4,31 @@ import { editProduct } from '@/services/product';
 
 function ProductDataEditModal(props) {
   const [product, setProduct] = useState(props.product);
+  const [changedFields, setChangedFields] = useState({});
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  // const handleChange = (e) => {
+  //   console.log('name: ', e.target.name);
+  //   console.log('value: ', e.target.value);
+  //   setProduct((prev) => {
+  //     return {
+  //       ...prev,
+  //       [e.target.name]: e.target.value,
+  //     };
+  //   });
+  // };
+
   const handleChange = (e) => {
-    console.log('name: ', e.target.name);
-    console.log('value: ', e.target.value);
-    setProduct((prev) => {
-      return {
-        ...prev,
-        product_description: {
-          5: {
-            ...prev.product_description[5],
-            [e.target.name]: e.target.value,
-          },
-        },
-        [e.target.name]: e.target.value,
-      };
-    });
+    const { name, value } = e.target;
+
+    // Eğer yeni değer eski değerden farklıysa, değişikliği kaydet
+    if (value !== product[name]) {
+      setChangedFields({ ...changedFields, [name]: value });
+    }
+
+    // Ürün state'ini güncelle
+    setProduct({ ...product, [name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -30,16 +37,31 @@ function ProductDataEditModal(props) {
     // Prevent the default submit and page reload
     e.preventDefault();
 
+    // Eğer changedFields boşsa, herhangi bir backend isteği yapma
+    if (Object.keys(changedFields).length === 0) {
+      console.log('Hiçbir değişiklik yapılmadı, backend isteği yapılmayacak.');
+      setIsUpdate(false);
+      props.closeModal(false);
+      return;
+    }
+
     // Handle validations
     console.log('ÜRÜN EDİTİNDEN GÖNDERİLEN PRODUCT DATA:: ', product);
     // Handle validations
 
-    const response = await editProduct(product, product.urunId);
+    // const response = await editProduct(product, product.urunId);
+    const response = await editProduct(changedFields, product.ID);
 
-    //TODO: Response Status 201 olmalı.
     if (response.status === 200) {
       setSuccess(true);
-      props.setProduct(product);
+
+      // Başarılı güncelleme sonrasında ana product state'ini güncelle
+      props.setProduct((prevProduct) => {
+        // prevProduct içindeki değerleri changedFields ile birleştir
+        return { ...prevProduct, ...changedFields };
+      });
+
+      props.closeModal(false);
     }
     setIsUpdate(false);
   };
@@ -63,7 +85,7 @@ function ProductDataEditModal(props) {
                     className='text-base font-semibold leading-6 text-gray-600  border-b'
                     id='modal-title'
                   >
-                    Ürün Düzenle
+                    Ürün Bilgilerini Düzenle
                   </h3>
                   <div>
                     <form
@@ -82,11 +104,11 @@ function ProductDataEditModal(props) {
                             Ürün Adı
                           </label>
                           <input
-                            value={product?.product_description[5].name || ''}
+                            value={product?.name || ''}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-300 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
                             name='name'
                             type='text'
-                            placeholder='Elektronik'
+                            placeholder='iPhone 12 Pro 128GB Beyaz'
                             onChange={handleChange}
                           />
                         </div>
@@ -100,9 +122,7 @@ function ProductDataEditModal(props) {
                             ÜRÜN DETAYI
                           </label>
                           <textarea
-                            value={
-                              product?.product_description[5].description || ''
-                            }
+                            value={product?.description || ''}
                             rows='4'
                             name='description'
                             className='block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500'
@@ -121,9 +141,9 @@ function ProductDataEditModal(props) {
                             Ürün Kodu
                           </label>
                           <input
-                            value={product?.model || ''}
+                            value={product?.product_code || ''}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-300 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
-                            name='model'
+                            name='product_code'
                             type='text'
                             onChange={handleChange}
                           />
@@ -248,18 +268,12 @@ function ProductDataEditModal(props) {
                           >
                             KDV
                           </label>
-                          <div className='relative'>
+                          {/* <div className='relative'>
                             <select
                               className='block appearance-none w-full bg-gray-50 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500'
                               id='grid-state'
                             >
-                              {product?.tax_classes.map((tax) => {
-                                return (
-                                  <option key={tax.tax_class_id}>
-                                    {tax.title}
-                                  </option>
-                                );
-                              }) || ''}
+                              {product?.tax_class_id || ''}
                             </select>
                             <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700'>
                               <svg
@@ -270,7 +284,7 @@ function ProductDataEditModal(props) {
                                 <path d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z' />
                               </svg>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
 
                         <div className='w-full md:w-1/4 px-3 mb-6 md:mb-0'>
@@ -296,7 +310,7 @@ function ProductDataEditModal(props) {
                           >
                             FİYAT CİNSİ
                           </label>
-                          <div className='relative'>
+                          {/* <div className='relative'>
                             <select
                               defaultValue={product.price_currency_code}
                               className='block appearance-none w-full bg-gray-50 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500'
@@ -328,7 +342,7 @@ function ProductDataEditModal(props) {
                                 <path d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z' />
                               </svg>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
 

@@ -7,6 +7,8 @@ import EditOptionModal from './EditOptionModal';
 // import { getSingleOption } from '@/services/option';
 
 function OptionList({ options }) {
+  console.log('secenekler12332: ', options);
+
   const [addNewOptionModal, setAddNewOptionModal] = useState(false);
   const [editOptionModal, setEditOptionModal] = useState(false);
   const [editOption, setEditOption] = useState(false);

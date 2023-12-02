@@ -1,4 +1,4 @@
-import { API_URL_ADMIN } from '@/config/apiConfig';
+import { API_URL_ADMIN, _API_URL_ADMIN } from '@/config/apiConfig';
 import { cookies } from 'next/headers';
 import axios from 'axios';
 
@@ -7,10 +7,10 @@ export async function GET(request) {
   const nextCookies = cookies();
 
   let headers = new Headers();
-  headers.append('Cookie', `default=${nextCookies.get('default').value}`);
-  headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
-  headers.append('Cookie', `language=${nextCookies.get('language').value}`);
-  headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
+  // headers.append('Cookie', `default=${nextCookies.get('default').value}`);
+  // headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
+  // headers.append('Cookie', `language=${nextCookies.get('language').value}`);
+  // headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
 
   var requestOptions = {
     method: 'GET',
@@ -18,12 +18,7 @@ export async function GET(request) {
     redirect: 'follow',
   };
 
-  const response = await fetch(
-    `${API_URL_ADMIN}/catalog/product&sort=pd.name&order=DESC&token=${
-      nextCookies.get('token').value
-    }`,
-    requestOptions
-  );
+  const response = await fetch(`${_API_URL_ADMIN}/products`, requestOptions);
 
   const res = await response.json();
 
@@ -44,7 +39,7 @@ export async function GET(request) {
       JSON.stringify({
         status: 200,
         statusText: 'login true',
-        products: res.products,
+        products: res,
       })
     );
   }

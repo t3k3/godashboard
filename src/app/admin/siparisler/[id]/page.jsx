@@ -6,11 +6,11 @@ async function Siparis(props) {
   const nextCookies = cookies();
   const order = await getSingleOrder(nextCookies, props.params.id);
 
-  if (order.order.order_id == 0) {
-    return 'Sipariş bulunamadı';
-  } else {
-    return order && <OrderComp order={order.order} />;
-  }
+  return (
+    order && (
+      <OrderComp order={order.order} order_statuses={order.order_statuses} />
+    )
+  );
 }
 
 export default Siparis;

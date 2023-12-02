@@ -15,9 +15,11 @@ function Category(props) {
 
   const [categoryProductsState, setCategoryProductsState] = useState(false);
 
-  if (category.response == 'null') {
-    console.log('Kategori bulunamadı.');
-  }
+  console.log('category1423: ', category);
+
+  // if (category.ID == 'null') {
+  //   console.log('Kategori bulunamadı.');
+  // }
 
   // useEffect(() => {
   //   async function getCategoryProductsHandle() {
@@ -61,13 +63,13 @@ function Category(props) {
           <h2 className='text-lg font-medium text-gray-900'>Kategori</h2>
           <div className='sm:ml-6 flex items-center sm:mt-0 mt-1'>
             <h1 className='text-lg font-medium text-gray-900'>
-              #{category?.KategoriId}
+              #{category?.ID}
             </h1>
           </div>
           <span
             className={`bg-emerald-100 text-emerald-600 text-xs font-medium mr-1 ml-2 px-2 py-0.5 rounded`}
           >
-            {category?.status > 0 ? 'Aktif' : 'Kapalı'}
+            {category?.status ? 'Aktif' : 'Kapalı'}
           </span>
           <span className='bg-cyan-100 text-cyan-600 text-xs font-medium mr-1 ml-2 px-2 py-0.5 rounded'>
             Trendyol
@@ -650,9 +652,7 @@ function Category(props) {
               </div>
               <div className='flex items-center justify-between px-2  pt-2'>
                 <span className='font-medium '>Kategori Adı:</span>
-                <span className=' pr-2'>
-                  {category?.category_description[5]?.name || ''}
-                </span>
+                <span className=' pr-2'>{category?.name || ''}</span>
               </div>
 
               <div className='flex items-center justify-between px-2'>
@@ -687,19 +687,19 @@ function Category(props) {
               <div className='flex justify-between pl-2 pt-2 px-4'>
                 <span className=' font-medium'>Meta Başlığı:</span>
                 <span className='ml-12 line-clamp-1'>
-                  {category?.category_description[5]?.meta_title || ''}
+                  {category?.meta_title || ''}
                 </span>
               </div>
               <div className='flex justify-between pl-2 pt-2 px-4'>
                 <span className=' font-medium'>Meta Açıklaması:</span>
                 <span className='ml-24 line-clamp-1'>
-                  {category?.category_description[5]?.meta_description || ''}
+                  {category?.meta_description || ''}
                 </span>
               </div>
               <div className='flex justify-between pl-2 pt-2 px-4'>
                 <span className=' font-medium'>Meta Kelimeleri:</span>
                 <span className='ml-12 line-clamp-1'>
-                  {category?.category_description[5]?.meta_keyword || ''}
+                  {category?.meta_keyword || ''}
                 </span>
               </div>
 

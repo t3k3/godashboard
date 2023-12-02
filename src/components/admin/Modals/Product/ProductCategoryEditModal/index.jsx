@@ -1,53 +1,53 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { editProduct } from '@/services/product';
+import { UpdateProductCategories } from '@/services/product';
 import { getCategoriesFromClientSide } from '@/services/category';
+import { getCategories } from '@/services/category';
 
 function ProductCategoryEditModal(props) {
   const [product, setProduct] = useState(props.product);
+
+  const [initialCategories, setInitialCategories] = useState(
+    product.categories.map((c) => c.ID)
+  );
+  const [currentCategories, setCurrentCategories] = useState(
+    product.categories.map((c) => c.ID)
+  );
+
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
   const [categories, setCategories] = useState();
 
   useEffect(() => {
     async function fetchCategories() {
-      const response = await getCategoriesFromClientSide();
+      // const response = await getCategoriesFromClientSide();
+      const response = await getCategories();
+      console.log('response1232: ', response);
       setCategories(response.categories);
     }
     fetchCategories();
   }, []);
 
-  function removeObjectWithId(arr, id) {
-    return arr.filter((obj) => obj.category_id !== id);
-  }
-
-  const editProductCategory = (category_id) => {
-    const sp = removeObjectWithId(product.product_categories, category_id);
-    setProduct((prevProduct) => ({
-      ...prevProduct,
-      product_categories: sp,
-    }));
+  // Kategori ekleme işlemi (sadece arayüzde)
+  const handleAddCategory = (e) => {
+    const categoryId = parseInt(e.target.value);
+    const newCategory = categories.find((c) => c.ID === categoryId);
+    if (newCategory && !product.categories.some((c) => c.ID === categoryId)) {
+      setProduct((prevProduct) => ({
+        ...prevProduct,
+        categories: [...prevProduct.categories, newCategory],
+      }));
+    }
+    setCurrentCategories((prev) => [...prev, categoryId]);
   };
 
-  const handleChangeOptions = (e) => {
-    console.log('Selected value:', e.target.value);
-    console.log('Categories:', categories);
-
-    if (e.target.value !== '') {
-      var item = categories.find((item) => item.category_id === e.target.value);
-      if (
-        !product?.product_categories.some(
-          (it) => it.category_id === item.category_id
-        )
-      ) {
-        setProduct((prev) => {
-          return {
-            ...prev,
-            product_categories: [...prev.product_categories, item],
-          };
-        });
-      }
-    }
+  // Kategori kaldırma işlemi (sadece arayüzde)
+  const handleRemoveCategory = (categoryId) => {
+    setProduct((prevProduct) => ({
+      ...prevProduct,
+      categories: prevProduct.categories.filter((c) => c.ID !== categoryId),
+    }));
+    setCurrentCategories((prev) => prev.filter((id) => id !== categoryId));
   };
 
   const handleSubmit = async (e) => {
@@ -56,11 +56,19 @@ function ProductCategoryEditModal(props) {
     // Prevent the default submit and page reload
     e.preventDefault();
 
-    // Handle validations
-    console.log('ÜRÜN EDİTİNDEN GÖNDERİLEN PRODUCT DATA:: ', product);
-    // Handle validations
+    // Kategorileri hesaplama
+    const categoriesToAdd = currentCategories.filter(
+      (id) => !initialCategories.includes(id)
+    );
+    const categoriesToRemove = initialCategories.filter(
+      (id) => !currentCategories.includes(id)
+    );
 
-    const response = await editProduct(product, product.urunId);
+    const response = await UpdateProductCategories({
+      product_id: product.ID,
+      categories_to_add: categoriesToAdd,
+      categories_to_remove: categoriesToRemove,
+    });
 
     //TODO: Response Status 201 olmalı.
     if (response.status === 200) {
@@ -108,18 +116,18 @@ function ProductCategoryEditModal(props) {
                           <div className=' border-r py-4 border-l text-lg'>
                             <div className='flex items-center justify-between px-2'>
                               <div className='items-center flex-wrap pt-2 '>
-                                {product?.product_categories.map((key) => {
+                                {product?.categories.map((category) => {
                                   return (
-                                    <div key={key.category_id} className='my-4'>
+                                    <div key={category.ID} className='my-4'>
                                       <br />
                                       <span className=' text-xl mr-2'>.</span>
                                       <span className='bg-green-100 text-green-800 text-lg font-medium mr-2 px-2.5 py-4 rounded '>
-                                        {key.name}
+                                        {category.path}
                                       </span>
                                       <span
                                         className='-ml-2 mr-4 px-2.5 py-4 rounded-sm cursor-pointer bg-green-200 border-l border-green-400  h-full w-8'
                                         onClick={() => {
-                                          editProductCategory(key.category_id);
+                                          handleRemoveCategory(category.ID);
                                         }}
                                       >
                                         -
@@ -142,21 +150,26 @@ function ProductCategoryEditModal(props) {
                           </label>
                           <select
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
-                            onChange={handleChangeOptions}
+                            onChange={handleAddCategory}
                           >
                             <option defaultValue={true} value={''}>
                               Bir Kategori Seçiniz
                             </option>
-                            {categories?.map((category) => {
-                              return (
+                            {categories
+                              ?.filter(
+                                (category) =>
+                                  !product.categories.some(
+                                    (pc) => pc.ID === category.ID
+                                  )
+                              )
+                              .map((filteredCategory) => (
                                 <option
-                                  key={category.category_id}
-                                  value={category.category_id}
+                                  key={filteredCategory.ID}
+                                  value={filteredCategory.ID}
                                 >
-                                  {category.name}
+                                  {filteredCategory.path}
                                 </option>
-                              );
-                            })}
+                              ))}
                           </select>
                         </div>
                       </div>

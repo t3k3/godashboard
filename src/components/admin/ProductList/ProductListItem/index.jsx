@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 function ProductListItem({ product, selectedProducts, handleCheckboxChange }) {
+  console.log('PRODUCT1232: ', product);
   return (
     <tr className='bg-white border-b  hover:bg-gray-200'>
       <td className='w-4 p-4'>
@@ -11,8 +12,8 @@ function ProductListItem({ product, selectedProducts, handleCheckboxChange }) {
             id='checkbox-all-search'
             type='checkbox'
             className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'
-            checked={selectedProducts.includes(product.product_id)}
-            onChange={() => handleCheckboxChange(product.product_id)}
+            checked={selectedProducts.includes(product.ID)}
+            onChange={() => handleCheckboxChange(product.ID)}
           />
           <label htmlFor='checkbox-all-search' className='sr-only'>
             checkbox
@@ -20,10 +21,10 @@ function ProductListItem({ product, selectedProducts, handleCheckboxChange }) {
         </div>
       </td>
       <td className='w-4 p-4'>
-        <div className='flex items-center'>#{product.product_id}</div>
+        <div className='flex items-center'>#{product.ID}</div>
       </td>
       <td className='w-4 p-4'>
-        <div className='flex items-center'>{product.model}</div>
+        <div className='flex items-center'>{product.productCode}</div>
       </td>
       <td className='w-4 p-4'>
         <div className='flex items-center'>
@@ -32,7 +33,10 @@ function ProductListItem({ product, selectedProducts, handleCheckboxChange }) {
               <span className='border-2 rounded border-white'>
                 <Image
                   className='w-12 h-12 rounded object-cover'
-                  src={product.image}
+                  // src={product.main_image}
+                  src={
+                    'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
+                  }
                   alt='avatar'
                   height={48}
                   width={48}
@@ -49,7 +53,7 @@ function ProductListItem({ product, selectedProducts, handleCheckboxChange }) {
         <div className='pl-3 pt-4'>
           <div className='text-base font-semibold'>{product.name}</div>
           <div className='font-normal text-gray-500'>
-            <span className='text-xs'>{product.meta_title}</span>
+            <span className='text-xs'>{product.name}</span>
           </div>
         </div>
       </th>
@@ -57,7 +61,7 @@ function ProductListItem({ product, selectedProducts, handleCheckboxChange }) {
       <td className='px-6 py-1'>
         <span className='text-xs'>
           <span className='bg-purple-100 text-purple-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded'>
-            {product.date_added}
+            {product.CreatedAt}
           </span>
         </span>
       </td>
@@ -74,10 +78,10 @@ function ProductListItem({ product, selectedProducts, handleCheckboxChange }) {
         <div className='flex items-center'>
           <div
             className={`h-2.5 w-2.5 rounded-full ${
-              product.status > 0 ? 'bg-green-500' : 'bg-red-500'
+              product.status ? 'bg-green-500' : 'bg-red-500'
             }  mr-2`}
           ></div>{' '}
-          {product.status > 0 ? 'Açık' : 'Kapalı'}
+          {product.status ? 'Açık' : 'Kapalı'}
         </div>
       </td>
       <td className='px-6 py-1'>
@@ -106,7 +110,7 @@ function ProductListItem({ product, selectedProducts, handleCheckboxChange }) {
             </svg>
           </a>
           <Link
-            href={`/admin/urunler/${product.product_id}`}
+            href={`/admin/urunler/${product.ID}`}
             type='button'
             data-modal-target='editUserModal'
             data-modal-show='editUserModal'

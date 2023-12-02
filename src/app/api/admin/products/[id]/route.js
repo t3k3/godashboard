@@ -1,18 +1,18 @@
-import { API_URL_ADMIN } from '@/config/apiConfig';
+import { API_URL_ADMIN, _API_URL_ADMIN } from '@/config/apiConfig';
 import { cookies } from 'next/headers';
 import axios from 'axios';
 
 //get single product
 export async function GET(request, { params }) {
   const { id } = params;
-  // console.log('id: ', id);
+  console.log('id324234: ', id);
   const nextCookies = cookies();
 
   let headers = new Headers();
-  headers.append('Cookie', `default=${nextCookies.get('default').value}`);
-  headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
-  headers.append('Cookie', `language=${nextCookies.get('language').value}`);
-  headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
+  // headers.append('Cookie', `default=${nextCookies.get('default').value}`);
+  // headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
+  // headers.append('Cookie', `language=${nextCookies.get('language').value}`);
+  // headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
 
   var requestOptions = {
     method: 'GET',
@@ -21,9 +21,7 @@ export async function GET(request, { params }) {
   };
 
   const response = await fetch(
-    `${API_URL_ADMIN}/catalog/product/edit&product_id=${id}&token=${
-      nextCookies.get('token').value
-    }`,
+    `${_API_URL_ADMIN}/products/${id}`,
     requestOptions
   );
 
@@ -54,33 +52,29 @@ export async function GET(request, { params }) {
 }
 
 export async function PUT(request, { params }) {
-  // console.log('PUT ISTEK GELDİ');
+  console.log('PUT ISTEK GELDİ');
+  console.log('params12312323: ', params);
   const { id } = params;
 
   const data = await request.json();
+
+  console.log('data4233234: ', data);
 
   const nextCookies = cookies();
 
   try {
     const response = await axios({
-      method: 'POST',
+      method: 'PUT',
       mode: 'no-cors',
-      url: `${API_URL_ADMIN}/catalog/product/edit&product_id=${id}&token=${
-        nextCookies.get('token').value
-      }`,
+      url: `${_API_URL_ADMIN}/products/${id}`,
 
       headers: {
-        'Content-Type': 'multipart/form-data',
-        Cookie: `default=${nextCookies.get('default').value}; PHPSESSID=${
-          nextCookies.get('PHPSESSID').value
-        }; language=${nextCookies.get('language').value}; currency=${
-          nextCookies.get('currency').value
-        }`,
+        'Content-Type': 'application/json',
       },
-      data: data,
+      data: JSON.stringify(data),
     });
 
-    // console.log('response.status: ', response.status);
+    console.log('response.status: ', response.status);
 
     //TODO: response.status 201 olmalı
     if (response.status === 200) {

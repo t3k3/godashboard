@@ -74,7 +74,7 @@ function CategoryDataEditModal({ category, setCategory, closeModal }) {
                             Kategori Adı
                           </label>
                           <input
-                            value={category?.category_description[5].name || ''}
+                            value={category?.name || ''}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
                             name='name'
                             type='text'
@@ -92,10 +92,7 @@ function CategoryDataEditModal({ category, setCategory, closeModal }) {
                             Açıklama
                           </label>
                           <textarea
-                            value={
-                              category?.category_description[5].description ||
-                              ''
-                            }
+                            value={category?.description || ''}
                             rows='4'
                             name='description'
                             className='block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500'

@@ -1,12 +1,12 @@
-import { BASE_URL } from '@/config/apiConfig';
+import { _API_URL_ADMIN } from '@/config/apiConfig';
 
 const getCustomerService = async (nextCookies, id = '') => {
   let headers = new Headers();
-  headers.append('Cookie', `default=${nextCookies.get('default').value}`);
-  headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
-  headers.append('Cookie', `language=${nextCookies.get('language').value}`);
-  headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
-  headers.append('Cookie', `token=${nextCookies.get('token').value}`);
+  // headers.append('Cookie', `default=${nextCookies.get('default').value}`);
+  // headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
+  // headers.append('Cookie', `language=${nextCookies.get('language').value}`);
+  // headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
+  // headers.append('Cookie', `token=${nextCookies.get('token').value}`);
 
   var requestOptions = {
     cache: 'no-store',
@@ -17,7 +17,7 @@ const getCustomerService = async (nextCookies, id = '') => {
 
   try {
     const res = await fetch(
-      `${BASE_URL}/api/admin/customers/${id}`,
+      `${_API_URL_ADMIN}/customers/${id}`,
       requestOptions
     );
 
@@ -39,7 +39,7 @@ const getCustomerOrdersService = async (id) => {
 
   try {
     const res = await fetch(
-      `${BASE_URL}/api/admin/customers/customerOrders/${id}`,
+      `${_API_URL_ADMIN}/customers/customerOrders/${id}`,
       requestOptions
     );
 

@@ -9,7 +9,7 @@ async function Shipping() {
   return (
     shippingMethods && (
       <ShippingMethodList
-        shippingMethods={shippingMethods.extensions}
+        shippingMethods={shippingMethods}
         //manufacturer_total={shippingMethods.manufacturer_total}
       />
     )

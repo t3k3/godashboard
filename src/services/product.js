@@ -1,12 +1,14 @@
 import { BASE_URL } from '@/config/apiConfig';
+import { _BASE_URL } from '@/config/apiConfig';
+import { _API_URL_ADMIN } from '@/config/apiConfig';
 
 const getProductService = async (nextCookies, id = '') => {
   let headers = new Headers();
-  headers.append('Cookie', `default=${nextCookies.get('default').value}`);
-  headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
-  headers.append('Cookie', `language=${nextCookies.get('language').value}`);
-  headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
-  headers.append('Cookie', `token=${nextCookies.get('token').value}`);
+  // headers.append('Cookie', `default=${nextCookies.get('default').value}`);
+  // headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
+  // headers.append('Cookie', `language=${nextCookies.get('language').value}`);
+  // headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
+  // headers.append('Cookie', `token=${nextCookies.get('token').value}`);
 
   var requestOptions = {
     cache: 'no-store',
@@ -17,7 +19,7 @@ const getProductService = async (nextCookies, id = '') => {
 
   try {
     const res = await fetch(
-      `${BASE_URL}/api/admin/products/${id}`,
+      `${_BASE_URL}/api/admin/products/${id}`,
       requestOptions
     );
 
@@ -135,6 +137,27 @@ const getFilteredProductService = async (filterObject) => {
   }
 };
 
+const ProductToCategoryService = async (data) => {
+  const res = await fetch(`/api/admin/products/category`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    console.log('ERROR: product.js service');
+    throw new Error(error);
+  }
+
+  const resData = await res.json();
+
+  return resData;
+};
+
 const getSingleProduct = async (nextCookies, id) => {
   return getProductService(nextCookies, id);
 };
@@ -159,12 +182,20 @@ const editProduct = async (data, id) => {
   return putProductService(data, id);
 };
 
+const editProductStatus = async (data, id) => {
+  return putProductService(data, id);
+};
+
 const addNewProduct = async (data) => {
   return postProductService(data);
 };
 
 const deleteProduct = async (data) => {
   return deleteProductService(data);
+};
+
+const UpdateProductCategories = async (data) => {
+  return ProductToCategoryService(data);
 };
 
 export {
@@ -175,6 +206,8 @@ export {
   getFilteredProducts,
   getTrendyolCategories,
   editProduct,
+  editProductStatus,
   addNewProduct,
   deleteProduct,
+  UpdateProductCategories,
 };

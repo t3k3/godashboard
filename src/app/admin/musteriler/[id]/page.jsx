@@ -19,7 +19,7 @@ async function Musteri(props) {
   return (
     customer && (
       <CustomerComp
-        customer={customer.customer}
+        customer={customer}
 
         // customerOrderHistory={customerOrderHistory.customerOrders}
       />

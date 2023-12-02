@@ -1,13 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
 
-function CategoryItem({ kategori }) {
+function CategoryItem({ category }) {
   console.log();
   return (
     <>
       <tr className='bg-white border-b  hover:bg-gray-200'>
         <td className='w-4 p-4'>
-          <div className='flex items-center'>#{kategori.category_id}</div>
+          <div className='flex items-center'>#{category.ID}</div>
         </td>
 
         <th
@@ -15,19 +15,21 @@ function CategoryItem({ kategori }) {
           className='flex items-center px-2 py-1 text-gray-900 whitespace-nowrap '
         >
           <div className='pl-3'>
-            <div className='text-base font-semibold'>{kategori.name}</div>
+            <div className='text-base font-semibold'>{category.name}</div>
             <div className='font-normal text-gray-500'>
-              <span className='text-xs'>{kategori.name}</span>
+              <span className='text-xs'>{category.path}</span>
             </div>
           </div>
         </th>
 
         <td className='px-6 py-1'>
-          <span className='text-xs'>{kategori.parent_id}</span>
+          <span className='text-xs'>{category.parent_id}</span>
         </td>
         <td className='px-6 py-1'>
           <span className='text-xs'>elektronik</span>
         </td>
+
+        {/* TODO: Kategori status editlenecek */}
         <td className='px-6 py-1'>
           <div className='flex items-center'>
             <div className='h-2.5 w-2.5 rounded-full bg-green-500 mr-2'></div>{' '}
@@ -38,7 +40,7 @@ function CategoryItem({ kategori }) {
           {/* <!-- Modal toggle --> */}
           <div className='flex'>
             <Link
-              href={`/admin/kategoriler/${kategori.category_id}`}
+              href={`/admin/kategoriler/${category.ID}`}
               type='button'
               data-modal-target='editUserModal'
               data-modal-show='editUserModal'

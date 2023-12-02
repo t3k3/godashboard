@@ -8,7 +8,10 @@ async function Liste() {
 
   return (
     orders && (
-      <OrderList orders={orders.orders} order_total={orders.order_total} />
+      <OrderList
+        orders={orders.orders}
+        order_statuses={orders.order_statuses}
+      />
     )
   );
 }

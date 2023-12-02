@@ -106,7 +106,7 @@ function ManufacturerList(props) {
                 manufacturers.map((manufacturer) => {
                   return (
                     <ManufacturerListItem
-                      key={manufacturer.manufacturer_id}
+                      key={manufacturer.ID}
                       manufacturer={manufacturer}
                       handleManufacturerEdit={handleManufacturerEdit}
                     />
@@ -122,10 +122,7 @@ function ManufacturerList(props) {
           >
             <span className='text-sm font-normal text-gray-500'>
               <span className='font-semibold text-gray-900 '> 1-10</span> arasi{' '}
-              <span className='font-semibold text-gray-900 '>
-                {' '}
-                Toplam {props.manufacturer_total}
-              </span>
+              <span className='font-semibold text-gray-900 '> Toplam 1</span>
             </span>
             <ul className='inline-flex items-center -space-x-px'>
               <li>

@@ -132,12 +132,7 @@ function CustomerList({ customers }) {
         </thead>
         <tbody>
           {customers.map((customer) => {
-            return (
-              <CustomerListItem
-                key={customer.customer_id}
-                customer={customer}
-              />
-            );
+            return <CustomerListItem key={customer.ID} customer={customer} />;
           })}
         </tbody>
       </table>

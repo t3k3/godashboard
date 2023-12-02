@@ -8,6 +8,9 @@ function OrderHistoryEditModal({ orderId, selectedStatus, closeModal }) {
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  console.log('ORDERID456: ', orderId);
+  console.log('selectedStatus456: ', selectedStatus);
+
   const handleChange = (e) => {
     setStatus((prev) => {
       return {
@@ -17,16 +20,11 @@ function OrderHistoryEditModal({ orderId, selectedStatus, closeModal }) {
     });
   };
   const data = {
+    order_id: orderId,
     comment: status.comment,
     notify: enabled,
-    order_status_id: selectedStatus.order_status_id,
+    order_status_id: selectedStatus.ID,
   };
-
-  if (data.notify == false) {
-    data.notify = 'false';
-  } else if (data.notify == true) {
-    data.notify = 'true';
-  }
 
   const handleSubmit = async (e) => {
     setSuccess(false);
@@ -42,8 +40,9 @@ function OrderHistoryEditModal({ orderId, selectedStatus, closeModal }) {
     const response = await editOrderHistory(data, orderId);
 
     //TODO: Response Status 201 olmalı.
-    if (response.status === 200) {
+    if (response.status === 201) {
       setSuccess(true);
+      window.location.reload();
     }
     setIsUpdate(false);
   };
@@ -139,6 +138,7 @@ function OrderHistoryEditModal({ orderId, selectedStatus, closeModal }) {
 
                       <div className='bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6'>
                         <button
+                          disabled={success}
                           type='submit'
                           className='inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto'
                         >

@@ -11,7 +11,7 @@ function EditShippingMethodModal(props) {
   useEffect(() => {
     (async () => {
       const shippingMethod = await getSingleShippingMethod(
-        props.shippingMethodData.edit
+        props.shippingMethodData.ID
       );
       setShippingMethod(shippingMethod);
     })();
@@ -19,7 +19,7 @@ function EditShippingMethodModal(props) {
     return () => {
       // this now gets called when the component unmounts
     };
-  }, [shippingMethod]);
+  }, []);
 
   const handleChange = (e) => {
     setShippingMethod((prev) => {
@@ -106,12 +106,60 @@ function EditShippingMethodModal(props) {
                             className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'
                             htmlFor='grid-first-name'
                           >
+                            İSİM
+                          </label>
+                          <input
+                            value={shippingMethod?.name || ''}
+                            className='appearance-none block w-full bg-gray-50 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-indigo-500'
+                            name='name'
+                            type='text'
+                            placeholder='İsim'
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div className=' px-3 w-2/1 mb-6 md:mb-0'>
+                          <label
+                            className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'
+                            htmlFor='grid-first-name'
+                          >
+                            TAHMİNİ TESLİMAT SÜRESİ
+                          </label>
+                          <input
+                            value={shippingMethod?.estimated_time || ''}
+                            className='appearance-none block w-full bg-gray-50 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-indigo-500'
+                            name='estimated_time'
+                            type='text'
+                            placeholder='Tahmini Teslimat'
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div className=' px-3 w-2/1 mb-6 md:mb-0'>
+                          <label
+                            className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'
+                            htmlFor='grid-first-name'
+                          >
                             FİYAT
                           </label>
                           <input
-                            value={shippingMethod?.flat_cost || ''}
+                            value={shippingMethod?.price || ''}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-indigo-500'
-                            name='flat_cost'
+                            name='price'
+                            type='text'
+                            placeholder='Kargo Ücreti'
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div className=' px-3 w-2/1 mb-6 md:mb-0'>
+                          <label
+                            className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'
+                            htmlFor='grid-first-name'
+                          >
+                            ÜCRETSİZ KARGO İÇİN MİNİMUM TUTAR
+                          </label>
+                          <input
+                            value={shippingMethod?.minimum_order_amount || ''}
+                            className='appearance-none block w-full bg-gray-50 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-indigo-500'
+                            name='minimum_order_amount'
                             type='text'
                             placeholder='Kargo Ücreti'
                             onChange={handleChange}
@@ -127,12 +175,12 @@ function EditShippingMethodModal(props) {
 
                           <select
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
-                            name='flat_status'
-                            value={shippingMethod?.flat_status || ''}
+                            name='status'
+                            value={shippingMethod?.status || ''}
                             onChange={handleChange}
                           >
-                            <option value={'0'}>Kapalı</option>
-                            <option value={'1'}>Açık</option>
+                            <option value={false}>Kapalı</option>
+                            <option value={true}>Açık</option>
                           </select>
                         </div>
                       </div>

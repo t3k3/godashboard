@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 import Image from 'next/image';
 
-function OrderListItem({ order }) {
+function OrderListItem({ order, order_statuses }) {
   return (
     <tr className=' bg-white border-b-2 hover:bg-gray-200'>
       <td className='w-4 p-4'>
@@ -15,69 +15,17 @@ function OrderListItem({ order }) {
         </div>
       </td>
       <td className='w-4 p-4'>
-        <div className='flex items-center'>#{order.order_id}</div>
+        <div className='flex items-center'>#{order.ID}</div>
       </td>
-      <td className='w-4 p-4'>
-        <div className='flex items-center'>
-          <div className='sm:flex sm:items-center'>
-            <div className=' flex items-center sm:mt-0 mt-1'>
-              {order.order_product.map((order_prod) => {
-                return (
-                  <span
-                    key={order_prod.order_product_id}
-                    className='-ml-2.5 border-2 border-white rounded-full '
-                  >
-                    {/* {console.log(order_prod)} */}
-                    {/* {order_prod.images.map((image) => {
-                      console.log('image: ', image);
-                      // return 1;
-                      return (
-                        <Link href={`/admin/urunler/${order_prod.product_id}`}>
-                          <Image
-                            className='w-8 h-8 rounded-full object-cover'
-                            src={
-                              image ||
-                              'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
-                            }
-                            alt='avatar'
-                            width={32}
-                            height={32}
-                          />
-                        </Link>
-                      );
-                    })} */}
-                    <Link href={`/admin/urunler/${order_prod.product_id}`}>
-                      <Image
-                        className='w-8 h-8 rounded-full object-cover'
-                        src={
-                          order_prod.image ||
-                          'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
-                        }
-                        alt='avatar'
-                        width={32}
-                        height={32}
-                      />
-                    </Link>
-                  </span>
-                );
-              })}{' '}
-              <span
-                className={`absolute w-6 h-6 -ml-6 mb-2 pl-1.5 border-2 border-white bg-blue-500 text-white rounded-full ${
-                  order.product_total < 4 && 'hidden'
-                } `}
-              >
-                {order.product_total}
-              </span>
-            </div>
-          </div>
-        </div>
-      </td>
+
       <th
         scope='row'
         className='flex items-center px-2 py-8 text-gray-900 whitespace-nowrap '
       >
         <div className='pl-3'>
-          <div className='text-base font-semibold'>{order.customer}</div>
+          <div className='text-base font-semibold'>
+            {order.firstname + ' ' + order.lastname}
+          </div>
           <div className='font-normal text-gray-500'>
             <span className='text-xs'>{order.telephone}</span>
           </div>
@@ -85,13 +33,16 @@ function OrderListItem({ order }) {
       </th>
 
       <td className='px-6 py-4'>
-        <span className='text-xs'>{order.date_added}</span>
+        <span className='text-xs'>{order.CreatedAt}</span>
       </td>
 
       <td className='px-6 py-4'>
         <div className='flex items-center'>
           <div className='h-2.5 w-2.5 rounded-full bg-green-500 mr-2'></div>{' '}
-          {order.order_status}
+          {
+            order_statuses.find((status) => status.ID == order.order_status_id)
+              ?.name
+          }
         </div>
       </td>
       <td className='px-6 py-4'>
@@ -125,7 +76,7 @@ function OrderListItem({ order }) {
             </svg>
           </a>
           <Link
-            href={`/admin/siparisler/${order.order_id}`}
+            href={`/admin/siparisler/${order.ID}`}
             type='button'
             data-modal-target='editUserModal'
             data-modal-show='editUserModal'

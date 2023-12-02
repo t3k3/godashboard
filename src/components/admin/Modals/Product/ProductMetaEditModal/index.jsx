@@ -4,22 +4,20 @@ import { editProduct } from '@/services/product';
 
 function ProductMetaEditModal(props) {
   const [product, setProduct] = useState(props.product);
+  const [changedFields, setChangedFields] = useState({});
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
-    setProduct((prev) => {
-      return {
-        ...prev,
-        product_description: {
-          5: {
-            ...prev.product_description[5],
-            [e.target.name]: e.target.value,
-          },
-        },
-        [e.target.name]: e.target.value,
-      };
-    });
+    const { name, value } = e.target;
+
+    // Eğer yeni değer eski değerden farklıysa, değişikliği kaydet
+    if (value !== product[name]) {
+      setChangedFields({ ...changedFields, [name]: value });
+    }
+
+    // Ürün state'ini güncelle
+    setProduct({ ...product, [name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -28,15 +26,31 @@ function ProductMetaEditModal(props) {
     // Prevent the default submit and page reload
     e.preventDefault();
 
+    // Eğer changedFields boşsa, herhangi bir backend isteği yapma
+    if (Object.keys(changedFields).length === 0) {
+      console.log('Hiçbir değişiklik yapılmadı, backend isteği yapılmayacak.');
+      setIsUpdate(false);
+      props.closeModal(false);
+      return;
+    }
+
     // Handle validations
-    console.log('ÜRÜN EDİTİNDEN GÖNDERİLEN PRODUCT DATA:: ', product);
+    console.log('ÜRÜN EDİTİNDEN GÖNDERİLEN PRODUCT DATA: ', product);
+    // Handle validations
 
-    const response = await editProduct(product, product.urunId);
+    // const response = await editProduct(product, product.urunId);
+    const response = await editProduct(changedFields, product.ID);
 
-    //TODO: Response Status 201 olmalı.
     if (response.status === 200) {
       setSuccess(true);
-      props.setProduct(product);
+
+      // Başarılı güncelleme sonrasında ana product state'ini güncelle
+      props.setProduct((prevProduct) => {
+        // prevProduct içindeki değerleri changedFields ile birleştir
+        return { ...prevProduct, ...changedFields };
+      });
+
+      props.closeModal(false);
     }
     setIsUpdate(false);
   };
@@ -77,9 +91,7 @@ function ProductMetaEditModal(props) {
                             Meta Başlığı
                           </label>
                           <input
-                            value={
-                              product?.product_description[5].meta_title || ''
-                            }
+                            value={product?.meta_title || ''}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-300 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
                             name='meta_title'
                             type='text'
@@ -96,10 +108,7 @@ function ProductMetaEditModal(props) {
                             Meta Açıklaması
                           </label>
                           <textarea
-                            value={
-                              product?.product_description[5]
-                                .meta_description || ''
-                            }
+                            value={product?.meta_description || ''}
                             rows='4'
                             name='meta_description'
                             className='block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500'
@@ -117,9 +126,7 @@ function ProductMetaEditModal(props) {
                             Meta Kelimeleri
                           </label>
                           <input
-                            value={
-                              product?.product_description[5].meta_keyword || ''
-                            }
+                            value={product?.meta_keyword || ''}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-300 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
                             name='meta_keyword'
                             type='text'
@@ -137,7 +144,7 @@ function ProductMetaEditModal(props) {
                             Ürün Etiketleri
                           </label>
                           <input
-                            value={product?.product_description[5].tag || ''}
+                            value={product?.tag || ''}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
                             name='tag'
                             type='text'

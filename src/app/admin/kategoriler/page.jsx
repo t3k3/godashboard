@@ -4,9 +4,9 @@ import { cookies } from 'next/headers';
 
 async function Categories() {
   const nextCookies = cookies();
-  const categories = await getCategories(nextCookies);
+  const { categories } = await getCategories(nextCookies);
 
-  return categories && <CategoryList categories={categories.categories} />;
+  return categories && <CategoryList categories={categories} />;
 }
 
 export default Categories;

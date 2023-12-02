@@ -4,9 +4,9 @@ import { cookies } from 'next/headers';
 
 async function Urun(props) {
   const nextCookies = cookies();
-  var product = await getSingleProduct(nextCookies, props.params.id);
+  var { product } = await getSingleProduct(nextCookies, props.params.id);
 
-  return product && <ProductComp product={product.product} />;
+  return product && <ProductComp product={product} />;
 }
 
 export default Urun;

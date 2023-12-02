@@ -7,9 +7,7 @@ function ManufacturerListItem({ manufacturer, handleManufacturerEdit }) {
     <>
       <tr className='bg-white border-b  hover:bg-gray-200'>
         <td className='w-4 p-4'>
-          <div className='flex items-center'>
-            #{manufacturer.manufacturer_id}
-          </div>
+          <div className='flex items-center'>#{manufacturer.ID}</div>
         </td>
 
         <th
@@ -50,7 +48,7 @@ function ManufacturerListItem({ manufacturer, handleManufacturerEdit }) {
               stroke='currentColor'
               className='w-6 h-6 font-medium text-blue-600  hover:underline cursor-pointer'
               onClick={() => {
-                handleManufacturerEdit(manufacturer.manufacturer_id);
+                handleManufacturerEdit(manufacturer.ID);
               }}
             >
               <path

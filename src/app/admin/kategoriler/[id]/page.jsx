@@ -4,9 +4,9 @@ import { cookies } from 'next/headers';
 
 async function Kategori(props) {
   const nextCookies = cookies();
-  const category = await getSingleCategory(nextCookies, props.params.id);
+  const { category } = await getSingleCategory(nextCookies, props.params.id);
 
-  return category && <CategoryComp category={category.category} />;
+  return category && <CategoryComp category={category} />;
 }
 
 export default Kategori;

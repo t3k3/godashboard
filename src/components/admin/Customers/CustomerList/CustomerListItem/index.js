@@ -18,13 +18,13 @@ function OrderListItem({ customer }) {
         </div>
       </td>
       <td className='w-4 p-4'>
-        <div className='flex items-center'>#{customer.customer_id}</div>
+        <div className='flex items-center'>#{customer.ID}</div>
       </td>
       <td className='w-4 p-4'>
         <div className='flex items-center'>
           <div className='sm:flex sm:items-center'>
             <div className=' flex items-center sm:mt-0 mt-1'>
-              {customer.name}
+              {customer.firstname + ' ' + customer.lastname}
             </div>
           </div>
         </div>
@@ -48,14 +48,14 @@ function OrderListItem({ customer }) {
         <div className='flex items-center'>
           <div
             className={`h-2.5 w-2.5 rounded-full ${
-              customer.status == 'Açık' ? 'bg-green-500' : 'bg-red-500'
+              customer.status ? 'bg-green-500' : 'bg-red-500'
             } mr-2`}
           ></div>{' '}
-          {customer.status == 'Açık' ? 'Aktif' : 'Pasif'}
+          {customer.status ? 'Aktif' : 'Pasif'}
         </div>
       </td>
       <td className='px-6 py-4'>
-        <div className='flex items-center'>{customer.date_added}</div>
+        <div className='flex items-center'>{customer.CreatedAt}</div>
       </td>
       <td className='px-6 py-4'>
         <div className='flex items-center'>{customer.ip}</div>
@@ -86,7 +86,7 @@ function OrderListItem({ customer }) {
             </svg>
           </a>
           <Link
-            href={`/admin/musteriler/${customer.customer_id}`}
+            href={`/admin/musteriler/${customer.ID}`}
             type='button'
             data-modal-target='editUserModal'
             data-modal-show='editUserModal'

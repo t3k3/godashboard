@@ -1,12 +1,12 @@
-import { BASE_URL } from '@/config/apiConfig';
+import { _API_URL_ADMIN, _BASE_URL } from '@/config/apiConfig';
 
 const getCategoryService = async (nextCookies, id = '') => {
   let headers = new Headers();
-  headers.append('Cookie', `default=${nextCookies.get('default').value}`);
-  headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
-  headers.append('Cookie', `language=${nextCookies.get('language').value}`);
-  headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
-  headers.append('Cookie', `token=${nextCookies.get('token').value}`);
+  // headers.append('Cookie', `default=${nextCookies.get('default').value}`);
+  // headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
+  // headers.append('Cookie', `language=${nextCookies.get('language').value}`);
+  // headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
+  // headers.append('Cookie', `token=${nextCookies.get('token').value}`);
 
   var requestOptions = {
     cache: 'no-store',
@@ -17,7 +17,7 @@ const getCategoryService = async (nextCookies, id = '') => {
 
   try {
     const res = await fetch(
-      `${BASE_URL}/api/admin/categories/${id}`,
+      `${_BASE_URL}/api/admin/categories/${id}`,
       requestOptions
     );
 
@@ -38,7 +38,7 @@ const getCategoryFromClientSideService = async () => {
 
   try {
     const res = await fetch(
-      `${BASE_URL}/api/admin/categories/getCategoriesFromClientSide`,
+      `${_API_URL_ADMIN}/api/admin/categories/getCategoriesFromClientSide`,
       requestOptions
     );
 

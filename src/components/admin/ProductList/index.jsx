@@ -5,7 +5,9 @@ import ProductListItem from './ProductListItem';
 import AddNewProductModal from './AddNewProductModal';
 import { deleteProduct, getFilteredProducts } from '@/services/product';
 
-function ProductList(props, { totalProducts }) {
+function ProductList(props) {
+  var totalProducts = 20;
+
   const [products, setProducts] = useState(props.products);
   const [addNewProductModal, setAddNewProductModal] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -74,7 +76,7 @@ function ProductList(props, { totalProducts }) {
     if (selectAll) {
       setSelectedProducts([]);
     } else {
-      const allProductIds = products.map((product) => product.product_id);
+      const allProductIds = products.map((product) => product.ID);
       setSelectedProducts(allProductIds);
     }
     setSelectAll((prev) => !prev);
@@ -287,7 +289,7 @@ function ProductList(props, { totalProducts }) {
             products.map((product) => {
               return (
                 <ProductListItem
-                  key={product.product_id}
+                  key={product.ID}
                   product={product}
                   selectedProducts={selectedProducts}
                   handleCheckboxChange={handleCheckboxChange}
