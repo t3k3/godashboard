@@ -158,6 +158,27 @@ const ProductToCategoryService = async (data) => {
   return resData;
 };
 
+const ProductToAttributeService = async (data) => {
+  const res = await fetch(`/api/admin/products/attribute`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    console.log('ERROR: product.js service');
+    throw new Error(error);
+  }
+
+  const resData = await res.json();
+
+  return resData;
+};
+
 const getSingleProduct = async (nextCookies, id) => {
   return getProductService(nextCookies, id);
 };
@@ -198,6 +219,10 @@ const UpdateProductCategories = async (data) => {
   return ProductToCategoryService(data);
 };
 
+const UpdateProductAttributes = async (data) => {
+  return ProductToAttributeService(data);
+};
+
 export {
   getProductService,
   getSingleProduct,
@@ -210,4 +235,5 @@ export {
   addNewProduct,
   deleteProduct,
   UpdateProductCategories,
+  UpdateProductAttributes,
 };

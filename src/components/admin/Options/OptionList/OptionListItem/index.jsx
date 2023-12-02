@@ -6,7 +6,7 @@ function OptionListItem({ option, handleOptionEdit }) {
     <>
       <tr className='bg-white border-b  hover:bg-gray-200'>
         <td className='w-4 p-4'>
-          <div className='flex items-center'>#{option.option_id}</div>
+          <div className='flex items-center'>#{option.ID}</div>
         </td>
 
         <th
@@ -22,17 +22,17 @@ function OptionListItem({ option, handleOptionEdit }) {
         </th>
 
         <td className='px-6 py-1'>
-          <span className='text-xs'>{option.category}</span>
+          <span className='text-xs'>{option.type}</span>
         </td>
         <td className='px-6 py-1'>
           <span className='text-xs'>{option.type}</span>
         </td>
         <td className='px-6 py-1'>
           <div className='flex items-center'>
-            {option?.option_value.map((value) => {
+            {option?.values.map((value) => {
               return (
                 <span
-                  key={value.option_value_id}
+                  key={value.ID}
                   className='bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-blue-400'
                 >
                   {value.name}
@@ -53,7 +53,7 @@ function OptionListItem({ option, handleOptionEdit }) {
               stroke='currentColor'
               className='w-6 h-6 font-medium text-blue-600  hover:underline cursor-pointer'
               onClick={() => {
-                handleOptionEdit(option.option_id);
+                handleOptionEdit(option.ID);
               }}
             >
               <path

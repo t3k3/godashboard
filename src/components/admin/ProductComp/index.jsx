@@ -941,7 +941,7 @@ function ProductComp(props) {
           {/* Meta */}
           <div className='mx-2 my-2 bg-white text-gray-600 max-w-sm rounded overflow-hidden shadow-lg'>
             <div className=' flex justify-between h-10 border text-gray-600 font-medium'>
-              <span className='px-2 py-2 font-semibold'>Meta</span>
+              <span className='px-2 py-2 font-semibold'>Meta Ayarları</span>
               <span className='px-2 py-2 font-light'>SEO Ayarları</span>
             </div>
             <div className=' border-r py-4 border-l text-xs'>
@@ -987,7 +987,9 @@ function ProductComp(props) {
           {/* Category */}
           <div className='mx-2 my-2 bg-white text-gray-600 max-w-sm rounded overflow-hidden shadow-lg'>
             <div className=' flex justify-between h-10 border text-gray-600 font-medium'>
-              <span className='px-2 py-2 font-semibold'>Kategoriler</span>
+              <span className='px-2 py-2 font-semibold'>
+                Ürünün Kategorileri
+              </span>
             </div>
             <div className=' border-r py-4 border-l text-xs'>
               <div className='flex items-center justify-between px-2'>
@@ -1019,7 +1021,9 @@ function ProductComp(props) {
           {/* Secenekler */}
           <div className='mx-2 my-2 bg-white text-gray-600 max-w-sm rounded overflow-hidden shadow-lg'>
             <div className=' flex justify-between h-10 border text-gray-600 font-medium'>
-              <span className='px-2 py-2 font-semibold'>Seçenekler</span>
+              <span className='px-2 py-2 font-semibold'>
+                Ürünün Seçenekleri
+              </span>
             </div>
             <div className=' border-r py-4 border-l text-xs'>
               <div className='flex  justify-between px-2'>
@@ -1071,39 +1075,42 @@ function ProductComp(props) {
             </div>
           </div>
           {/* Attribute */}
-          <div className='mx-2 my-2 bg-white text-gray-600 max-w-sm rounded overflow-hidden shadow-lg'>
-            <div className=' flex justify-between h-10 border text-gray-600 font-medium'>
-              <span className='px-2 py-2 font-semibold'>Özellikler</span>
+          <div className='mx-2 my-2 max-w-sm bg-white rounded overflow-hidden shadow-lg'>
+            <div className='flex justify-between h-10 bg-white border-b border-gray-200'>
+              <span className='px-4 py-2 font-semibold text-gray-600'>
+                Ürünün Özellikleri
+              </span>
             </div>
-            <div className=' border-r py-4 border-l text-xs'>
-              <div className='flex  justify-between px-2'>
-                <div className='flex flex-wrap pt-2'>
-                  {product?.attributes?.map((attribute) => {
-                    return (
-                      <div
-                        key={attribute.ID}
-                        className='flex justify-between pl-2 pt-2 px-4'
-                      >
-                        <span className='font-medium'>{attribute.name}:</span>
-                        <span className='ml-12 line-clamp-1'>
-                          {attribute?.value || ''}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-            <div className=' border text-xs pl-2 pt-2'>
+            <table className='min-w-full leading-normal'>
+              <tbody>
+                {product?.attributes?.map((attribute, index) => (
+                  <tr
+                    key={index}
+                    className='border-b border-gray-200 hover:bg-gray-100'
+                  >
+                    <td className='border-r border-gray-200 px-4 py-2 text-gray-600 text-xs'>
+                      <span className='font-medium'>{attribute.name}:</span>
+                    </td>
+                    <td className='px-4 py-2 text-gray-600 text-xs'>
+                      <span className='ml-12 line-clamp-1'>
+                        {attribute?.value || ''}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className='px-4 py-3 bg-white'>
               <button
                 type='button'
-                className=' text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 '
+                className='text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2'
                 onClick={() => setProductAttributeEditModal(true)}
               >
                 Düzenle
               </button>
             </div>
           </div>
+
           {/* Pazaryeri Card */}
           {/* <div className='mx-2 my-2 bg-white text-gray-600 max-w-sm rounded overflow-hidden shadow-lg'>
             <div className=' flex justify-between h-10 border text-gray-600 font-medium'>
@@ -1300,7 +1307,7 @@ function ProductComp(props) {
           {/* VIDEO */}
           <div className='mx-2 my-2 bg-white text-gray-600 max-w-sm rounded overflow-hidden shadow-lg'>
             <div className=' flex justify-between h-10 border text-gray-600 font-medium'>
-              <span className='px-2 py-2 font-semibold'>Video</span>
+              <span className='px-2 py-2 font-semibold'>Ürün Videosu</span>
               <span className='px-2 font-semibold text-blue-500'>
                 <button className='w-24 ml-2 pl-2 pr-2 py-2 rounded-sm flex items-center text-sm font-medium text-white bg-green-600 hover:bg-green-500'>
                   <span className=' px-4 pr-1'>Aktif</span>

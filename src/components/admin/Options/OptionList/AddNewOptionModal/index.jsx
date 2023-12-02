@@ -1,163 +1,59 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import OptionItem from './OptionItem';
-import Image from 'next/image';
-import axios from 'axios';
-
-const optionJSON = {
-  error_warning: '',
-  error_name: [],
-  error_option_value: [],
-  languages: {
-    'tr-tr': {
-      language_id: '5',
-      name: 'Turkish',
-      code: 'tr-tr',
-      locale: 'tr_TR.UTF-8,tr_TR,tr-tr,tr_tr,turkish',
-      image: '',
-      directory: '',
-      sort_order: '',
-      status: '1',
-    },
-  },
-  option_types: {
-    select: 'Se\u00e7enek',
-    radio: 'Radyo D\u00fc\u011fmesi',
-    checkbox: 'Onay Kutusu',
-    input: 'Veri Giri\u015fi',
-    text: 'Metin',
-    textarea: 'Metin Alan\u0131',
-    file: 'Dosya',
-    date: 'Tarih',
-    datetime: 'Tarih &amp; Zaman',
-    time: 'Zaman',
-  },
-  option_description: { 5: { name: '' } },
-  type: '',
-  sort_order: '',
-  option_values: [
-    {
-      option_value_description: { 5: { name: '' } },
-      image: '',
-      thumb: '',
-      sort_order: '',
-    },
-  ],
-};
+import React, { useState } from 'react';
+import { CreateOptionWithValues } from '@/services/option';
+// import OptionItem from './OptionItem';
+// import Image from 'next/image';
+// import axios from 'axios';
 
 function AddNewOptionModal(props) {
-  const [option, setOption] = useState(optionJSON);
+  // Option state'i
+  const [optionName, setOptionName] = useState('');
+  const [optionType, setOptionType] = useState('select');
+  const [optionValues, setOptionValues] = useState([{ name: '' }]);
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const handleClick = (e) => {
-    const emptyValue = {
-      option_value_description: { 5: { name: '' } },
-      image: '',
-      thumb: '',
-      sort_order: '',
-    };
-
-    setOption((prev) => {
-      return {
-        ...prev,
-        ...prev.option_values.push(emptyValue),
-      };
-    });
+  const handleAddOptionValue = () => {
+    setOptionValues([...optionValues, { name: '' }]);
   };
 
-  const handleChange = (e) => {
-    setOption((prev) => {
-      return {
-        ...prev,
-        option_description: {
-          5: {
-            ...prev.option_description[5],
-            name: e.target.value,
-          },
-        },
-      };
-    });
-    console.log('option :', option);
+  const handleOptionValueChange = (index, value) => {
+    const newOptionValues = [...optionValues];
+    newOptionValues[index].name = value;
+    setOptionValues(newOptionValues);
   };
 
-  const handleOptionValueChange = (e, index) => {
-    console.log('name', e.target.name);
-    console.log('value', e.target.value);
-
-    let temp = { ...option };
-    console.log(
-      'TEMP: ',
-      temp.option_values[index].option_value_description[5]
-    );
-
-    temp.option_values[index] = {
-      ...temp.option_values[index],
-    };
-
-    setOption((prev) => {
-      const updatedOptionValues = { ...prev };
-      updatedOptionValues.option_values[index] = {
-        ...updatedOptionValues.option_values[index],
-        option_value_description: {
-          5: {
-            ...updatedOptionValues.option_values[index]
-              .option_value_description[5],
-            name: e.target.value,
-          },
-        },
-      };
-      return updatedOptionValues;
-    });
+  const handleRemoveOptionValue = (index) => {
+    const newOptionValues = [...optionValues];
+    newOptionValues.splice(index, 1);
+    setOptionValues(newOptionValues);
   };
 
-  const handleDeleteOptionValue = (index) => {
-    setOption((prev) => {
-      const updatedOptionValues = { ...prev };
-      updatedOptionValues.option_values.splice(index, 1);
-      return updatedOptionValues;
-    });
-  };
-
-  const handleSelect = (e) => {
-    setOption((prev) => {
-      return {
-        ...prev,
-        type: e.target.value,
-      };
-    });
-  };
-  // };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     setSuccess(false);
     setIsUpdate(true);
     // Prevent the default submit and page reload
     e.preventDefault();
 
-    console.log('OPTION EKLE GÖNDERİLEN DATA: ', option);
+    // API'ye gönderilecek payload
+    const payload = {
+      name: optionName,
+      type: optionType,
+      values: optionValues,
+    };
 
-    // Handle validations
-    axios({
-      method: 'POST',
-      mode: 'no-cors',
-      url: `http://demo.actsistem.com/api/v1/admin/index.php?route=catalog/option/add`,
-      data: option,
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
-      .then((response) => {
-        console.log(response);
-        setIsUpdate(false);
-        setSuccess(true);
-        if (!success) {
-          console.log('success');
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsUpdate(false);
-        setSuccess(false);
-      });
+    console.log('OPTION EKLE GÖNDERİLEN DATA: ', payload);
+
+    const response = await CreateOptionWithValues(payload);
+
+    console.log('RESPONSE123: ', response);
+    if (response.status === 201) {
+      setSuccess(true);
+      props.setOptions(response.data);
+      props.closeModal(false);
+    }
+
+    setIsUpdate(false);
   };
 
   return (
@@ -196,12 +92,12 @@ function AddNewOptionModal(props) {
                             SEÇENEK ADI
                           </label>
                           <input
-                            value={option?.option_description[5]?.name || ''}
+                            value={optionName}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-indigo-500'
                             name='name'
                             type='text'
                             placeholder='Secenek Adı'
-                            onChange={handleChange}
+                            onChange={(e) => setOptionName(e.target.value)}
                           />
                         </div>
                       </div>
@@ -213,12 +109,12 @@ function AddNewOptionModal(props) {
                           >
                             SEÇENEK TÜRÜ
                           </label>
+
                           <select
+                            value={optionType}
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
                             name='type'
-                            id='type'
-                            value={option.type || ''}
-                            onChange={handleSelect}
+                            onChange={(e) => setOptionType(e.target.value)}
                           >
                             <option value={'select'}>{'Seçenek'}</option>
                             <option value={'radio'}>{'Radyo Düğmesi'}</option>
@@ -251,23 +147,26 @@ function AddNewOptionModal(props) {
                             </tr>
                           </thead>
                           <tbody>
-                            {option?.option_values?.map(
-                              (option_item, index) => {
-                                return (
-                                  <OptionItem
-                                    key={index}
-                                    index={index}
-                                    option_item={option_item}
-                                    handleOptionValueChange={
-                                      handleOptionValueChange
-                                    }
-                                    handleDeleteOptionValue={
-                                      handleDeleteOptionValue
-                                    }
-                                  />
-                                );
-                              }
-                            )}
+                            {optionValues.map((optionValue, index) => (
+                              <div key={index} className='option-value-item'>
+                                <input
+                                  type='text'
+                                  value={optionValue.name}
+                                  onChange={(e) =>
+                                    handleOptionValueChange(
+                                      index,
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                                <span
+                                  className='cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+                                  onClick={() => handleRemoveOptionValue(index)}
+                                >
+                                  Sil
+                                </span>
+                              </div>
+                            ))}
 
                             <tr className={`border-b`}>
                               <th
@@ -278,7 +177,7 @@ function AddNewOptionModal(props) {
                                   <div className='flex items-center py-2 font-semibold'>
                                     <span
                                       className='cursor-pointer w-36 border-2 border-blue-400 border-dashed bg-gray-100 px-12 py-2 rounded hover:bg-gray-50 text-xl text-gray-500'
-                                      onClick={handleClick}
+                                      onClick={handleAddOptionValue}
                                     >
                                       Ekle +
                                     </span>

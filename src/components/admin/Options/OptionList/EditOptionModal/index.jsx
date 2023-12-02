@@ -72,7 +72,7 @@ function EditOptionModal(props) {
         ...prev,
         option_description: {
           5: {
-            ...prev.option_description[5],
+            ...prev,
             name: e.target.value,
           },
         },
@@ -196,7 +196,7 @@ function EditOptionModal(props) {
                             SEÇENEK ADI
                           </label>
                           <input
-                            value={option?.option_description[5]?.name || ''}
+                            value={option?.name || ''}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-indigo-500'
                             name='name'
                             type='text'

@@ -1,7 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { UpdateProductCategories } from '@/services/product';
-import { getCategoriesFromClientSide } from '@/services/category';
 import { getCategories } from '@/services/category';
 
 function ProductCategoryEditModal(props) {

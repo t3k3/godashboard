@@ -1,13 +1,13 @@
-import { BASE_URL } from '@/config/apiConfig';
+import { BASE_URL, _BASE_URL } from '@/config/apiConfig';
 
 const getOptionService = async (nextCookies, id = '') => {
   console.log('getOptionService geldi: ');
   let headers = new Headers();
-  headers.append('Cookie', `default=${nextCookies.get('default').value}`);
-  headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
-  headers.append('Cookie', `language=${nextCookies.get('language').value}`);
-  headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
-  headers.append('Cookie', `token=${nextCookies.get('token').value}`);
+  // headers.append('Cookie', `default=${nextCookies.get('default').value}`);
+  // headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
+  // headers.append('Cookie', `language=${nextCookies.get('language').value}`);
+  // headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
+  // headers.append('Cookie', `token=${nextCookies.get('token').value}`);
 
   var requestOptions = {
     cache: 'no-store',
@@ -18,7 +18,7 @@ const getOptionService = async (nextCookies, id = '') => {
 
   try {
     const res = await fetch(
-      `${BASE_URL}/api/admin/options/${id}`,
+      `${_BASE_URL}/api/admin/options/${id}`,
       requestOptions
     );
     const response = await res.json();
@@ -71,6 +71,27 @@ const createVariantService = async (data, id) => {
   return resData;
 };
 
+const CreateOptionWithValuesService = async (data) => {
+  const res = await fetch(`/api/admin/options/create`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    console.log('error');
+    throw new Error(error);
+  }
+
+  const resData = await res.json();
+
+  return resData;
+};
+
 const getSingleOption = async (nextCookies, id) => {
   console.log('getSingleOption');
   return getOptionService(nextCookies, id);
@@ -85,6 +106,10 @@ const createVariants = async (data) => {
   return createVariantService(data);
 };
 
+const CreateOptionWithValues = async (data) => {
+  return CreateOptionWithValuesService(data);
+};
+
 const getOptionFromClientSide = async () => {
   return getOptionFromClientSideService();
 };
@@ -94,6 +119,7 @@ export {
   getSingleOption,
   getOptions,
   createVariants,
+  CreateOptionWithValues,
   getOptionFromClientSide,
 };
 

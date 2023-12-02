@@ -6,8 +6,10 @@ import EditOptionModal from './EditOptionModal';
 
 // import { getSingleOption } from '@/services/option';
 
-function OptionList({ options }) {
-  console.log('secenekler12332: ', options);
+function OptionList(props) {
+  console.log('secenekler12332: ', props.options);
+
+  const [options, setOptions] = useState(props.options);
 
   const [addNewOptionModal, setAddNewOptionModal] = useState(false);
   const [editOptionModal, setEditOptionModal] = useState(false);
@@ -30,8 +32,7 @@ function OptionList({ options }) {
       {/* ADD NEW OPTION MODAL */}
       {addNewOptionModal ? (
         <AddNewOptionModal
-          // product={product}
-          // setProduct={setProduct}
+          setOptions={setOptions}
           closeModal={setAddNewOptionModal}
         />
       ) : null}
@@ -116,7 +117,7 @@ function OptionList({ options }) {
                 options.map((option) => {
                   return (
                     <OptionListItem
-                      key={option.option_id}
+                      key={option.ID}
                       option={option}
                       handleOptionEdit={handleOptionEdit}
                     />

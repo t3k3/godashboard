@@ -4,9 +4,9 @@ import { cookies } from 'next/headers';
 
 async function Secenekler() {
   const nextCookies = cookies();
-  const secenekler = await getOptions(nextCookies);
-  // console.log('SEÇENEKLER: ', secenekler);
-  return secenekler && <OptionList options={secenekler.options} />;
+  const { options } = await getOptions(nextCookies);
+
+  return options && <OptionList options={options} />;
 }
 
 export default Secenekler;

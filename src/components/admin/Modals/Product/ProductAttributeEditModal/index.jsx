@@ -1,313 +1,254 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { editProduct } from '@/services/product';
+import React, { useState } from 'react';
+import { UpdateProductAttributes } from '@/services/product';
 
-import { getAttributesFromClientSide } from '@/services/attributes';
-import ProductAttributeEditModalItem from './ProductAttributeEditModalItem';
-
-function ProductAttributeEditModal(props) {
-  const [product, setProduct] = useState(props.product);
+function ProductAttributeEditModal({ product, setProduct, closeModal }) {
+  const [attributes, setAttributes] = useState([...product.attributes]);
+  const [newAttributes, setNewAttributes] = useState([]);
+  const [deletedAttributeIds, setDeletedAttributeIds] = useState([]); // Silinen özellik ID'lerini saklamak için state eklendi
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [attributes, setAttributes] = useState();
 
-  useEffect(() => {
-    async function fetchAttributes() {
-      const response = await getAttributesFromClientSide();
-      setAttributes(response.attributes);
-    }
-    fetchAttributes();
-  }, []);
+  const handleAttributeChange = (index, key, value) => {
+    const updatedAttributes = [...attributes];
+    updatedAttributes[index] = { ...updatedAttributes[index], [key]: value };
+    setAttributes(updatedAttributes);
+  };
 
-  const handleChangeText = (e, id) => {
-    const updatedProductAttributes = product.product_attributes.map(
-      (attribute) => {
-        if (attribute.attribute_id === id) {
-          return {
-            ...attribute,
-            product_attribute_description: {
-              ...attribute.product_attribute_description,
-              5: {
-                text: e.target.value,
-              },
-            },
-          };
-        }
-        return attribute;
-      }
-    );
+  const handleAddNewAttribute = () => {
+    setNewAttributes([...newAttributes, { name: '', value: '' }]);
+  };
 
-    const updatedProduct = {
-      ...product,
-      product_attributes: updatedProductAttributes,
+  const handleNewAttributeChange = (index, key, value) => {
+    const updatedNewAttributes = [...newAttributes];
+    updatedNewAttributes[index] = {
+      ...updatedNewAttributes[index],
+      [key]: value,
     };
-
-    setProduct(updatedProduct);
+    setNewAttributes(updatedNewAttributes);
   };
 
-  function removeObjectWithId(arr, id) {
-    return arr.filter((obj) => obj.attribute_id !== id);
-  }
-
-  const editProductAttribute = (attribute_id) => {
-    const sp = removeObjectWithId(product.product_attributes, attribute_id);
-    setProduct((prev) => {
-      return {
-        ...prev,
-        product_attributes: sp,
-      };
-    });
-    console.log('PRODUCT FROM EditProductAttribute: ', product);
-  };
-
-  const handleChangeOptions = (e) => {
-    if (e.target.value !== '') {
-      var item = attributes.find(
-        (item) => item.attribute_id === e.target.value
-      );
-
-      if (
-        !product?.product_attributes?.some(
-          (it) => it.attribute_id === item.attribute_id
-        )
-      ) {
-        let x = {
-          attribute_id: item.attribute_id,
-          name: item.name,
-          product_attribute_description: {
-            5: {
-              text: '',
-            },
-          },
-        };
-        setProduct((prev) => {
-          return {
-            ...prev,
-            product_attributes: [...prev.product_attributes, x],
-          };
-        });
-      }
+  // Özellik silme fonksiyonu
+  const handleDeleteAttribute = (index) => {
+    const attribute = attributes[index];
+    const updatedAttributes = attributes.filter((_, i) => i !== index);
+    setAttributes(updatedAttributes);
+    if (attribute.ID) {
+      setDeletedAttributeIds([...deletedAttributeIds, attribute.ID]); // Silinen özellik ID'lerini sakla
     }
   };
 
-  // const handleSubmit = (e) => {
-  //   setSuccess(false);
-  //   setIsUpdate(true);
-  //   // Prevent the default submit and page reload
-  //   e.preventDefault();
-  //   console.log('ÖZELLİKLERDEN GÖNDERİLEN PRODUCT DATA: ', product);
-
-  //   // Handle validations
-  //   axios({
-  //     method: 'POST',
-  //     mode: 'no-cors',
-  //     url: `http://demo.actsistem.com/api/v1/admin/index.php?route=catalog/product/edit&product_id=${product.urunId}`,
-  //     data: product,
-  //     headers: { 'Content-Type': 'multipart/form-data' },
-  //   })
-  //     .then((response) => {
-  //       console.log(response);
-  //       setIsUpdate(false);
-  //       setSuccess(true);
-  //       if (!success) {
-  //         props.setProduct(product);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //       setIsUpdate(false);
-  //       setSuccess(false);
-  //     });
-  // };
+  // Yeni eklenen özellikleri silme fonksiyonu
+  const handleDeleteNewAttribute = (index) => {
+    const updatedNewAttributes = newAttributes.filter((_, i) => i !== index);
+    setNewAttributes(updatedNewAttributes);
+  };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
     setSuccess(false);
     setIsUpdate(true);
-    // Prevent the default submit and page reload
-    e.preventDefault();
 
-    // Handle validations
-    console.log('ÜRÜN EDİTİNDEN GÖNDERİLEN PRODUCT DATA:: ', product);
-    // Handle validations
+    // Mevcut, yeni ve silinen özelliklerin listelerini oluştur
+    const updatedAttributes = attributes
+      .filter((attr) => attr.ID) // Yalnızca ID'si olanları al, yeni eklenenlerin ID'si olmayacak
+      .map((attr) => ({
+        ID: attr.ID,
+        Name: attr.name,
+        Value: attr.value,
+      }));
 
-    const response = await editProduct(product, product.urunId);
+    // API'ye gönderilecek nesneyi oluştur
+    const payload = {
+      productID: product.ID,
+      updatedAttributes,
+      newAttributes: newAttributes.map((attr) => ({
+        Name: attr.name,
+        Value: attr.value,
+      })),
+      deletedAttributeIds,
+    };
 
-    //TODO: Response Status 201 olmalı.
+    console.log('Gönderilecek payload:', payload);
+
+    const response = await UpdateProductAttributes(payload);
+
+    console.log('RESPONSE123: ', response);
     if (response.status === 200) {
       setSuccess(true);
-      props.setProduct(product);
+      // Burada ürünün yeni durumunu güncelleyebilirsiniz
+      setProduct((prevProduct) => {
+        // Mevcut ürün nesnesinin kopyasını oluştur
+        const updatedProduct = { ...prevProduct };
+
+        // Güncellenmiş özellikleri kopyaya ata
+        updatedProduct.attributes = response.data;
+
+        // Yeni kopyayı dönerek state'i güncelle
+        return updatedProduct;
+      });
+      closeModal(false);
     }
+
     setIsUpdate(false);
   };
 
   return (
-    <div
-      className='relative z-50'
-      aria-labelledby='modal-title'
-      role='dialog'
-      aria-modal='true'
-    >
-      <div className='fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity'></div>
+    <div className='fixed inset-0 z-10 overflow-y-auto'>
+      <div className='flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0'>
+        <div className='fixed inset-0 transition-opacity' aria-hidden='true'>
+          <div className='absolute inset-0 bg-gray-500 opacity-75'></div>
+        </div>
 
-      <div className='fixed inset-0 z-50 overflow-y-auto'>
-        <div className='flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0'>
-          <div className='relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl resize'>
-            <div className=' px-4 bg-white pb-4 pt-5 sm:p-6 sm:pb-4 '>
-              <div className='sm:flex sm:items-start '>
-                <div className='mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left  w-full'>
-                  <h3
-                    className='text-base font-semibold leading-6 text-gray-600  border-b'
-                    id='modal-title'
-                  >
-                    Özellik Düzenle
-                  </h3>
-                  <div>
-                    <form
-                      action=''
-                      id='login'
-                      method='post'
-                      onSubmit={handleSubmit}
-                      className='w-full mt-4 '
+        {/* This element is to trick the browser into centering the modal contents. */}
+        <span
+          className='hidden sm:inline-block sm:align-middle sm:h-screen'
+          aria-hidden='true'
+        >
+          &#8203;
+        </span>
+
+        <div
+          className='inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full'
+          role='dialog'
+          aria-modal='true'
+          aria-labelledby='modal-headline'
+        >
+          <form
+            className='px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4'
+            onSubmit={handleSubmit}
+          >
+            <div className='sm:flex sm:items-start'>
+              <div className='w-full mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
+                <h3
+                  className='text-lg font-medium leading-6 text-gray-900'
+                  id='modal-headline'
+                >
+                  Özellik Düzenle
+                </h3>
+                <div className='mt-2'>
+                  {attributes.map((attribute, index) => (
+                    <div
+                      key={`attribute-${index}`}
+                      className='flex items-center space-x-3'
                     >
-                      <div className='flex flex-wrap -mx-3 mb-6'>
-                        <div className='w-full px-3 mb-6 md:mb-0'>
-                          <label
-                            className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'
-                            htmlFor='grid-first-name'
-                          >
-                            Mevcut Özellikler
-                          </label>
-                          <div className=' border-r py-4 border-l text-lg'>
-                            <div className='flex items-center justify-between px-2'>
-                              <div className=' items-center flex-wrap pt-2 w-full '>
-                                {product?.product_attributes !== undefined &&
-                                  product?.product_attributes.map(
-                                    (attribute) => {
-                                      return (
-                                        <ProductAttributeEditModalItem
-                                          key={attribute.attribute_id}
-                                          attribute={attribute}
-                                          editProductAttribute={
-                                            editProductAttribute
-                                          }
-                                          handleChangeText={handleChangeText}
-                                        />
-                                      );
-                                    }
-                                  )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='flex flex-wrap -mx-3 mb-6'>
-                        <div className='w-full px-3 mb-6 md:mb-0'>
-                          <label
-                            htmlFor='countries'
-                            className='block mb-2 text-sm font-medium text-gray-900 '
-                          >
-                            Yeni Ozellik Sec
-                          </label>
-                          <select
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
-                            onChange={handleChangeOptions}
-                          >
-                            <option defaultValue={true} value={''}>
-                              Bir Özellik Seçiniz
-                            </option>
-                            {attributes?.map((attribute) => {
-                              return (
-                                <option
-                                  key={attribute.attribute_id}
-                                  value={attribute.attribute_id}
-                                >
-                                  {attribute.name}
-                                </option>
-                              );
-                            })}
-                          </select>
-                          <p className='text-xs text-blue-600 mt-4 mx-8'>
-                            Daha onceden ozellikler sayfasinda tanimlanan
-                            ozellikler eklenebilir. Aradiginiz ozellik yoksa
-                            ozellikler sayfasindan ekleyiniz.{' '}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className='bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6'>
-                        <button
-                          type='submit'
-                          disabled={isUpdate}
-                          className={`inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm  sm:ml-3 sm:w-auto ${
-                            isUpdate
-                              ? 'bg-gray-400'
-                              : 'bg-green-600 hover:bg-green-500'
-                          } `}
-                        >
-                          Güncelle
-                          {isUpdate && (
-                            <div role='status'>
-                              <svg
-                                aria-hidden='true'
-                                className='w-5 h-5 mx-2 text-gray-200 animate-spin fill-blue-600'
-                                viewBox='0 0 100 101'
-                                fill='none'
-                                xmlns='http://www.w3.org/2000/svg'
-                              >
-                                <path
-                                  d='M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z'
-                                  fill='currentColor'
-                                />
-                                <path
-                                  d='M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z'
-                                  fill='currentFill'
-                                />
-                              </svg>
-                              <span className='sr-only'>Loading...</span>
-                            </div>
-                          )}
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            props.closeModal(false);
-                          }}
-                          className='mt-3 inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-red-500 sm:mt-0 sm:w-auto'
-                        >
-                          Kapat
-                        </button>
-                      </div>
-                      {success && (
-                        <div
-                          className='flex p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 '
-                          role='alert'
-                        >
-                          <svg
-                            aria-hidden='true'
-                            className='flex-shrink-0 inline w-5 h-5 mr-3'
-                            fill='currentColor'
-                            viewBox='0 0 20 20'
-                            xmlns='http://www.w3.org/2000/svg'
-                          >
-                            <path
-                              fillRule='evenodd'
-                              d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z'
-                              clipRule='evenodd'
-                            ></path>
-                          </svg>
-                          <span className='sr-only'>Info</span>
-                          <div>
-                            <span className='font-medium'>Başarılı!</span>{' '}
-                            Değişikler başarılı bir şekilde kaydedildi.
-                          </div>
-                        </div>
-                      )}
-                    </form>
-                  </div>
+                      <input
+                        type='text'
+                        className='flex-1 p-2 mt-1 border border-gray-300 rounded shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                        value={attribute.name}
+                        placeholder='Özellik Adı'
+                        onChange={(e) =>
+                          handleAttributeChange(index, 'name', e.target.value)
+                        }
+                      />
+                      <input
+                        type='text'
+                        className='flex-1 p-2 mt-1 border border-gray-300 rounded shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                        value={attribute.value}
+                        placeholder='Özellik Değeri'
+                        onChange={(e) =>
+                          handleAttributeChange(index, 'value', e.target.value)
+                        }
+                      />
+                      <button
+                        type='button'
+                        className='px-4 py-2 text-sm text-red-600 bg-red-200 border border-transparent rounded-md hover:bg-red-300 focus:outline-none focus:border-red-700 focus:ring-red active:bg-red-700 transition ease-in-out duration-150'
+                        onClick={() => handleDeleteAttribute(index)}
+                      >
+                        Sil
+                      </button>
+                    </div>
+                  ))}
+                  {newAttributes.map((attribute, index) => (
+                    <div
+                      key={`new-attribute-${index}`}
+                      className='flex items-center space-x-3'
+                    >
+                      <input
+                        type='text'
+                        className='flex-1 p-2 mt-1 border border-gray-300 rounded shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                        value={attribute.name}
+                        placeholder='Yeni Özellik Adı'
+                        onChange={(e) =>
+                          handleNewAttributeChange(
+                            index,
+                            'name',
+                            e.target.value
+                          )
+                        }
+                      />
+                      <input
+                        type='text'
+                        className='flex-1 p-2 mt-1 border border-gray-300 rounded shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                        value={attribute.value}
+                        placeholder='Yeni Özellik Değeri'
+                        onChange={(e) =>
+                          handleNewAttributeChange(
+                            index,
+                            'value',
+                            e.target.value
+                          )
+                        }
+                      />
+                      <button
+                        type='button'
+                        className='px-4 py-2 text-sm text-red-600 bg-red-200 border border-transparent rounded-md hover:bg-red-300 focus:outline-none focus:border-red-700 focus:ring-red active:bg-red-700 transition ease-in-out duration-150'
+                        onClick={() => handleDeleteNewAttribute(index)}
+                      >
+                        Sil
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type='button'
+                    className='px-4 py-2 mt-4 text-sm text-green-600 bg-green-200 border border-transparent rounded-md hover:bg-green-300 focus:outline-none focus:border-green-700 focus:ring-green active:bg-green-700 transition ease-in-out duration-150'
+                    onClick={handleAddNewAttribute}
+                  >
+                    Yeni Özellik Ekle
+                  </button>
                 </div>
               </div>
             </div>
-          </div>
+            <div className='px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse'>
+              <button
+                type='submit'
+                className={`inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm  sm:ml-3 sm:w-auto ${
+                  isUpdate ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-500'
+                } `}
+                disabled={isUpdate}
+              >
+                Güncelle
+                {isUpdate && (
+                  <div role='status'>
+                    <svg
+                      aria-hidden='true'
+                      className='w-5 h-5 mx-2 text-gray-200 animate-spin fill-blue-600'
+                      viewBox='0 0 100 101'
+                      fill='none'
+                      xmlns='http://www.w3.org/2000/svg'
+                    >
+                      <path
+                        d='M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z'
+                        fill='currentColor'
+                      />
+                      <path
+                        d='M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z'
+                        fill='currentFill'
+                      />
+                    </svg>
+                    <span className='sr-only'>Loading...</span>
+                  </div>
+                )}
+              </button>
+              <button
+                type='button'
+                className='inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 sm:mt-0 sm:w-auto sm:text-sm'
+                onClick={() => closeModal()}
+              >
+                İptal
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
