@@ -72,13 +72,50 @@ const createVariantService = async (data, id) => {
 };
 
 const CreateOptionWithValuesService = async (data) => {
-  const res = await fetch(`/api/admin/options/create`, {
+  const res = await fetch(`${_BASE_URL}/api/admin/options/create`, {
     method: 'POST',
     headers: {
       Accept: 'application/json, text/plain, */*',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    console.log('error');
+    throw new Error(error);
+  }
+
+  const resData = await res.json();
+
+  return resData;
+};
+
+const UpdateOptionWithValuesService = async (data) => {
+  const res = await fetch(`/api/admin/options`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    console.log('error');
+    throw new Error(error);
+  }
+
+  const resData = await res.json();
+
+  return resData;
+};
+
+const DeleteOptionWithValuesService = async (id) => {
+  const res = await fetch(`/api/admin/options/${id}`, {
+    method: 'DELETE',
   });
 
   if (!res.ok) {
@@ -110,6 +147,14 @@ const CreateOptionWithValues = async (data) => {
   return CreateOptionWithValuesService(data);
 };
 
+const UpdateOptionWithValues = async (data) => {
+  return UpdateOptionWithValuesService(data);
+};
+
+const DeleteOptionWithValues = async (id) => {
+  return DeleteOptionWithValuesService(id);
+};
+
 const getOptionFromClientSide = async () => {
   return getOptionFromClientSideService();
 };
@@ -120,6 +165,8 @@ export {
   getOptions,
   createVariants,
   CreateOptionWithValues,
+  UpdateOptionWithValues,
+  DeleteOptionWithValues,
   getOptionFromClientSide,
 };
 

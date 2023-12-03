@@ -3,7 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 function ProductListItem({ product, selectedProducts, handleCheckboxChange }) {
-  console.log('PRODUCT1232: ', product);
   return (
     <tr className='bg-white border-b  hover:bg-gray-200'>
       <td className='w-4 p-4'>

@@ -148,24 +148,47 @@ function AddNewOptionModal(props) {
                           </thead>
                           <tbody>
                             {optionValues.map((optionValue, index) => (
-                              <div key={index} className='option-value-item'>
-                                <input
-                                  type='text'
-                                  value={optionValue.name}
-                                  onChange={(e) =>
-                                    handleOptionValueChange(
-                                      index,
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                                <span
-                                  className='cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-                                  onClick={() => handleRemoveOptionValue(index)}
-                                >
-                                  Sil
-                                </span>
-                              </div>
+                              <tr key={index}>
+                                <td className='px-6 py-4 whitespace-nowrap'>
+                                  <input
+                                    type='text'
+                                    value={optionValue.name}
+                                    onChange={(e) =>
+                                      handleOptionValueChange(
+                                        index,
+                                        e.target.value
+                                      )
+                                    }
+                                    className='block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
+                                  />
+                                  {/* <span
+                                    className='cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+                                    onClick={() =>
+                                      handleRemoveOptionValue(index)
+                                    }
+                                  >
+                                    Sil
+                                  </span> */}
+                                </td>
+                                <td className='px-6 py-4 whitespace-nowrap'>
+                                  {/* Resim yükleme inputu burada olacak */}
+                                  <input
+                                    type='file'
+                                    name={`image-${index}`}
+                                    className='block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
+                                  />
+                                </td>
+                                <td className='px-6 py-4 whitespace-nowrap text-right text-sm font-medium'>
+                                  <span
+                                    onClick={() =>
+                                      handleRemoveOptionValue(index)
+                                    }
+                                    className='text-red-600 hover:text-red-900 cursor-pointer'
+                                  >
+                                    Sil
+                                  </span>
+                                </td>
+                              </tr>
                             ))}
 
                             <tr className={`border-b`}>

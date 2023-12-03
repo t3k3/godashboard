@@ -4,7 +4,7 @@ import CategoryListItem from '@/components/admin/Categories/CategoryList/Categor
 // import AddNewCategoryModal from './AddNewCategoryModal';
 
 function CategoryList({ categories }) {
-  console.log('categories: ', categories);
+  // console.log('categories: ', categories);
   const [addNewCategoryModal, setAddNewCategoryModal] = useState(false);
 
   return (

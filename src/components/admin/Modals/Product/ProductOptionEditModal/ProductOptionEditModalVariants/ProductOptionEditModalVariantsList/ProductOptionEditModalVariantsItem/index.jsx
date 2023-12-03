@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { getOptionFromClientSide } from '@/services/option';
 
 function ProductOptionEditModalVariantsItem(props) {
-  const [options, setOptions] = useState();
+  const [options, setOptions] = useState(props.options);
   const [isChecked, setIsChecked] = useState();
   const [isCheckedStatus, setIsCheckedStatus] = useState();
 
@@ -34,27 +34,26 @@ function ProductOptionEditModalVariantsItem(props) {
     setIsCheckedStatus(props.variant.status);
   }, []);
 
-  useEffect(() => {
-    async function fetchOptions() {
-      const response = await getOptionFromClientSide();
-      setOptions(response);
-    }
-    fetchOptions();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchOptions() {
+  //     const response = await getOptionFromClientSide();
+  //     setOptions(response);
+  //   }
+  //   fetchOptions();
+  // }, []);
 
   const foundObject = (id) => {
     var foundObject = null;
 
     for (var i = 0; i < options?.length; i++) {
-      var optionValue = options[i].option_value;
+      var optionValue = options[i].values;
       for (var j = 0; j < optionValue.length; j++) {
-        if (optionValue[j].option_value_id === id) {
+        if (optionValue[j].ID === id) {
           foundObject = optionValue[j];
           break;
         }
       }
     }
-
     return foundObject?.name;
   };
 
@@ -85,6 +84,7 @@ function ProductOptionEditModalVariantsItem(props) {
                   d='M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z'
                 />
               </svg>
+
               {props.variant?.options?.map((opt, index) => {
                 return (
                   <span

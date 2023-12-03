@@ -1,6 +1,6 @@
 import { API_URL_ADMIN, _API_URL_ADMIN } from '@/config/apiConfig';
 import { cookies } from 'next/headers';
-
+import axios from 'axios';
 //get all categories
 export async function GET(request) {
   const nextCookies = cookies();
@@ -45,31 +45,49 @@ export async function GET(request) {
   }
 }
 
-// export async function POST(request) {
-//   console.log('POST ISTEK GELDİ');
-//   const data = await request.json();
+export async function PUT(request) {
+  console.log('PUT ISTEK GELDİ 443534');
 
-//   try {
-//     const url = `${API_URL_ADMIN}catalog/category/add`;
-//     const headers = { 'Content-Type': 'multipart/form-data' };
-//     const response = await axios.post(url, data, { headers });
+  const data = await request.json();
 
-//     return new Response(
-//       JSON.stringify({
-//         status: response.status,
-//         statusText: response.statusText,
-//         data: response.data,
-//       })
-//     );
-//   } catch (error) {
-//     return new Response(
-//       JSON.stringify({
-//         status: error.response.status,
-//         statusText: error.response.statusText,
-//         data: error.response.data,
-//       })
-//     );
-//   }
+  const nextCookies = cookies();
 
-//   // console.log('RES: ', res);
-// }
+  console.log('data43534: ', data);
+
+  try {
+    const response = await axios({
+      method: 'PUT',
+      mode: 'no-cors',
+      url: `${_API_URL_ADMIN}/options`,
+
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify(data),
+    });
+
+    console.log('response34423: ', response);
+
+    // TODO: response.status 201 olmalı
+    if (response.status === 200) {
+      return new Response(
+        JSON.stringify({
+          status: response.status,
+          statusText: response.statusText,
+          data: response.data,
+        })
+      );
+    }
+  } catch (error) {
+    console.log(error);
+    return new Response(
+      JSON.stringify({
+        status: error.response.status,
+        statusText: error.response.statusText,
+        data: error.response.data,
+      })
+    );
+  }
+
+  // console.log('RES: ', res);
+}

@@ -6,27 +6,30 @@ function ProductOptionEditModalItem(props) {
   const handleChangeNewOptionValue = (e) => {
     if (e.target.value !== '') {
       if (
-        !productOption?.product_option_value?.some(
-          (it) => it.option_value_id === e.target.value
+        !productOption?.product_option_values?.some(
+          (it) => it.optionValueId == e.target.value
         )
       ) {
         let x = {
-          option_value_id: e.target.value,
+          optionValueId: Number(e.target.value),
+          productOptionId: productOption.ID,
         };
 
         setProductOption((prev) => {
           return {
             ...prev,
-            ...prev.product_option_value.push(x),
+            ...prev.product_option_values.push(x),
           };
         });
+
+        console.log(productOption);
       }
     }
-    props.createVariantsTest();
+    // props.createVariantsTest();
   };
 
   function removeObjectWithId(arr, id) {
-    const objWithIdIndex = arr.findIndex((obj) => obj.option_value_id === id);
+    const objWithIdIndex = arr.findIndex((obj) => obj.optionValueId === id);
 
     if (objWithIdIndex > -1) {
       arr.splice(objWithIdIndex, 1);
@@ -35,27 +38,27 @@ function ProductOptionEditModalItem(props) {
     return arr;
   }
 
-  const editProductOption = (option_id, option_value_id) => {
+  const editProductOption = (optionId, optionValueId) => {
     const sp = removeObjectWithId(
-      productOption.product_option_value,
-      option_value_id
+      productOption.product_option_values,
+      optionValueId
     );
     setProductOption((prev) => {
       return {
         ...prev,
-        product_option_value: sp,
+        product_option_values: sp,
       };
     });
-    props.createVariantsTest();
+    // props.createVariantsTest();
   };
 
   return (
     <div className='justify-between border rounded flex px-4 my-4 items-center '>
       <span className=' line-clamp-1'>
         <span className='float-left mr-4 py-3 font-medium text-base text-gray-600'>
-          {productOption.name}
+          {props.options.find((opt) => opt.ID === productOption.optionId).name}
         </span>
-        {productOption?.product_option_value?.map(
+        {productOption?.product_option_values?.map(
           (product_option_value, index) => {
             return (
               <div
@@ -66,18 +69,16 @@ function ProductOptionEditModalItem(props) {
                   className='bg-gray-100 py-1.5 hover:bg-red-500 hover:text-white cursor-pointer text-gray-600 text-sm font-medium px-2.5 rounded-md border border-gray-300 '
                   onClick={() =>
                     editProductOption(
-                      productOption.option_id,
-                      product_option_value.option_value_id
+                      productOption.optionId,
+                      product_option_value.optionValueId
                     )
                   }
                 >
                   {
                     props.options
-                      .find((opt) => opt.option_id === productOption.option_id)
-                      .option_value.find(
-                        (val) =>
-                          val.option_value_id ===
-                          product_option_value.option_value_id
+                      .find((opt) => opt.ID === productOption.optionId)
+                      .values.find(
+                        (val) => val.ID == product_option_value.optionValueId
                       ).name
                   }
                 </span>
@@ -106,17 +107,12 @@ function ProductOptionEditModalItem(props) {
 
             {props.options[
               props.options?.indexOf(
-                props.options.find(
-                  (opt) => opt.option_id === productOption.option_id
-                )
+                props.options.find((opt) => opt.ID === productOption.optionId)
               )
-            ]?.option_value?.map((option) => {
+            ]?.values?.map((value) => {
               return (
-                <option
-                  key={option.option_value_id}
-                  value={option.option_value_id}
-                >
-                  {option.name}
+                <option key={value.ID} value={value.ID}>
+                  {value.name}
                 </option>
               );
             })}

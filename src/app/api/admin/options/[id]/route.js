@@ -1,4 +1,4 @@
-import { API_URL_ADMIN } from '@/config/apiConfig';
+import { API_URL_ADMIN, _API_URL_ADMIN } from '@/config/apiConfig';
 import { cookies } from 'next/headers';
 import axios from 'axios';
 
@@ -81,6 +81,44 @@ export async function PUT(request, { params }) {
     });
 
     if (response.status === 201) {
+      return new Response(
+        JSON.stringify({
+          status: response.status,
+          statusText: response.statusText,
+          data: response.data,
+        })
+      );
+    }
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        status: error.response.status,
+        statusText: error.response.statusText,
+        data: error.response.data,
+      })
+    );
+  }
+
+  // console.log('RES: ', res);
+}
+
+export async function DELETE(request, { params }) {
+  const { id } = params;
+
+  const nextCookies = cookies();
+
+  try {
+    const response = await axios({
+      method: 'DELETE',
+      mode: 'no-cors',
+      url: `${_API_URL_ADMIN}/options/${id}`,
+
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    if (response.status === 200) {
       return new Response(
         JSON.stringify({
           status: response.status,

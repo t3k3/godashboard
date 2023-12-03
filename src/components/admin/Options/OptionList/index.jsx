@@ -3,28 +3,35 @@ import { useState } from 'react';
 import OptionListItem from '@/components/admin/Options/OptionList/OptionListItem';
 import AddNewOptionModal from './AddNewOptionModal';
 import EditOptionModal from './EditOptionModal';
+import { DeleteOptionWithValues } from '@/services/option';
 
 // import { getSingleOption } from '@/services/option';
 
 function OptionList(props) {
-  console.log('secenekler12332: ', props.options);
-
   const [options, setOptions] = useState(props.options);
 
   const [addNewOptionModal, setAddNewOptionModal] = useState(false);
   const [editOptionModal, setEditOptionModal] = useState(false);
   const [editOption, setEditOption] = useState(false);
-  const [editOptionId, setEditOptionId] = useState(false);
 
-  const handleOptionEdit = async (index) => {
-    const getSingleOption = require('@/services/option').getSingleOption;
-    const option = await getSingleOption(index);
-    // const option = await getSingleOption(index);
-    // const option = await single(index);
+  const handleOptionEdit = async (option) => {
     setEditOption(option);
-    setEditOptionId(index);
 
     option && setEditOptionModal(true);
+  };
+
+  const handleDeleteOption = async (optionId) => {
+    const response = await DeleteOptionWithValues(optionId);
+
+    console.log('RESPONSE123: ', response);
+
+    if (response.status === 200) {
+      // Başarılı işlem sonrası state güncellemeleri
+      // Option listesinden silinen option'ı çıkar
+      setOptions((prevOptions) =>
+        prevOptions.filter((option) => option.ID !== optionId)
+      );
+    }
   };
 
   return (
@@ -40,10 +47,8 @@ function OptionList(props) {
       {/* EDİT OPTION MODAL */}
       {editOptionModal ? (
         <EditOptionModal
-          // product={product}
-          // setProduct={setProduct}
+          setOptions={setOptions}
           editOption={editOption}
-          editOptionId={editOptionId}
           closeModal={setEditOptionModal}
         />
       ) : null}
@@ -120,6 +125,7 @@ function OptionList(props) {
                       key={option.ID}
                       option={option}
                       handleOptionEdit={handleOptionEdit}
+                      handleDeleteOption={handleDeleteOption}
                     />
                   );
                 })}

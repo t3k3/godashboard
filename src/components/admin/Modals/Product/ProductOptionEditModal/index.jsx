@@ -2,7 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { editProduct } from '@/services/product';
 
-import { createVariants, getOptionFromClientSide } from '@/services/option';
+import {
+  createVariants,
+  getOptionFromClientSide,
+  getOptions,
+} from '@/services/option';
 import ProductOptionEditModalItem from './ProductOptionEditModalItem';
 import ProductOptionEditModalVariantsList from './ProductOptionEditModalVariants/ProductOptionEditModalVariantsList';
 
@@ -16,10 +20,12 @@ function ProductOptionEditModal(props) {
 
   const localProductBackup = props.product;
 
+  console.log('product4343: ', product);
+
   useEffect(() => {
     async function fetchOptions() {
-      const response = await getOptionFromClientSide();
-      setOptions(response);
+      const { options } = await getOptions();
+      setOptions(options);
     }
     fetchOptions();
   }, []);
@@ -89,16 +95,15 @@ function ProductOptionEditModal(props) {
 
   const handleChangeOptions = (e) => {
     if (e.target.value !== '') {
-      var item = options.find((item) => item.option_id === e.target.value);
-      if (
-        !product?.product_options?.some((it) => it.option_id === item.option_id)
-      ) {
+      var item = options.find((item) => item.ID === Number(e.target.value));
+      if (!product?.product_options?.some((it) => it.optionId === item.ID)) {
+        console.log('item: ', item);
         let x = {
-          option_id: item.option_id,
+          optionId: item.ID,
           name: item.name,
           type: item.type,
           required: 1,
-          product_option_value: [],
+          product_option_values: [],
         };
 
         setProduct((prev) => {
@@ -119,7 +124,7 @@ function ProductOptionEditModal(props) {
 
     const x = [];
     product.product_options.map((opt, index) => {
-      x[index] = opt.product_option_value.map((val) => val.option_value_id);
+      x[index] = opt.product_option_values.map((val) => val.optionValueId);
     });
 
     var datx = {};
@@ -131,24 +136,22 @@ function ProductOptionEditModal(props) {
     //   datx.current = { ...product.product_combination };
     // }
 
-    datx.current = { ...variantList };
+    // datx.current = { ...variantList };
 
-    console.log('datx1: ', datx);
+    console.log('datx1 giden: ', datx);
     // console.log('DAT: ', dat);
     // console.log('XXX: ', x);
 
     // Handle validations
 
     // Handle validations
-    console.log('ÜRÜN EDİTİNDEN GÖNDERİLEN PRODUCT DATA:: ', product);
+    // console.log('ÜRÜN EDİTİNDEN GÖNDERİLEN PRODUCT DATA:: ', product);
     // Handle validations
 
     const response = await createVariants(datx);
 
-    //TODO: Response Status 201 olmalı.
-    console.log('createVariants: ', response);
     if (response.status === 200) {
-      setVariantList(response.data);
+      setVariantList(response.data.data);
       setNewCombination(true);
     }
     setIsUpdate(false);
@@ -266,10 +269,10 @@ function ProductOptionEditModal(props) {
                                 {product?.product_options !== undefined &&
                                   options !== undefined &&
                                   product?.product_options?.map(
-                                    (productOption) => {
+                                    (productOption, index) => {
                                       return (
                                         <ProductOptionEditModalItem
-                                          key={productOption.option_id}
+                                          key={index}
                                           options={options}
                                           product={product}
                                           productOption={productOption}
@@ -302,12 +305,10 @@ function ProductOptionEditModal(props) {
                             <option defaultValue={true} value={''}>
                               Bir Seçenek Seçiniz
                             </option>
+                            {console.log(options)}
                             {options?.map((option) => {
                               return (
-                                <option
-                                  key={option.option_id}
-                                  value={option.option_id}
-                                >
+                                <option key={option.ID} value={option.ID}>
                                   {option.name}
                                 </option>
                               );
@@ -333,6 +334,7 @@ function ProductOptionEditModal(props) {
                       {variantList && (
                         <ProductOptionEditModalVariantsList
                           variantList={variantList}
+                          options={options}
                           setVariantList={setVariantList}
                         />
                       )}

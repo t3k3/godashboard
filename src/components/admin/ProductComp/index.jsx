@@ -1032,26 +1032,29 @@ function ProductComp(props) {
                     product?.product_options?.map((option) => {
                       return (
                         <div
-                          key={option.option_id}
+                          key={option.ID}
                           className='flex justify-between pl-2 pt-2 px-4 my-2'
                         >
-                          <span className='font-medium'>{option.name}:</span>
+                          <span className='font-medium'>
+                            {option.optionId}:
+                          </span>
                           <span className='ml-12 line-clamp-1'>
-                            {option?.product_option_value?.map((key) => {
+                            {option?.product_option_values?.map((key) => {
                               return (
                                 <div
-                                  key={key.option_value_id}
+                                  key={key.optionValueId}
                                   className='flex items-center justify-between pt-2 '
                                 >
                                   <span className='bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded  border border-blue-400 '>
                                     {
-                                      product?.option_values[
-                                        option?.option_id
-                                      ]?.find(
-                                        (value) =>
-                                          value.option_value_id ===
-                                          key.option_value_id
-                                      )?.name
+                                      // product?.option_values[
+                                      //   option?.option_id
+                                      // ]?.find(
+                                      //   (value) =>
+                                      //     value.option_value_id ===
+                                      //     key.option_value_id
+                                      // )?.name
+                                      key.optionValueId
                                     }
                                   </span>
                                 </div>

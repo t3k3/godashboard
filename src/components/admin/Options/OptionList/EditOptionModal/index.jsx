@@ -1,163 +1,76 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import EditOptionItem from './EditOptionItem';
-import Image from 'next/image';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { UpdateOptionWithValues } from '@/services/option';
+// import OptionItem from './OptionItem';
+// import Image from 'next/image';
+// import axios from 'axios';
 
-const optionJSON = {
-  error_warning: '',
-  error_name: [],
-  error_option_value: [],
-  languages: {
-    'tr-tr': {
-      language_id: '5',
-      name: 'Turkish',
-      code: 'tr-tr',
-      locale: 'tr_TR.UTF-8,tr_TR,tr-tr,tr_tr,turkish',
-      image: '',
-      directory: '',
-      sort_order: '',
-      status: '1',
-    },
-  },
-  option_types: {
-    select: 'Se\u00e7enek',
-    radio: 'Radyo D\u00fc\u011fmesi',
-    checkbox: 'Onay Kutusu',
-    input: 'Veri Giri\u015fi',
-    text: 'Metin',
-    textarea: 'Metin Alan\u0131',
-    file: 'Dosya',
-    date: 'Tarih',
-    datetime: 'Tarih &amp; Zaman',
-    time: 'Zaman',
-  },
-  option_description: { 5: { name: '' } },
-  type: '',
-  sort_order: '',
-  option_values: [
-    {
-      option_value_description: { 5: { name: '' } },
-      image: '',
-      thumb: '',
-      sort_order: '',
-    },
-  ],
-};
-
-function EditOptionModal(props) {
-  const [option, setOption] = useState(props.editOption);
+function EditOptionModal({ editOption, setOptions, closeModal }) {
+  // Option state'i
+  const [optionName, setOptionName] = useState(editOption.name);
+  const [optionType, setOptionType] = useState(editOption.type);
+  // Yeni ve mevcut değerlerin ayrımını yapabilmek için, mevcut değerlerin her birine bir id ekleyin
+  const [optionValues, setOptionValues] = useState(
+    editOption.values.map((value) => ({ id: value.ID, name: value.name }))
+  );
+  const [deletedValueIds, setDeletedValueIds] = useState([]); // Silinen değerlerin ID'leri
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const handleClick = (e) => {
-    const emptyValue = {
-      option_value_description: { 5: { name: '' } },
-      image: '',
-      thumb: '',
-      sort_order: '',
-    };
-
-    setOption((prev) => {
-      return {
-        ...prev,
-        ...prev.option_values.push(emptyValue),
-      };
-    });
+  // Yeni bir seçenek değeri eklerken, id'si null olmalıdır
+  const handleAddOptionValue = () => {
+    setOptionValues((prevValues) => [...prevValues, { id: null, name: '' }]);
   };
 
-  const handleChange = (e) => {
-    setOption((prev) => {
-      return {
-        ...prev,
-        option_description: {
-          5: {
-            ...prev,
-            name: e.target.value,
-          },
-        },
-      };
-    });
-    console.log('option :', option);
+  const handleOptionValueChange = (index, value) => {
+    const newOptionValues = [...optionValues];
+    newOptionValues[index].name = value;
+    setOptionValues(newOptionValues);
   };
 
-  const handleOptionValueChange = (e, index) => {
-    console.log('name', e.target.name);
-    console.log('value', e.target.value);
+  const handleRemoveOptionValue = (index) => {
+    const valueToRemove = optionValues[index];
+    if (valueToRemove && valueToRemove.id) {
+      setDeletedValueIds((prevIds) => [...prevIds, valueToRemove.id]);
+    }
 
-    let temp = { ...option };
-    console.log(
-      'TEMP: ',
-      temp.option_values[index].option_value_description[5]
-    );
-
-    temp.option_values[index] = {
-      ...temp.option_values[index],
-    };
-
-    setOption((prev) => {
-      const updatedOptionValues = { ...prev };
-      updatedOptionValues.option_values[index] = {
-        ...updatedOptionValues.option_values[index],
-        option_value_description: {
-          5: {
-            ...updatedOptionValues.option_values[index]
-              .option_value_description[5],
-            name: e.target.value,
-          },
-        },
-      };
-      return updatedOptionValues;
-    });
+    const newOptionValues = [...optionValues];
+    newOptionValues.splice(index, 1);
+    setOptionValues(newOptionValues);
   };
 
-  const handleDeleteOptionValue = (index) => {
-    setOption((prev) => {
-      const updatedOptionValues = { ...prev };
-      updatedOptionValues.option_values.splice(index, 1);
-      return updatedOptionValues;
-    });
-  };
-
-  const handleSelect = (e) => {
-    setOption((prev) => {
-      return {
-        ...prev,
-        type: e.target.value,
-      };
-    });
-  };
-  // };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     setSuccess(false);
     setIsUpdate(true);
     // Prevent the default submit and page reload
     e.preventDefault();
 
-    console.log('OPTION EKLE GÖNDERİLEN DATA: ', option);
+    // API'ye gönderilecek payload
+    const payload = {
+      option_id: editOption.ID,
+      name: optionName,
+      type: optionType,
+      // Sadece isim ve id bilgilerini göndermek için map kullanılıyor
+      values: optionValues.map(({ id, name }) => ({ id, name })),
+      deleted_value_ids: deletedValueIds, // Silinen değerlerin ID'lerini ekle
+    };
 
-    // Handle validations
-    axios({
-      method: 'POST',
-      mode: 'no-cors',
-      url: `http://demo.actsistem.com/api/v1/admin/index.php?route=catalog/option/edit&option_id=${props.editOptionId}`,
-      data: option,
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
-      .then((response) => {
-        console.log(response);
-        setIsUpdate(false);
-        setSuccess(true);
-        if (!success) {
-          console.log('success');
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsUpdate(false);
-        setSuccess(false);
-      });
+    console.log('OPTION EDİT GÖNDERİLEN DATA: ', payload);
+
+    const response = await UpdateOptionWithValues(payload);
+
+    console.log('RESPONSE123: ', response);
+    if (response.status === 200) {
+      setSuccess(true);
+      // Ana listeyi güncellemek için setOptions kullanın
+      setOptions((prev) =>
+        prev.map((o) => (o.ID === editOption.ID ? response.data : o))
+      );
+
+      closeModal(false);
+    }
+
+    setIsUpdate(false);
   };
 
   return (
@@ -196,12 +109,12 @@ function EditOptionModal(props) {
                             SEÇENEK ADI
                           </label>
                           <input
-                            value={option?.name || ''}
+                            value={optionName}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-indigo-500'
                             name='name'
                             type='text'
                             placeholder='Secenek Adı'
-                            onChange={handleChange}
+                            onChange={(e) => setOptionName(e.target.value)}
                           />
                         </div>
                       </div>
@@ -213,12 +126,12 @@ function EditOptionModal(props) {
                           >
                             SEÇENEK TÜRÜ
                           </label>
+
                           <select
+                            value={optionType}
                             className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
                             name='type'
-                            id='type'
-                            value={option.type || ''}
-                            onChange={handleSelect}
+                            onChange={(e) => setOptionType(e.target.value)}
                           >
                             <option value={'select'}>{'Seçenek'}</option>
                             <option value={'radio'}>{'Radyo Düğmesi'}</option>
@@ -251,23 +164,49 @@ function EditOptionModal(props) {
                             </tr>
                           </thead>
                           <tbody>
-                            {option?.option_values?.map(
-                              (option_item, index) => {
-                                return (
-                                  <EditOptionItem
-                                    key={index}
-                                    index={index}
-                                    option_item={option_item}
-                                    handleOptionValueChange={
-                                      handleOptionValueChange
+                            {optionValues.map((optionValue, index) => (
+                              <tr key={index}>
+                                <td className='px-6 py-4 whitespace-nowrap'>
+                                  <input
+                                    type='text'
+                                    value={optionValue.name}
+                                    onChange={(e) =>
+                                      handleOptionValueChange(
+                                        index,
+                                        e.target.value
+                                      )
                                     }
-                                    handleDeleteOptionValue={
-                                      handleDeleteOptionValue
-                                    }
+                                    className='block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
                                   />
-                                );
-                              }
-                            )}
+                                  {/* <span
+                                    className='cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+                                    onClick={() =>
+                                      handleRemoveOptionValue(index)
+                                    }
+                                  >
+                                    Sil
+                                  </span> */}
+                                </td>
+                                <td className='px-6 py-4 whitespace-nowrap'>
+                                  {/* Resim yükleme inputu burada olacak */}
+                                  <input
+                                    type='file'
+                                    name={`image-${index}`}
+                                    className='block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
+                                  />
+                                </td>
+                                <td className='px-6 py-4 whitespace-nowrap text-right text-sm font-medium'>
+                                  <span
+                                    onClick={() =>
+                                      handleRemoveOptionValue(index)
+                                    }
+                                    className='text-red-600 hover:text-red-900 cursor-pointer'
+                                  >
+                                    Sil
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
 
                             <tr className={`border-b`}>
                               <th
@@ -278,7 +217,7 @@ function EditOptionModal(props) {
                                   <div className='flex items-center py-2 font-semibold'>
                                     <span
                                       className='cursor-pointer w-36 border-2 border-blue-400 border-dashed bg-gray-100 px-12 py-2 rounded hover:bg-gray-50 text-xl text-gray-500'
-                                      onClick={handleClick}
+                                      onClick={handleAddOptionValue}
                                     >
                                       Ekle +
                                     </span>
@@ -323,14 +262,14 @@ function EditOptionModal(props) {
                           )}
                         </button>
 
-                        <button
+                        <span
                           onClick={() => {
-                            props.closeModal(false);
+                            closeModal(false);
                           }}
                           className='mt-3 inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-red-500 sm:mt-0 sm:w-auto'
                         >
                           Kapat
-                        </button>
+                        </span>
                       </div>
                       {success && (
                         <div

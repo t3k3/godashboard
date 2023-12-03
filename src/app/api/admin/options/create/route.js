@@ -23,9 +23,6 @@ export async function POST(request) {
       data: JSON.stringify(data),
     });
 
-    console.log('response.status: ', response.status);
-
-    //TODO: response.status 201 olmalı
     if (response.status === 201) {
       return new Response(
         JSON.stringify({

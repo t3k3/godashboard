@@ -3,17 +3,19 @@ import ProductOptionEditModalVariantsItem from './ProductOptionEditModalVariants
 import { getOptionFromClientSide } from '@/services/option';
 import { useState, useEffect } from 'react';
 
-function ProductOptionEditModalVariantsList({ variantList, setVariantList }) {
-  const [options, setOptions] = useState();
+function ProductOptionEditModalVariantsList(props) {
+  // console.log('variantList3454: ', props.variantList);
+
+  const [options, setOptions] = useState(props.options);
   // const [selectedFilters, setSelectedFilters] = useState([]);
   // product_option;
-  useEffect(() => {
-    async function fetchOptions() {
-      const response = await getOptionFromClientSide();
-      setOptions(response);
-    }
-    fetchOptions();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchOptions() {
+  //     const response = await getOptionFromClientSide();
+  //     setOptions(response);
+  //   }
+  //   fetchOptions();
+  // }, []);
 
   // GET NAME BY OPTION VALUE ID
   const foundObject = (id) => {
@@ -33,7 +35,7 @@ function ProductOptionEditModalVariantsList({ variantList, setVariantList }) {
   };
 
   const handleVariantChange = (e, id, value) => {
-    let temp = [...variantList];
+    let temp = [...props.variantList];
     if (e.target.name == 'subtrack') {
       temp[id] = { ...temp[id], [e.target.name]: value };
     } else if (e.target.name == 'status') {
@@ -43,10 +45,8 @@ function ProductOptionEditModalVariantsList({ variantList, setVariantList }) {
     }
 
     console.log('TEMPPP: ', temp);
-    setVariantList(temp);
+    props.setVariantList(temp);
   };
-
-  console.log('VARIANT LIST 123: ', variantList);
 
   return (
     <div className='flex bg-white text-gray-600 border rounded overflow-hidden '>
@@ -163,13 +163,14 @@ function ProductOptionEditModalVariantsList({ variantList, setVariantList }) {
               </tr>
             </thead>
             <tbody>
-              {variantList != [] &&
-                variantList.map((variant, index) => {
+              {props.variantList != [] &&
+                props.variantList.map((variant, index) => {
                   return (
                     <ProductOptionEditModalVariantsItem
                       key={index}
                       index={index}
                       variant={variant}
+                      options={props.options}
                       handleVariantChange={handleVariantChange}
                     />
                   );
