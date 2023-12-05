@@ -19,6 +19,7 @@ export default function AdminLayout({ children }) {
     <html lang='tr'>
       <body>
         <div className='flex'>
+          {/* <Nav /> */}
           <div>{showHeader && <Header />}</div>
           <div className='w-full'>{children}</div>
         </div>

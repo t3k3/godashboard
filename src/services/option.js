@@ -1,7 +1,6 @@
 import { BASE_URL, _BASE_URL } from '@/config/apiConfig';
 
 const getOptionService = async (nextCookies, id = '') => {
-  console.log('getOptionService geldi: ');
   let headers = new Headers();
   // headers.append('Cookie', `default=${nextCookies.get('default').value}`);
   // headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
@@ -53,6 +52,27 @@ const getOptionFromClientSideService = async () => {
 const createVariantService = async (data, id) => {
   const res = await fetch(`/api/admin/options/combinations`, {
     method: 'PUT',
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    console.log('error');
+    throw new Error(error);
+  }
+
+  const resData = await res.json();
+
+  return resData;
+};
+
+const saveVariantsService = async (data, id) => {
+  const res = await fetch(`/api/admin/products/savevariants`, {
+    method: 'POST',
     headers: {
       Accept: 'application/json, text/plain, */*',
       'Content-Type': 'application/json',
@@ -130,12 +150,10 @@ const DeleteOptionWithValuesService = async (id) => {
 };
 
 const getSingleOption = async (nextCookies, id) => {
-  console.log('getSingleOption');
   return getOptionService(nextCookies, id);
 };
 
 const getOptions = async (nextCookies) => {
-  console.log('getOptions');
   return getOptionService(nextCookies);
 };
 
@@ -151,6 +169,10 @@ const UpdateOptionWithValues = async (data) => {
   return UpdateOptionWithValuesService(data);
 };
 
+const saveVariants = async (data) => {
+  return saveVariantsService(data);
+};
+
 const DeleteOptionWithValues = async (id) => {
   return DeleteOptionWithValuesService(id);
 };
@@ -164,6 +186,7 @@ export {
   getSingleOption,
   getOptions,
   createVariants,
+  saveVariants,
   CreateOptionWithValues,
   UpdateOptionWithValues,
   DeleteOptionWithValues,

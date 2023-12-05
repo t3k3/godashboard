@@ -1,17 +1,14 @@
 import React from 'react';
 import Image from 'next/image';
 
-function Nav({ toggleSidebar }) {
+function Nav() {
   return (
-    <div className='flex flex-col flex-shrink-0'>
+    <div className={`flex flex-col flex-shrink-0 fixed w-full z-31`}>
       <header className='flex flex-col border-b px-6 border-gray-200'>
         <div className='flex justify-between items-center py-3'>
           <div className='flex items-center py-3'>
             {/* Hamburger Menu */}
-            <button
-              className='text-gray-600 lg:hidden'
-              onClick={() => toggleSidebar(true)}
-            >
+            {/* <button className='text-gray-600 lg:hidden'>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
@@ -26,9 +23,9 @@ function Nav({ toggleSidebar }) {
                   d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5'
                 />
               </svg>
-            </button>
+            </button> */}
             {/* Search Bar */}
-            <div className='ml-4 lg:ml-0 relative w-64'>
+            {/* <div className='ml-4 lg:ml-0 relative w-64'>
               <span className='absolute inset-y-0 left-0 flex items-center pl-3'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -49,7 +46,7 @@ function Nav({ toggleSidebar }) {
                 className='block w-full text-sm border border-gray-400 rounded-md py-2 pl-10 pr-4 placeholder-gray-400'
                 placeholder='Search'
               />
-            </div>
+            </div> */}
           </div>
 
           {/* Icons */}

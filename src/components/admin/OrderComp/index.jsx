@@ -19,14 +19,15 @@ function OrderComp(props) {
 
   const [orderHistory, setOrderHistory] = useState(false);
 
-  useEffect(() => {
-    async function getOrderHistoryHandle() {
-      const orderHistoryTemp = await getOrderHistory(order.ID);
+  //Order history sipariş datasıyla birlikte gelir. Sayfa yüklendikten sonra ayrıca çekilmek istenirse burası kullanılabilir.
+  // useEffect(() => {
+  //   async function getOrderHistoryHandle() {
+  //     const orderHistoryTemp = await getOrderHistory(order.ID);
 
-      setOrderHistory(orderHistoryTemp);
-    }
-    getOrderHistoryHandle();
-  }, [order]);
+  //     setOrderHistory(orderHistoryTemp);
+  //   }
+  //   getOrderHistoryHandle();
+  // }, [order]);
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -283,14 +284,18 @@ function OrderComp(props) {
               <div className=' flex justify-between h-6  text-gray-600 font-medium'>
                 <span className='px-2 text-sm font-semibold'>Hareketler</span>
               </div>
-              <div className='mx-2 my-4'>
-                <ol className='relative border-l border-gray-200 dark:border-gray-700'>
+              <div className='mx-2 my-2'>
+                <ol className='relative border-l border-gray-200'>
                   {order.order_status_histories.map((history, index) => {
-                    console.log('history54654: ', history);
-                    console.log('props.order_statuses: ', props.order_statuses);
                     return (
-                      <li key={index} className='mb-10 ml-4'>
+                      <li
+                        key={index}
+                        className='mb-10 ml-4 px-2 py-2 hover:bg-gray-100'
+                      >
                         <div className='absolute w-3 h-3 bg-green-600 rounded-full mt-1.5 -left-1.5 border border-white'></div>
+                        <time className='mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500'>
+                          {new Date(history.CreatedAt).toLocaleString('tr')}
+                        </time>
                         <h3 className='text-lg font-semibold text-gray-900'>
                           {
                             props.order_statuses.find(
@@ -298,21 +303,19 @@ function OrderComp(props) {
                             )?.name
                           }
                         </h3>
-                        <time className='mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500'>
-                          {history.CreatedAt}
-                        </time>
+
                         <div className='flex items-center justify-between'>
                           <h3 className='text-lg font-semibold text-gray-900'>
                             {history.status}
                           </h3>
 
                           <span>
-                            <h3>Müşteri Bildirimi:</h3>
+                            <h3>Müşteri Bildirimi</h3>
                             <b>{history.notify ? 'Var' : 'Yok'}</b>
                           </span>
                         </div>
                         <p className='mb-4 text-base font-normal text-gray-500'>
-                          {history.comment}
+                          {'Not: ' + history.comment}
                         </p>
                       </li>
                     );

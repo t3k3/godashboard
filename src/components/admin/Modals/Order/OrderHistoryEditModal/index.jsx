@@ -8,9 +8,6 @@ function OrderHistoryEditModal({ orderId, selectedStatus, closeModal }) {
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  console.log('ORDERID456: ', orderId);
-  console.log('selectedStatus456: ', selectedStatus);
-
   const handleChange = (e) => {
     setStatus((prev) => {
       return {
@@ -33,10 +30,10 @@ function OrderHistoryEditModal({ orderId, selectedStatus, closeModal }) {
     e.preventDefault();
 
     // Handle validations
-    console.log(
-      'ORDER HİSTORY EDİTİNDEN GÖNDERİLEN ORDER HİSTORY DATA:: ',
-      data
-    );
+    // console.log(
+    //   'ORDER HİSTORY EDİTİNDEN GÖNDERİLEN ORDER HİSTORY DATA:: ',
+    //   data
+    // );
     const response = await editOrderHistory(data, orderId);
 
     //TODO: Response Status 201 olmalı.

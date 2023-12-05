@@ -12,7 +12,6 @@ function ProductOptionEditModalItem(props) {
       ) {
         let x = {
           optionValueId: Number(e.target.value),
-          productOptionId: productOption.ID,
         };
 
         setProductOption((prev) => {

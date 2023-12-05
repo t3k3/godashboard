@@ -37,11 +37,11 @@ function ProductOptionEditModalVariantsList(props) {
   const handleVariantChange = (e, id, value) => {
     let temp = [...props.variantList];
     if (e.target.name == 'subtrack') {
-      temp[id] = { ...temp[id], [e.target.name]: value };
+      temp[id] = { ...temp[id], [e.target.name]: Boolean(value) };
     } else if (e.target.name == 'status') {
-      temp[id] = { ...temp[id], [e.target.name]: value };
+      temp[id] = { ...temp[id], [e.target.name]: Boolean(value) };
     } else {
-      temp[id] = { ...temp[id], [e.target.name]: e.target.value };
+      temp[id] = { ...temp[id], [e.target.name]: Number(e.target.value) };
     }
 
     console.log('TEMPPP: ', temp);

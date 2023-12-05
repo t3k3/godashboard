@@ -1,12 +1,6 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { editProduct } from '@/services/product';
-
-import {
-  createVariants,
-  getOptionFromClientSide,
-  getOptions,
-} from '@/services/option';
+import React, { useState } from 'react';
+import { createVariants, saveVariants } from '@/services/option';
 import ProductOptionEditModalItem from './ProductOptionEditModalItem';
 import ProductOptionEditModalVariantsList from './ProductOptionEditModalVariants/ProductOptionEditModalVariantsList';
 
@@ -14,84 +8,20 @@ function ProductOptionEditModal(props) {
   const [product, setProduct] = useState(props.product);
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [options, setOptions] = useState();
-  const [variantList, setVariantList] = useState();
+  const [options, setOptions] = useState(props.options);
+  const [variantList, setVariantList] = useState(product?.product_combinations);
   const [newCombination, setNewCombination] = useState(false);
 
-  const localProductBackup = props.product;
+  //TODO: Product bu şekilde çekilince Kapat butonu statei koruyor
+  // useEffect(() => {
+  //   async function fetchProduct() {
+  //     const { product } = await getSingleProduct(BaseNextResponse, id);
+  //     setProduct(product);
+  //   }
+  //   fetchProduct();
+  // }, []);
 
   console.log('product4343: ', product);
-
-  useEffect(() => {
-    async function fetchOptions() {
-      const { options } = await getOptions();
-      setOptions(options);
-    }
-    fetchOptions();
-  }, []);
-
-  useEffect(() => {
-    var setVar = product.product_combination;
-    setVariantList(setVar);
-  }, []);
-
-  // useEffect(() => {
-  //   createVariantsTest();
-  // }, [variantList]);
-
-  const handleChangeText = (e, option_value_id, option_id) => {
-    const indOf_option_id = product.product_options.indexOf(
-      product.product_options.find((opt) => opt.option_id === option_id)
-    );
-
-    const indOf_option_value_id = product.product_options[
-      indOf_option_id
-    ].product_option_value.indexOf(
-      product.product_options[indOf_option_id].product_option_value.find(
-        (opt) => opt.option_value_id === option_value_id
-      )
-    );
-
-    const temp = { ...product };
-
-    if (e.target.name === 'price_prefix') {
-      console.log('name: ', e.target.name);
-      console.log('value: ', e.target.value);
-    }
-
-    temp.product_options[indOf_option_id].product_option_value[
-      indOf_option_value_id
-    ] = {
-      ...temp.product_options[indOf_option_id].product_option_value[
-        indOf_option_value_id
-      ],
-      [e.target.name]: e.target.value,
-    };
-
-    setProduct(temp);
-  };
-
-  function removeObjectWithId(arr, id) {
-    const objWithIdIndex = arr.findIndex((obj) => obj.attribute_id === id);
-
-    if (objWithIdIndex > -1) {
-      arr.splice(objWithIdIndex, 1);
-    }
-
-    return arr;
-  }
-
-  const editProductOption = (option_id) => {
-    console.log('i am editProductOption from ProductOptionEditModal');
-    // const sp = removeObjectWithId(product.product_options, option_id);
-    // setProduct((prev) => {
-    //   return {
-    //     ...prev,
-    //     product_options: sp,
-    //   };
-    // });
-    // console.log('PRODUCT FROM EditProductOption: ', product);
-  };
 
   const handleChangeOptions = (e) => {
     if (e.target.value !== '') {
@@ -100,9 +30,10 @@ function ProductOptionEditModal(props) {
         console.log('item: ', item);
         let x = {
           optionId: item.ID,
+          productId: product.ID,
           name: item.name,
           type: item.type,
-          required: 1,
+          required: true,
           product_option_values: [],
         };
 
@@ -135,40 +66,20 @@ function ProductOptionEditModal(props) {
     //   console.log('1');
     //   datx.current = { ...product.product_combination };
     // }
-
-    // datx.current = { ...variantList };
+    console.log('variant List: ', variantList);
+    datx.current = variantList;
 
     console.log('datx1 giden: ', datx);
-    // console.log('DAT: ', dat);
-    // console.log('XXX: ', x);
-
-    // Handle validations
-
-    // Handle validations
-    // console.log('ÜRÜN EDİTİNDEN GÖNDERİLEN PRODUCT DATA:: ', product);
-    // Handle validations
 
     const response = await createVariants(datx);
+
+    console.log('response34233: ', response);
 
     if (response.status === 200) {
       setVariantList(response.data.data);
       setNewCombination(true);
     }
     setIsUpdate(false);
-
-    // axios({
-    //   method: 'POST',
-    //   mode: 'no-cors',
-    //   url: `http://demo.actsistem.com/api/v1/admin/index.php?route=catalog/combination/optionRender`,
-    //   data: datx,
-    //   headers: { 'Content-Type': 'multipart/form-data' },
-    // }).then((response) => {
-    //   console.log(response);
-    //   setVariantList(response.data);
-    //   setNewCombination(true);
-
-    //   // Handle response
-    // });
   };
 
   const handleSubmit = async (e) => {
@@ -178,19 +89,27 @@ function ProductOptionEditModal(props) {
     e.preventDefault();
 
     let temp = { ...product };
-    temp.product_combination = variantList;
+    temp.product_combinations = variantList;
+
+    const updatedVariantList = variantList.map((variant) => ({
+      ...variant,
+      product_id: product.ID,
+    }));
+
+    let variants = {
+      productID: product.ID,
+      combinations: updatedVariantList,
+      product_options: product.product_options,
+    };
 
     // console.log('BEFORE SECENEKLERDEN GÖNDERİLEN PRODUCT DATA:: ', product);
     //setProduct(temp);
 
-    // console.log('AFTER SECENEKLERDEN GÖNDERİLEN PRODUCT DATA:: ', product);
-    console.log('TEMP: ', temp);
+    console.log('variant43534543: ', variants);
 
-    // Handle validations
-    console.log('ÜRÜN EDİTİNDEN GÖNDERİLEN PRODUCT DATA:: ', product);
-    // Handle validations
+    const response = await saveVariants(variants, product.urunId);
 
-    const response = await editProduct(temp, product.urunId);
+    console.log('response534543345: ', response);
 
     //TODO: Response Status 201 olmalı.
     if (response.status === 200) {
@@ -198,32 +117,15 @@ function ProductOptionEditModal(props) {
       setIsUpdate(false);
       setSuccess(true);
       if (!success) {
-        props.setProduct(product);
+        let updatedProduct = {
+          ...product,
+          product_combinations: response.data.product_combinations,
+          product_options: response.data.product_options,
+        };
+        props.setProduct(updatedProduct);
       }
     }
     setIsUpdate(false);
-
-    // Handle validations
-    // axios({
-    //   method: 'POST',
-    //   mode: 'no-cors',
-    //   url: `http://demo.actsistem.com/api/v1/admin/index.php?route=catalog/product/edit&product_id=${product.urunId}`,
-    //   data: temp,
-    //   headers: { 'Content-Type': 'multipart/form-data' },
-    // })
-    //   .then((response) => {
-    //     console.log(response);
-    //     setIsUpdate(false);
-    //     setSuccess(true);
-    //     if (!success) {
-    //       props.setProduct(product);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //     setIsUpdate(false);
-    //     setSuccess(false);
-    //   });
   };
 
   return (
@@ -276,8 +178,7 @@ function ProductOptionEditModal(props) {
                                           options={options}
                                           product={product}
                                           productOption={productOption}
-                                          editProductOption={editProductOption}
-                                          handleChangeText={handleChangeText}
+                                          // handleChangeText={handleChangeText}
                                           createVariantsTest={
                                             createVariantsTest
                                           }
@@ -305,7 +206,7 @@ function ProductOptionEditModal(props) {
                             <option defaultValue={true} value={''}>
                               Bir Seçenek Seçiniz
                             </option>
-                            {console.log(options)}
+
                             {options?.map((option) => {
                               return (
                                 <option key={option.ID} value={option.ID}>
@@ -372,15 +273,17 @@ function ProductOptionEditModal(props) {
                           )}
                         </button>
 
-                        <button
+                        <span
+                          //TODO: Burada modal kaptma ve ürün stateini güncellememe gibi bir aksiyon gerekiyor.
                           onClick={() => {
+                            props.handleCloseModal(props.product.ID);
                             props.closeModal(false);
-                            window.location.reload();
+                            // window.location.reload();
                           }}
-                          className='mt-3 inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-red-500 sm:mt-0 sm:w-auto'
+                          className='mt-3 inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-red-500 sm:mt-0 sm:w-auto cursor-pointer'
                         >
                           Kapat
-                        </button>
+                        </span>
                       </div>
                       {success && (
                         <div
