@@ -1,15 +1,16 @@
-import { API_URL_ADMIN, _API_URL_ADMIN } from '@/config/apiConfig';
+import { _API_URL_ADMIN } from '@/config/apiConfig';
 import { cookies } from 'next/headers';
 
-//get all orders
 export async function GET(request) {
   const nextCookies = cookies();
 
+  console.log('GELDİ mi');
+
   let headers = new Headers();
-  headers.append('Cookie', `default=${nextCookies.get('default').value}`);
-  headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
-  headers.append('Cookie', `language=${nextCookies.get('language').value}`);
-  headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
+  // headers.append('Cookie', `default=${nextCookies.get('default').value}`);
+  // headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
+  // headers.append('Cookie', `language=${nextCookies.get('language').value}`);
+  // headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
 
   var requestOptions = {
     method: 'GET',
@@ -18,7 +19,7 @@ export async function GET(request) {
   };
 
   const response = await fetch(
-    `${API_URL_ADMIN}/sale/order&token=${nextCookies.get('token').value}`,
+    `${_API_URL_ADMIN}/orderstatuses`,
     requestOptions
   );
 
@@ -42,7 +43,7 @@ export async function GET(request) {
       JSON.stringify({
         status: 200,
         statusText: 'login true',
-        orders: res.orders,
+        statuses: res,
       })
     );
   }

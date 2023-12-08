@@ -1,4 +1,4 @@
-import { _API_URL_ADMIN } from '@/config/apiConfig';
+import { _API_URL_ADMIN, _BASE_URL } from '@/config/apiConfig';
 
 const getManufacturerService = async (nextCookies, id = '') => {
   let headers = new Headers();
@@ -16,7 +16,10 @@ const getManufacturerService = async (nextCookies, id = '') => {
   };
 
   try {
-    const res = await fetch(`${_API_URL_ADMIN}/manufacturers`, requestOptions);
+    const res = await fetch(
+      `${_BASE_URL}/api/admin/manufacturers`,
+      requestOptions
+    );
 
     const response = await res.json();
 
@@ -26,14 +29,91 @@ const getManufacturerService = async (nextCookies, id = '') => {
   }
 };
 
+const putManufacturerService = async (data, id) => {
+  const res = await fetch(`${_BASE_URL}/api/admin/manufacturers/${id}`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    console.log('ERROR: manufacturers.js service');
+    throw new Error(error);
+  }
+
+  const resData = await res.json();
+
+  return resData;
+};
+
 const getSingleManufacturer = async (id) => {
   return getManufacturerService(
     `catalog/manufacturer/edit&manufacturer_id=${id}`
   );
 };
 
+const postManufacturerService = async (data) => {
+  const res = await fetch(`${_BASE_URL}/api/admin/manufacturers`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    console.log('error');
+    throw new Error(error);
+  }
+
+  const resData = await res.json();
+
+  return resData;
+};
+
+const DeleteManufacturerService = async (id) => {
+  const res = await fetch(`${_BASE_URL}/api/admin/manufacturers/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    console.log('error');
+    throw new Error(error);
+  }
+
+  const resData = await res.json();
+
+  return resData;
+};
+
 const getManufacturers = async (nextCookies) => {
   return getManufacturerService(nextCookies);
 };
 
-export { getManufacturerService, getSingleManufacturer, getManufacturers };
+const editManufacturer = async (data, id) => {
+  return putManufacturerService(data, id);
+};
+
+const addNewManufacturer = async (data) => {
+  return postManufacturerService(data);
+};
+
+const DeleteManufacturer = async (id) => {
+  return DeleteManufacturerService(id);
+};
+
+export {
+  getManufacturerService,
+  getSingleManufacturer,
+  getManufacturers,
+  editManufacturer,
+  addNewManufacturer,
+  DeleteManufacturer,
+};

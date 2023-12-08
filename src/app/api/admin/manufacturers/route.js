@@ -1,15 +1,14 @@
-import { API_URL_ADMIN } from '@/config/apiConfig';
+import { _API_URL_ADMIN } from '@/config/apiConfig';
 import { cookies } from 'next/headers';
 
-//get all categories
 export async function GET(request) {
   const nextCookies = cookies();
 
   let headers = new Headers();
-  headers.append('Cookie', `default=${nextCookies.get('default').value}`);
-  headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
-  headers.append('Cookie', `language=${nextCookies.get('language').value}`);
-  headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
+  // headers.append('Cookie', `default=${nextCookies.get('default').value}`);
+  // headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
+  // headers.append('Cookie', `language=${nextCookies.get('language').value}`);
+  // headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
 
   var requestOptions = {
     method: 'GET',
@@ -18,9 +17,7 @@ export async function GET(request) {
   };
 
   const response = await fetch(
-    `${API_URL_ADMIN}/catalog/manufacturer&token=${
-      nextCookies.get('token').value
-    }`,
+    `${_API_URL_ADMIN}/manufacturers`,
     requestOptions
   );
 
@@ -43,37 +40,48 @@ export async function GET(request) {
     return new Response(
       JSON.stringify({
         status: 200,
-        manufacturers: res.manufacturers,
+        statusText: 'login true',
+        manufacturers: res,
       })
     );
   }
 }
 
-// export async function POST(request) {
-//   console.log('POST ISTEK GELDİ');
-//   const data = await request.json();
+export async function POST(request) {
+  const data = await request.json();
 
-//   try {
-//     const url = `${API_URL_ADMIN}catalog/category/add`;
-//     const headers = { 'Content-Type': 'multipart/form-data' };
-//     const response = await axios.post(url, data, { headers });
+  console.log('DATA123: ', data);
 
-//     return new Response(
-//       JSON.stringify({
-//         status: response.status,
-//         statusText: response.statusText,
-//         data: response.data,
-//       })
-//     );
-//   } catch (error) {
-//     return new Response(
-//       JSON.stringify({
-//         status: error.response.status,
-//         statusText: error.response.statusText,
-//         data: error.response.data,
-//       })
-//     );
-//   }
+  try {
+    const response = await fetch(`${_API_URL_ADMIN}/manufacturers`, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data), // Stringify the data before sending
+    });
 
-//   // console.log('RES: ', res);
-// }
+    console.log('response.status: ', response.status);
+    console.log('response.text: ', response.text);
+
+    if (response.status === 201) {
+      return new Response(
+        JSON.stringify({
+          status: response.status,
+          statusText: response.statusText,
+          data: response.data,
+        })
+      );
+    }
+  } catch (error) {
+    console.log('ERRRRROSOS: ', error);
+    return new Response(
+      JSON.stringify({
+        status: error.response.status,
+        statusText: error.response.statusText,
+        data: error.response.data,
+      })
+    );
+  }
+}

@@ -4,16 +4,14 @@ import { cookies } from 'next/headers';
 
 async function Payment() {
   const nextCookies = cookies();
-  const paymentMethods = await getPaymentMethods(nextCookies);
+  // const paymentMethods = await getPaymentMethods(nextCookies);
 
-  return (
-    paymentMethods && (
-      <PaymentMethodList
-        paymentMethods={paymentMethods.extensions}
-        //manufacturer_total={shippingMethods.manufacturer_total}
-      />
-    )
-  );
+  return 'Ödemeler';
+  // return (
+  //   paymentMethods && (
+  //     <PaymentMethodList paymentMethods={paymentMethods.extensions} />
+  //   )
+  // );
 }
 
 export default Payment;

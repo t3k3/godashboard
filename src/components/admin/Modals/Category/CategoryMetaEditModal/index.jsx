@@ -5,16 +5,11 @@ import { editCategory } from '@/services/category';
 function CategoryMetaEditModal({ category, setCategory, closeModal }) {
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
+
   const handleChange = (e) => {
     setCategory((prev) => {
       return {
         ...prev,
-        category_description: {
-          5: {
-            ...prev.category_description[5],
-            [e.target.name]: e.target.value,
-          },
-        },
         [e.target.name]: e.target.value,
       };
     });
@@ -26,10 +21,17 @@ function CategoryMetaEditModal({ category, setCategory, closeModal }) {
     // Prevent the default submit and page reload
     e.preventDefault();
 
-    const res = editCategory(category, category.KategoriId);
+    let data = {
+      meta_title: category.meta_title,
+      meta_description: category.meta_description,
+      meta_keyword: category.meta_keyword,
+      keyword: category.keyword,
+    };
+
+    const res = editCategory(data, category.ID);
 
     const response = await res;
-    if (response.status === 201) {
+    if (response.status === 200) {
       setSuccess(true);
     }
     setIsUpdate(false);
@@ -54,7 +56,7 @@ function CategoryMetaEditModal({ category, setCategory, closeModal }) {
                     className='text-base font-semibold leading-6 text-gray-600  border-b'
                     id='modal-title'
                   >
-                    Meta Düzenle
+                    Kategorinin Meta Bilgilerini Düzenle
                   </h3>
                   <div>
                     <form
@@ -73,9 +75,7 @@ function CategoryMetaEditModal({ category, setCategory, closeModal }) {
                             Meta Başlığı
                           </label>
                           <input
-                            value={
-                              category?.category_description[5].meta_title || ''
-                            }
+                            value={category?.meta_title || ''}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
                             name='meta_title'
                             type='text'

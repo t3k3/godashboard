@@ -7,15 +7,35 @@ import Image from 'next/image';
 import Link from 'next/link';
 import CategoryDataEditModal from '@/components/admin/Modals/Category/CategoryDataEditModal';
 import CategoryMetaEditModal from '@/components/admin/Modals/Category/CategoryMetaEditModal';
+import { editCategory, getSingleCategory } from '@/services/category';
+import { _BASE_URL } from '@/config/apiConfig';
 
 function Category(props) {
   const [category, setCategory] = useState(props.category);
+  // const [parentCategory, setParentCategory] = useState(null);
+
   const [categoryDataEditModal, setCategoryDataEditModal] = useState(false);
   const [categoryMetaEditModal, setCategoryMetaEditModal] = useState(false);
 
   const [categoryProductsState, setCategoryProductsState] = useState(false);
 
-  console.log('category1423: ', category);
+  const handleChange = async (e) => {
+    console.log('KATEGORİ EDİTİNDEN GÖNDERİLEN PRODUCT DATA:: ', category);
+
+    let data = {
+      status: e.target.value === 'true', // 'true' stringini boolean değere dönüştürür
+    };
+
+    console.log(data);
+
+    const response = await editCategory(data, props.category.ID);
+    console.log(response);
+    if (response.status === 200) {
+      let cat = { ...category };
+      cat.status = data.status;
+      setCategory(cat);
+    }
+  };
 
   // if (category.ID == 'null') {
   //   console.log('Kategori bulunamadı.');
@@ -28,6 +48,21 @@ function Category(props) {
   //   }
   //   getCategoryProductsHandle();
   // }, []);
+
+  // useEffect(() => {
+  //   // Update the document title using the browser API
+  //   document.title = 'Düzenle - ' + category?.name;
+  // });
+
+  // useEffect(() => {
+  //   async function getCategory() {
+  //     const parentCatagory = await getSingleCategory('', category.parent_id);
+  //     setParentCategory(parentCatagory);
+  //   }
+  //   if (category.parent_id > 0) {
+  //     getCategory();
+  //   }
+  // }, [category]);
 
   return (
     <div className='mx-8'>
@@ -67,7 +102,11 @@ function Category(props) {
             </h1>
           </div>
           <span
-            className={`bg-emerald-100 text-emerald-600 text-xs font-medium mr-1 ml-2 px-2 py-0.5 rounded`}
+            className={`${
+              category?.status
+                ? 'bg-emerald-200 text-emerald-600'
+                : 'bg-red-200 text-red-900'
+            }   text-lg font-medium mr-1 ml-2 px-2 py-0.5 rounded`}
           >
             {category?.status ? 'Aktif' : 'Kapalı'}
           </span>
@@ -122,7 +161,7 @@ function Category(props) {
             CARD
           </div>
 
-          {/* Products Images */}
+          {/* Category Images */}
           <div>
             <div className='relative overflow-x-auto shadow-lg '>
               <div className='flex px-8 py-4 justify-center'>
@@ -580,23 +619,18 @@ function Category(props) {
 
         {/* Right */}
         <div className=' w-96 h-screen'>
-          <button className='w-24 ml-2 pl-2 pr-2 py-1 rounded-sm flex items-center text-sm font-medium text-white bg-green-600 hover:bg-green-500'>
-            <span className=' px-4 pr-1'>Aktif</span>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
-              strokeWidth={1.5}
-              stroke='currentColor'
-              className='w-4 h-4'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M19.5 8.25l-7.5 7.5-7.5-7.5'
-              />
-            </svg>
-          </button>
+          <select
+            className={`${
+              category?.status ? 'bg-green-500' : 'bg-red-500'
+            } border border-gray-300 text-white text-xl rounded-sm focus:ring-green-500 focus:border-green-500 block w-24 ml-2 p-2.5 `}
+            name='status'
+            id='status'
+            value={category?.status.toString()}
+            onChange={(e) => handleChange(e)}
+          >
+            <option value={true}>Aktif</option>
+            <option value={false}>Kapalı</option>
+          </select>
 
           {/* Category Info */}
           <div className='mx-2 my-2 bg-white text-gray-600 max-w-sm rounded overflow-hidden shadow-lg'>
@@ -629,7 +663,7 @@ function Category(props) {
                 <span className=' font-medium'>Link:</span>
                 <span className='ml-12'>
                   <a
-                    href='#'
+                    href={_BASE_URL + '/kategoriler/' + category.keyword}
                     className=' flex items-center font-semibold text-blue-500'
                   >
                     Sitede Göster
@@ -650,20 +684,43 @@ function Category(props) {
                   </a>
                 </span>
               </div>
-              <div className='flex items-center justify-between px-2  pt-2'>
-                <span className='font-medium '>Kategori Adı:</span>
-                <span className=' pr-2'>{category?.name || ''}</span>
+
+              <div className='flex items-center justify-between px-2'>
+                <span className='font-medium pt-2'>Kategori Adı:</span>
+                <div className='flex items-center justify-between pt-2'>
+                  <span className='bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded  border border-blue-400'>
+                    {category?.name}
+                  </span>
+                </div>
               </div>
 
               <div className='flex items-center justify-between px-2'>
-                <span className='font-medium pt-2'>Üst Kategori:</span>
+                <span className='font-medium pt-2'>Üst Kategoriler:</span>
                 <div className='flex items-center justify-between pt-2'>
                   <span className='bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded  border border-blue-400'>
-                    {category?.parent_id}
+                    {category?.parent_id === 0 ? 'Yok' : category?.path}
+                  </span>
+                </div>
+              </div>
+
+              <div className='flex items-center justify-between px-2'>
+                <span className='font-medium pt-2'>Üst Menüde Göster:</span>
+                <div className='flex items-center justify-between pt-2'>
+                  <span className='bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded  border border-blue-400'>
+                    {category?.top ? 'Evet' : 'Hayır'}
+                  </span>
+                </div>
+              </div>
+              <div className='flex items-center justify-between px-2'>
+                <span className='font-medium pt-2'>Üst Menü Sıralaması:</span>
+                <div className='flex items-center justify-between pt-2'>
+                  <span className='bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded  border border-blue-400'>
+                    {category?.sort_order}
                   </span>
                 </div>
               </div>
             </div>
+
             <div className=' border text-xs pl-2 pt-2'>
               <button
                 type='button'
@@ -680,7 +737,7 @@ function Category(props) {
           {/* Meta */}
           <div className='mx-2 my-2 bg-white text-gray-600 max-w-sm rounded overflow-hidden shadow-lg'>
             <div className=' flex justify-between h-10 border text-gray-600 font-medium'>
-              <span className='px-2 py-2 font-semibold'>Meta</span>
+              <span className='px-2 py-2 font-semibold'>Meta Bilgileri</span>
               <span className='px-2 py-2 font-light'>SEO Ayarları</span>
             </div>
             <div className=' border-r py-4 border-l text-xs'>

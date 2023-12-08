@@ -3,7 +3,7 @@ import { useState } from 'react';
 import ManufacturerListItem from './ManufacturerListItem';
 import EditManufacturerModal from './EditManufacturerModal';
 import AddNewManufacturerModal from './AddNewManufacturerModal';
-import { getSingleManufacturer } from '@/services/manufacturer';
+import { DeleteManufacturer } from '@/services/manufacturer';
 
 function ManufacturerList(props) {
   const [manufacturers, setManufacturers] = useState(props.manufacturers);
@@ -11,29 +11,37 @@ function ManufacturerList(props) {
   const [editManufacturerModal, setEditManufacturerModal] = useState(false);
   const [editManufacturer, setEditManufacturer] = useState(false);
 
-  const handleManufacturerEdit = async (index) => {
-    const manufacturer = await getSingleManufacturer(index);
+  const handleManufacturerEdit = async (manufacturer) => {
     setEditManufacturer(manufacturer);
 
     manufacturer && setEditManufacturerModal(true);
+    setEditManufacturerModal(true);
+  };
+
+  const handleDeleteManufacturer = async (optionId) => {
+    const response = await DeleteManufacturer(optionId);
+
+    console.log('RESPONSE123: ', response);
+
+    if (response.status === 200) {
+      // Başarılı işlem sonrası state güncellemeleri
+      // Option listesinden silinen option'ı çıkar
+      setManufacturers((prevManufacturers) =>
+        prevManufacturers.filter((manufacturer) => manufacturer.ID !== optionId)
+      );
+    }
   };
 
   return (
     <div className='flex-1 bg-white text-gray-600 rounded overflow-hidden shadow-lg border'>
       {/* ADD NEW MANUFACTURER MODAL */}
       {addNewManufacturerModal ? (
-        <AddNewManufacturerModal
-          // product={product}
-          // setProduct={setProduct}
-          closeModal={setAddNewManufacturerModal}
-        />
+        <AddNewManufacturerModal closeModal={setAddNewManufacturerModal} />
       ) : null}
 
       {/* EDİT MANUFACTURER MODAL */}
       {editManufacturerModal ? (
         <EditManufacturerModal
-          // product={product}
-          // setProduct={setProduct}
           editManufacturer={editManufacturer}
           closeModal={setEditManufacturerModal}
         />
@@ -108,6 +116,7 @@ function ManufacturerList(props) {
                     <ManufacturerListItem
                       key={manufacturer.ID}
                       manufacturer={manufacturer}
+                      handleDeleteManufacturer={handleDeleteManufacturer}
                       handleManufacturerEdit={handleManufacturerEdit}
                     />
                   );

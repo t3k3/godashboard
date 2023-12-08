@@ -2,7 +2,6 @@ import React from 'react';
 import Link from 'next/link';
 
 function CategoryItem({ category }) {
-  console.log();
   return (
     <>
       <tr className='bg-white border-b  hover:bg-gray-200'>

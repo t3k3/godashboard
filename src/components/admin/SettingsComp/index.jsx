@@ -1,18 +1,16 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-
+import cities from '/public/cities.json';
 import Image from 'next/image';
+import { editSettings } from '@/services/settings';
 
 function SettingsComp(props) {
-  console.log('PROPS FROM SETTİNGS: ', props.settings);
-
-  //console.log('PROPS: ', props.product.product_categories);
   const [settings, setSettings] = useState(props.settings);
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  // const [logoImage, setLogoImage] = useState(props.settings.logo);
+  // const [logoImage, setLogoImage] = useState(props.settings?.logo);
 
   // const handleChange = (e) => {
   //   console.log('name: ', e.target.name);
@@ -40,28 +38,20 @@ function SettingsComp(props) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     setSuccess(false);
     setIsUpdate(true);
     // Prevent the default submit and page reload
     e.preventDefault();
 
-    console.log('evet: ', e);
-    console.log('settings: ', settings);
+    // const response = await editProduct(product, product.urunId);
+    const response = await editSettings(settings);
 
-    axios({
-      method: 'POST',
-      mode: 'no-cors',
-      url: `http://demo.actsistem.com/api/v1/admin/index.php?route=setting/setting`,
-      data: settings,
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }).then((response) => {
-      console.log(response);
-      setIsUpdate(false);
+    if (response.status === 200) {
+      setSettings(response.data);
       setSuccess(true);
-      setSettings(settings);
-      // Handle response
-    });
+    }
+    setIsUpdate(false);
   };
 
   const onFileChange = (e, config_image) => {
@@ -230,7 +220,7 @@ function SettingsComp(props) {
                     </label>
                     <div className='flex'>
                       <Image
-                        src={settings.logo}
+                        src={settings?.logo}
                         alt='logo'
                         width={100}
                         height={100}
@@ -254,7 +244,7 @@ function SettingsComp(props) {
                     </label>
                     <div className='flex'>
                       <Image
-                        src={settings.icon}
+                        src={settings?.icon}
                         alt='favicon'
                         width={100}
                         height={100}
@@ -279,7 +269,7 @@ function SettingsComp(props) {
                     </label>
                     <div className='flex'>
                       <Image
-                        src={settings.headerbanner}
+                        src={settings?.header_banner}
                         alt='header_banner'
                         width={100}
                         height={100}
@@ -294,7 +284,7 @@ function SettingsComp(props) {
                       />
                     </div>
                     <input
-                      value={settings?.config_headerbannerlink || ''}
+                      value={settings?.config_header_banner_link || ''}
                       className='appearance-none block w-full bg-white text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:border-green-500'
                       name='config_headerbannerlink'
                       type='text'
@@ -311,7 +301,7 @@ function SettingsComp(props) {
                     </label>
                     <div className='flex'>
                       <Image
-                        src={settings.footerbanner}
+                        src={settings?.footer_banner}
                         alt='footer_banner'
                         width={100}
                         height={100}
@@ -630,10 +620,10 @@ function SettingsComp(props) {
                       id='config_country_id'
                       disabled
                     >
-                      {settings?.config_country_id ? (
+                      {/* {settings?.config_country_id ? (
                         <option value={settings?.config_country_id}>
                           {
-                            settings.countries.find(
+                            settings?.countries.find(
                               (country) =>
                                 country.country_id ===
                                 settings?.config_country_id
@@ -642,9 +632,10 @@ function SettingsComp(props) {
                         </option>
                       ) : (
                         <option selected>Seçiniz</option>
-                      )}
+                      )} */}
+                      <option value={'215'}>Türkiye</option>
 
-                      {settings.countries.map((country) => {
+                      {/* {settings?.countries?.map((country) => {
                         return (
                           <option
                             key={country.country_id}
@@ -653,26 +644,9 @@ function SettingsComp(props) {
                             {country.name}
                           </option>
                         );
-                      })}
+                      })} */}
                     </select>
                   </div>
-                  {/* <div className='mb-4'>
-                    <label
-                      className='block tracking-wide text-gray-700 text-sm font-bold mb-2'
-                      htmlFor='grid-first-name'
-                    >
-                      Şehir
-                    </label>
-                    
-                    <input
-                      value={settings?.config_zone_id || ''}
-                      className='appearance-none block w-full bg-white text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:border-green-500'
-                      name='config_zone_id'
-                      type='text'
-                      placeholder='Şehir'
-                      onChange={handleChange}
-                    />
-                  </div> */}
 
                   <label
                     htmlFor='config_zone_id'
@@ -684,28 +658,26 @@ function SettingsComp(props) {
                     className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
                     name='config_zone_id'
                     id='config_zone_id'
-                    value={settings.config_zone_id}
+                    value={settings?.config_zone_id}
                     onChange={handleChange}
                   >
                     {/* {settings?.config_zone_id ? (
                       <option value={settings?.config_zone_id}>
-                        {
-                          settings.cities.find(
-                            (city) => city.zone_id === settings?.config_zone_id
-                          ).name
-                        }
+                        {cities.zone.find(
+                          (city) => city.zone_id == settings?.config_zone_id
+                        ).name || ''}
                       </option>
                     ) : (
                       <option selected>Seçiniz</option>
                     )} */}
 
-                    {settings.cities.map((city) => {
+                    {cities?.zone.map((city) => {
                       return (
                         <option
                           key={city.zone_id}
                           value={city.zone_id}
                           // selected={
-                          //   settings.config_zone_id == city.zone_id
+                          //   settings?.config_zone_id == city.zone_id
                           //     ? true
                           //     : false
                           // }
@@ -723,7 +695,7 @@ function SettingsComp(props) {
                     >
                       Para Birimi
                     </label>
-                    {settings.currencies[settings.config_currency].name}
+                    {/* {settings?.currencies[settings?.config_currency]?.name} */}
                     <input
                       value={settings?.config_currency || ''}
                       className='appearance-none block w-full bg-white text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:border-green-500'
@@ -778,12 +750,12 @@ function SettingsComp(props) {
                     >
                       Uzunluk Birimi
                     </label>
-                    <input
+                    {/* <input
                       value={
                         settings?.length_classes.find(
                           (length_class) =>
                             length_class.length_class_id ===
-                            settings.config_length_class_id
+                            settings?.config_length_class_id
                         ).title || ''
                       }
                       className='appearance-none block w-full bg-white text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:border-green-500'
@@ -791,7 +763,7 @@ function SettingsComp(props) {
                       type='text'
                       placeholder='Uzunluk Birimi'
                       onChange={handleChange}
-                    />
+                    /> */}
                   </div>
                   <div className='mb-4 hidden'>
                     <label
@@ -801,12 +773,12 @@ function SettingsComp(props) {
                       Ağırlık Birimi
                     </label>
 
-                    <input
+                    {/* <input
                       value={
                         settings?.weight_classes.find(
                           (weight_class) =>
                             weight_class.weight_class_id ===
-                            settings.config_weight_class_id
+                            settings?.config_weight_class_id
                         ).title || ''
                       }
                       className='appearance-none block w-full bg-white text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:border-green-500'
@@ -814,7 +786,7 @@ function SettingsComp(props) {
                       type='text'
                       placeholder='Ağırlık Birimi'
                       onChange={handleChange}
-                    />
+                    /> */}
                   </div>
                 </div>
               </div>
@@ -862,7 +834,7 @@ function SettingsComp(props) {
                       className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
                       name='config_customer_price'
                       id='config_customer_price'
-                      value={settings.config_customer_price}
+                      value={settings?.config_customer_price}
                       onChange={handleChange}
                     >
                       <option value={0}>Hayır</option>
@@ -881,7 +853,7 @@ function SettingsComp(props) {
                       className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
                       name='config_stock_display'
                       id='config_stock_display'
-                      value={settings.config_stock_display}
+                      value={settings?.config_stock_display}
                       onChange={handleChange}
                     >
                       <option value={0}>Hayır</option>
@@ -900,7 +872,7 @@ function SettingsComp(props) {
                       className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
                       name='config_stock_warning'
                       id='config_stock_warning'
-                      value={settings.config_stock_warning}
+                      value={settings?.config_stock_warning}
                       onChange={handleChange}
                     >
                       <option value={0}>Hayır</option>
@@ -919,7 +891,7 @@ function SettingsComp(props) {
                       className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
                       name='config_stock_checkout'
                       id='config_stock_checkout'
-                      value={settings.config_stock_checkout}
+                      value={settings?.config_stock_checkout}
                       onChange={handleChange}
                     >
                       <option value={0}>Hayır</option>
@@ -938,7 +910,7 @@ function SettingsComp(props) {
                       className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
                       name='config_review_status'
                       id='config_review_status'
-                      value={settings.config_review_status}
+                      value={settings?.config_review_status}
                       onChange={handleChange}
                     >
                       <option value={0}>Hayır</option>
@@ -956,7 +928,7 @@ function SettingsComp(props) {
                       className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
                       name='config_review_guest'
                       id='config_review_guest'
-                      value={settings.config_review_guest}
+                      value={settings?.config_review_guest}
                       onChange={handleChange}
                     >
                       <option value={0}>Hayır</option>
@@ -993,22 +965,19 @@ function SettingsComp(props) {
                       className='block tracking-wide text-gray-700 text-sm font-bold mb-2'
                       htmlFor='grid-first-name'
                     >
-                      Varsayılan Sipariş Durumu
+                      Varsayılan Yeni Sipariş Durumu
                     </label>
 
                     <select
                       className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
                       name='config_order_status_id'
                       id='config_order_status_id'
-                      value={settings.config_order_status_id}
+                      value={settings?.config_order_status_id}
                       onChange={handleChange}
                     >
-                      {settings.order_statuses.map((order_status) => {
+                      {props.statuses?.map((order_status) => {
                         return (
-                          <option
-                            key={order_status.order_status_id}
-                            value={order_status.order_status_id}
-                          >
+                          <option key={order_status.ID} value={order_status.ID}>
                             {order_status.name}
                           </option>
                         );
@@ -1027,16 +996,13 @@ function SettingsComp(props) {
                       className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
                       name='config_return_status_id'
                       id='config_return_status_id'
-                      value={settings.config_return_status_id}
+                      value={settings?.config_terms_of_purchase_policy}
                       onChange={handleChange}
                     >
-                      {settings.return_statuses.map((return_status) => {
+                      {props.statuses?.map((order_status) => {
                         return (
-                          <option
-                            key={return_status.return_status_id}
-                            value={return_status.return_status_id}
-                          >
-                            {return_status.name}
+                          <option key={order_status.ID} value={order_status.ID}>
+                            {order_status.name}
                           </option>
                         );
                       })}
@@ -1050,24 +1016,15 @@ function SettingsComp(props) {
                       Satın Alma Koşulları
                     </label>
 
-                    <select
-                      className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
-                      name='config_checkout_id'
-                      id='config_checkout_id'
-                      value={settings.config_checkout_id}
+                    <textarea
+                      value={settings?.config_terms_of_purchase_policy || ''}
+                      name='config_terms_of_purchase_policy'
+                      placeholder='Satınalma Sözleşmeniz...'
+                      className='appearance-none block w-full bg-white text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:border-green-500'
+                      type='text'
                       onChange={handleChange}
-                    >
-                      {settings.informations.map((information) => {
-                        return (
-                          <option
-                            key={information.information_id}
-                            value={information.information_id}
-                          >
-                            {information.title}
-                          </option>
-                        );
-                      })}
-                    </select>
+                      rows='4'
+                    ></textarea>
                   </div>
 
                   <div className='mb-4'>
@@ -1077,24 +1034,16 @@ function SettingsComp(props) {
                     >
                       İade Koşulları
                     </label>
-                    <select
-                      className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
-                      name='config_return_id'
-                      id='config_return_id'
-                      value={settings.config_return_id}
+
+                    <textarea
+                      value={settings?.config_terms_of_return_policy || ''}
+                      className='appearance-none block w-full bg-white text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:border-green-500'
+                      name='config_terms_of_return_policy'
+                      type='text'
+                      placeholder='İade Sözleşmeniz...'
                       onChange={handleChange}
-                    >
-                      {settings.informations.map((information) => {
-                        return (
-                          <option
-                            key={information.information_id}
-                            value={information.information_id}
-                          >
-                            {information.title}
-                          </option>
-                        );
-                      })}
-                    </select>
+                      rows='4'
+                    ></textarea>
                   </div>
                 </div>
               </div>

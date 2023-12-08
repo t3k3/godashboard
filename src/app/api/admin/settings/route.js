@@ -1,18 +1,16 @@
-import { API_URL_ADMIN, _API_URL_ADMIN } from '@/config/apiConfig';
+import { _API_URL_ADMIN } from '@/config/apiConfig';
 import { cookies } from 'next/headers';
 import axios from 'axios';
 
 //get all categories
-export async function GET(request, { params }) {
-  const { id } = params;
-  // console.log('id: ', id);
+export async function GET(request) {
   const nextCookies = cookies();
 
   let headers = new Headers();
-  // headers.append('Cookie', `default=${nextCookies.get('default').value}`);
-  // headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
-  // headers.append('Cookie', `language=${nextCookies.get('language').value}`);
-  // headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
+  //   headers.append('Cookie', `default=${nextCookies.get('default').value}`);
+  //   headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
+  //   headers.append('Cookie', `language=${nextCookies.get('language').value}`);
+  //   headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
 
   var requestOptions = {
     method: 'GET',
@@ -20,12 +18,8 @@ export async function GET(request, { params }) {
     redirect: 'follow',
   };
 
-  const response = await fetch(
-    `${_API_URL_ADMIN}/categories/${id}`,
-    requestOptions
-  );
+  const response = await fetch(`${_API_URL_ADMIN}/settings`, requestOptions);
 
-  // console.log('response.status: ', response.status);
   const res = await response.json();
 
   if (response.status == 401) {
@@ -45,16 +39,18 @@ export async function GET(request, { params }) {
       JSON.stringify({
         status: 200,
         statusText: 'login true',
-        category: res,
+        settings: res,
       })
     );
   }
 }
 
-export async function PUT(request, { params }) {
-  const { id } = params;
+export async function PUT(request) {
+  console.log('PUT ISTEK GELDİ');
 
   const data = await request.json();
+
+  console.log('data4233234: ', data);
 
   const nextCookies = cookies();
 
@@ -62,7 +58,7 @@ export async function PUT(request, { params }) {
     const response = await axios({
       method: 'PUT',
       mode: 'no-cors',
-      url: `${_API_URL_ADMIN}/categories/${id}`,
+      url: `${_API_URL_ADMIN}/settings`,
 
       headers: {
         'Content-Type': 'application/json',
@@ -70,6 +66,9 @@ export async function PUT(request, { params }) {
       data: JSON.stringify(data),
     });
 
+    console.log('response.status: ', response.status);
+
+    //TODO: response.status 201 olmalı
     if (response.status === 200) {
       return new Response(
         JSON.stringify({
@@ -80,6 +79,7 @@ export async function PUT(request, { params }) {
       );
     }
   } catch (error) {
+    console.log(error);
     return new Response(
       JSON.stringify({
         status: error.response.status,
@@ -88,4 +88,6 @@ export async function PUT(request, { params }) {
       })
     );
   }
+
+  // console.log('RES: ', res);
 }

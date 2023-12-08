@@ -46,6 +46,26 @@ const getOrderHistoryService = async (id) => {
   }
 };
 
+const getOrderStatusService = async () => {
+  var requestOptions = {
+    cache: 'no-store',
+    method: 'GET',
+    redirect: 'follow',
+  };
+  try {
+    const res = await fetch(
+      `${_BASE_URL}/api/admin/orders/orderStatus`,
+      requestOptions
+    );
+
+    const response = await res.json();
+
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 const postOrderService = async (data, id) => {
   const res = await fetch(`${_BASE_URL}/api/admin/orders/orderHistory/${id}`, {
     method: 'PUT',
@@ -75,6 +95,10 @@ const getOrders = async (nextCookies) => {
   return getOrderService(nextCookies);
 };
 
+const getOrderStatus = async () => {
+  return getOrderStatusService();
+};
+
 const getOrderHistory = async (id) => {
   return getOrderHistoryService(id);
 };
@@ -98,6 +122,7 @@ export {
   getOrderService,
   getSingleOrder,
   getOrders,
+  getOrderStatus,
   editOrderHistory,
   getOrderHistory,
   getCustomerOrders,

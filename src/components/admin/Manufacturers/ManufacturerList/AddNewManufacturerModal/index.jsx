@@ -2,17 +2,12 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
+import { addNewManufacturer } from '@/services/manufacturer';
 
 const manufacturerJSON = {
-  pazaryerleri: [],
-  manufacturer_pazaryeri: {},
-  manufacturer_id: '',
   name: '',
-  sort_order: '',
-  keyword: '',
-  image: '',
-  thumb: '',
-  placeholder: 'http://demo.actsistem.com/image/cache/no_image-100x100.png',
+  image: 'http://demo.actsistem.com/image/cache/no_image-100x100.png',
+  sort_order: 0,
 };
 
 function AddNewManufacturerModal(props) {
@@ -77,35 +72,26 @@ function AddNewManufacturerModal(props) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     setSuccess(false);
     setIsUpdate(true);
     // Prevent the default submit and page reload
     e.preventDefault();
 
-    console.log('MANUFACTURER EDİT GÖNDERİLEN DATA: ', manufacturer);
+    let data = {
+      name: manufacturer.name,
+      image: manufacturer.image,
+      sort_order: Number(manufacturer.sort_order),
+    };
 
-    // Handle validations
-    axios({
-      method: 'POST',
-      mode: 'no-cors',
-      url: `http://demo.actsistem.com/api/v1/admin/index.php?route=catalog/manufacturer/add`,
-      data: manufacturer,
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
-      .then((response) => {
-        console.log(response);
-        setIsUpdate(false);
-        setSuccess(true);
-        if (!success) {
-          console.log('success');
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsUpdate(false);
-        setSuccess(false);
-      });
+    const res = addNewManufacturer(data);
+
+    const response = await res;
+
+    if (response.status === 201) {
+      setSuccess(true);
+    }
+    setIsUpdate(false);
   };
 
   return (
@@ -144,7 +130,7 @@ function AddNewManufacturerModal(props) {
                             MARKA ADI
                           </label>
                           <input
-                            value={manufacturer.name}
+                            value={manufacturer?.name}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-indigo-500'
                             name='name'
                             type='text'
@@ -160,7 +146,7 @@ function AddNewManufacturerModal(props) {
                             MARKA SIRALAMASI
                           </label>
                           <input
-                            value={manufacturer.sort_order}
+                            value={manufacturer?.sort_order}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-indigo-500'
                             name='sort_order'
                             type='text'
@@ -179,9 +165,9 @@ function AddNewManufacturerModal(props) {
                         </label>
 
                         <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'></div>
-                        {manufacturer.thumb != '' ? (
+                        {manufacturer.image != '' ? (
                           <Image
-                            src={manufacturer.thumb}
+                            src={manufacturer.image}
                             alt='image'
                             width={100}
                             height={100}

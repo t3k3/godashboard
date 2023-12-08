@@ -2,7 +2,6 @@ import { _API_URL_ADMIN } from '@/config/apiConfig';
 import { cookies } from 'next/headers';
 import axios from 'axios';
 
-//get all categories
 export async function PUT(request) {
   const data = await request.json();
 

@@ -5,6 +5,7 @@ import { Tab } from '@headlessui/react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
+import { register } from '@/services/store/account';
 
 function LoginRegister() {
   const pathname = usePathname();
@@ -18,6 +19,8 @@ function LoginRegister() {
   });
 
   const [registerFormData, setRegisterFormData] = useState({
+    firstname: '',
+    lastname: '',
     email: '',
     password: '',
     aggrement: 1,
@@ -75,16 +78,15 @@ function LoginRegister() {
     }
     e.preventDefault();
 
-    var requestOptions = {
-      method: 'POST',
-      body: JSON.stringify({
-        email: registerFormData.email,
-        password: registerFormData.password,
-        agree: registerAggrement,
-      }),
+    var data = {
+      firstname: registerFormData.firstname,
+      lastname: registerFormData.lastname,
+      email: registerFormData.email,
+      password: registerFormData.password,
+      agree: registerAggrement,
     };
 
-    const response = await fetch(`/api/account/register`, requestOptions);
+    const response = await register(data);
 
     const res = await response.json();
 
@@ -251,6 +253,38 @@ function LoginRegister() {
               </p>
               <form action='' method='post' onSubmit={handleSubmitRegister}>
                 <div className='space-y-4'>
+                  <div>
+                    <label
+                      htmlFor='firstname'
+                      className='text-gray-600 mb-2 block'
+                    >
+                      İsim
+                    </label>
+                    <input
+                      type='text'
+                      name='firstname'
+                      id='firstname'
+                      className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400'
+                      placeholder='İsim...'
+                      onChange={handleChangeRegister}
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor='lastname'
+                      className='text-gray-600 mb-2 block'
+                    >
+                      Soyisim
+                    </label>
+                    <input
+                      type='text'
+                      name='lastname'
+                      id='lastname'
+                      className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400'
+                      placeholder='Soyisim...'
+                      onChange={handleChangeRegister}
+                    />
+                  </div>
                   <div>
                     <label htmlFor='email' className='text-gray-600 mb-2 block'>
                       E-Posta Adresi

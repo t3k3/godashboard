@@ -4,8 +4,8 @@ import { cookies } from 'next/headers';
 
 async function Manufacturer() {
   const nextCookies = cookies();
-  const manufacturers = await getManufacturers(nextCookies);
-  // console.log('manufacturers: ', manufacturers);
+  const { manufacturers } = await getManufacturers(nextCookies);
+
   return (
     manufacturers && (
       <ManufacturerList

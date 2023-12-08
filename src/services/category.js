@@ -29,26 +29,26 @@ const getCategoryService = async (nextCookies, id = '') => {
   }
 };
 
-const getCategoryFromClientSideService = async () => {
-  var requestOptions = {
-    cache: 'no-store',
-    method: 'GET',
-    redirect: 'follow',
-  };
+// const getCategoryFromClientSideService = async () => {
+//   var requestOptions = {
+//     cache: 'no-store',
+//     method: 'GET',
+//     redirect: 'follow',
+//   };
 
-  try {
-    const res = await fetch(
-      `${_API_URL_ADMIN}/api/admin/categories/getCategoriesFromClientSide`,
-      requestOptions
-    );
+//   try {
+//     const res = await fetch(
+//       `${_API_URL_ADMIN}/api/admin/categories/getCategoriesFromClientSide`,
+//       requestOptions
+//     );
 
-    const response = await res.json();
+//     const response = await res.json();
 
-    return response;
-  } catch (error) {
-    throw new Error(error);
-  }
-};
+//     return response;
+//   } catch (error) {
+//     throw new Error(error);
+//   }
+// };
 
 const postCategoryService = async (data, id) => {
   console.log('EDİT CATEGORY');

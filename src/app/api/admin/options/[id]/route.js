@@ -114,7 +114,7 @@ export async function DELETE(request, { params }) {
       url: `${_API_URL_ADMIN}/options/${id}`,
 
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'application/json',
       },
     });
 

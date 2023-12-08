@@ -1,21 +1,40 @@
 'use client';
-import { useState } from 'react';
-import { editCategory } from '@/services/category';
+import { useState, useEffect } from 'react';
+import { editCategory, getCategories } from '@/services/category';
+
+import { Fragment } from 'react';
+import { Combobox, Transition } from '@headlessui/react';
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 
 function CategoryDataEditModal({ category, setCategory, closeModal }) {
+  const [categories, setCategories] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  const [selected, setSelected] = useState(false);
+  const [query, setQuery] = useState('');
+
+  useEffect(() => {
+    async function getAllCategories() {
+      const getACs = await getCategories();
+      setCategories(getACs.categories);
+      setSelected(
+        getACs.categories[
+          getACs.categories.find((c) => c.ID === category.ID).parent_id
+        ] > 0
+          ? getACs.categories[
+              getACs.categories.find((c) => c.ID === category.ID).parent_id
+            ]
+          : 0
+      );
+    }
+    getAllCategories();
+  }, []);
 
   const handleChange = (e) => {
     setCategory((prev) => {
       return {
         ...prev,
-        category_description: {
-          5: {
-            ...prev.category_description[5],
-            [e.target.name]: e.target.value,
-          },
-        },
         [e.target.name]: e.target.value,
       };
     });
@@ -27,14 +46,32 @@ function CategoryDataEditModal({ category, setCategory, closeModal }) {
     // Prevent the default submit and page reload
     e.preventDefault();
 
-    const res = editCategory(category, category.KategoriId);
+    let data = {
+      name: category.name,
+      description: category.descriptions,
+      parent_id: selected ? selected.ID : 0,
+      top: category.top,
+      sort_order: Number(category.sort_order),
+    };
+
+    const res = editCategory(data, category.ID);
 
     const response = await res;
-    if (response.status === 201) {
+    if (response.status === 200) {
       setSuccess(true);
     }
     setIsUpdate(false);
   };
+
+  const filteredCategories =
+    query === ''
+      ? categories
+      : categories.filter((cat) =>
+          cat.name
+            .toLowerCase()
+            .replace(/\s+/g, '')
+            .includes(query.toLowerCase().replace(/\s+/g, ''))
+        );
 
   return (
     <div
@@ -110,14 +147,95 @@ function CategoryDataEditModal({ category, setCategory, closeModal }) {
                           >
                             Ana Kategori (Bağlı Olunacak Üst Kategori)
                           </label>
-                          <input
-                            value={category?.parent_id || ''}
-                            className='appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
-                            name='name'
-                            type='text'
-                            placeholder='Elektronik'
-                            onChange={handleChange}
-                          />
+                          {categories ? (
+                            <div className=' top-16 w-full'>
+                              <Combobox
+                                value={selected}
+                                onChange={setSelected}
+                                nullable
+                              >
+                                <div className='relative mt-1'>
+                                  <div className='relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm'>
+                                    <Combobox.Input
+                                      className='w-full border-none py-4 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0'
+                                      displayValue={(cat) =>
+                                        cat ? cat.path : ''
+                                      }
+                                      onChange={(event) =>
+                                        setQuery(event.target.value)
+                                      }
+                                    />
+                                    <Combobox.Button className='absolute inset-y-0 right-0 flex items-center pr-2'>
+                                      <ChevronUpDownIcon
+                                        className='h-5 w-5 text-gray-400'
+                                        aria-hidden='true'
+                                      />
+                                    </Combobox.Button>
+                                  </div>
+                                  <Transition
+                                    as={Fragment}
+                                    leave='transition ease-in duration-100'
+                                    leaveFrom='opacity-100'
+                                    leaveTo='opacity-0'
+                                    afterLeave={() => setQuery('')}
+                                  >
+                                    <Combobox.Options className='absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm'>
+                                      {filteredCategories.length === 0 &&
+                                      query !== '' ? (
+                                        <div className='relative cursor-default select-none px-4 py-2 text-gray-700'>
+                                          Nothing found.
+                                        </div>
+                                      ) : (
+                                        filteredCategories.map((cat) => (
+                                          <Combobox.Option
+                                            key={cat.ID}
+                                            className={({ active }) =>
+                                              `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                                active
+                                                  ? 'bg-teal-600 text-white'
+                                                  : 'text-gray-900'
+                                              }`
+                                            }
+                                            value={cat}
+                                          >
+                                            {({ selected, active }) => (
+                                              <>
+                                                <span
+                                                  className={`block truncate ${
+                                                    selected
+                                                      ? 'font-medium'
+                                                      : 'font-normal'
+                                                  }`}
+                                                >
+                                                  {cat.path}
+                                                </span>
+                                                {selected ? (
+                                                  <span
+                                                    className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                                                      active
+                                                        ? 'text-white'
+                                                        : 'text-teal-600'
+                                                    }`}
+                                                  >
+                                                    <CheckIcon
+                                                      className='h-5 w-5'
+                                                      aria-hidden='true'
+                                                    />
+                                                  </span>
+                                                ) : null}
+                                              </>
+                                            )}
+                                          </Combobox.Option>
+                                        ))
+                                      )}
+                                    </Combobox.Options>
+                                  </Transition>
+                                </div>
+                              </Combobox>
+                            </div>
+                          ) : (
+                            ''
+                          )}
                         </div>
                       </div>
 
@@ -129,14 +247,16 @@ function CategoryDataEditModal({ category, setCategory, closeModal }) {
                           >
                             Üst (Kategoriyi Ana Sayfada Kategorilerde Göster)
                           </label>
-                          <input
-                            value={category?.top || ''}
-                            className='appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
-                            name='name'
-                            type='text'
-                            placeholder='Elektronik'
-                            onChange={handleChange}
-                          />
+                          <select
+                            className={`appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white `}
+                            name='top'
+                            id='top'
+                            value={category?.top}
+                            onChange={(e) => handleChange(e)}
+                          >
+                            <option value={true}>Aktif</option>
+                            <option value={false}>Kapalı</option>
+                          </select>
                           <p className='text-red-500 text-xs italic'>
                             Kategoriyi Ana Sayfada Kategorilerde Göster (Sadece
                             Ana kategoriler için geçerlidir.)
@@ -156,9 +276,9 @@ function CategoryDataEditModal({ category, setCategory, closeModal }) {
                           <input
                             value={category?.sort_order || ''}
                             className='appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
-                            name='name'
-                            type='text'
-                            placeholder='Elektronik'
+                            name='sort_order'
+                            type='number'
+                            placeholder='0'
                             onChange={handleChange}
                           />
                         </div>

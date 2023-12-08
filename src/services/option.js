@@ -50,7 +50,7 @@ const getOptionFromClientSideService = async () => {
 };
 
 const createVariantService = async (data, id) => {
-  const res = await fetch(`/api/admin/options/combinations`, {
+  const res = await fetch(`${_BASE_URL}/api/admin/options/combinations`, {
     method: 'PUT',
     headers: {
       Accept: 'application/json, text/plain, */*',
@@ -71,7 +71,7 @@ const createVariantService = async (data, id) => {
 };
 
 const saveVariantsService = async (data, id) => {
-  const res = await fetch(`/api/admin/products/savevariants`, {
+  const res = await fetch(`${_BASE_URL}/api/admin/products/savevariants`, {
     method: 'POST',
     headers: {
       Accept: 'application/json, text/plain, */*',
@@ -113,7 +113,7 @@ const CreateOptionWithValuesService = async (data) => {
 };
 
 const UpdateOptionWithValuesService = async (data) => {
-  const res = await fetch(`/api/admin/options`, {
+  const res = await fetch(`${_BASE_URL}/api/admin/options`, {
     method: 'PUT',
     headers: {
       Accept: 'application/json, text/plain, */*',
@@ -134,7 +134,7 @@ const UpdateOptionWithValuesService = async (data) => {
 };
 
 const DeleteOptionWithValuesService = async (id) => {
-  const res = await fetch(`/api/admin/options/${id}`, {
+  const res = await fetch(`${_BASE_URL}/api/admin/options/${id}`, {
     method: 'DELETE',
   });
 
