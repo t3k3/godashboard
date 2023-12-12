@@ -113,25 +113,14 @@ export async function POST(request) {
     const response = await axios({
       method: 'POST',
       mode: 'no-cors',
-      url: `${API_URL_ADMIN}/catalog/product/add&token=${
-        nextCookies.get('token').value
-      }`,
-
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Cookie: `default=${nextCookies.get('default').value}; PHPSESSID=${
-          nextCookies.get('PHPSESSID').value
-        }; language=${nextCookies.get('language').value}; currency=${
-          nextCookies.get('currency').value
-        }`,
-      },
-      data: data,
+      url: `${_API_URL_ADMIN}/products`,
+      data: JSON.stringify(data),
     });
 
     // console.log('response.status: ', response);
 
     // TODO: response.status 201 olmalı
-    if (response.status === 200) {
+    if (response.status === 201) {
       return new Response(
         JSON.stringify({
           status: response.status,

@@ -883,7 +883,7 @@ function ProductComp(props) {
                 <span className=' font-medium'>Link:</span>
                 <span className='ml-12'>
                   <Link
-                    href={`/urun/${product?.meta_keyword}`}
+                    href={`/urun/${product?.keyword}`}
                     className=' flex items-center font-semibold text-blue-500'
                     target='_blank'
                   >

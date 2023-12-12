@@ -1,89 +1,16 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import slugify from 'slugify';
 import { useRouter } from 'next/navigation';
 import { addNewProduct } from '@/services/product';
 
-// TODO: BUG: Modalda güncelleme yapıp kaydedilmediğinde parent componentte güncelleme yapılıyor.
-
 const productJSON = {
-  pazaryerleri: [],
-  error_warning: '',
-  error_name: [],
-  error_meta_title: [],
-  error_model: '',
-  error_keyword: '',
-  product_description: {
-    5: {
-      name: '',
-      description: '',
-      meta_title: '',
-      meta_description: '',
-      meta_keyword: '',
-      videolink: '',
-      tag: '',
-    },
-  },
-  urunId: '',
-  languages: {
-    'tr-tr': {
-      language_id: '5',
-      name: 'Turkish',
-      code: 'tr-tr',
-      locale: 'tr_TR.UTF-8,tr_TR,tr-tr,tr_tr,turkish',
-      image: '',
-      directory: '',
-      sort_order: '2',
-      status: '1',
-    },
-  },
-  product_pazaryeri: {},
-  product_combination: [],
-  model: '',
-  sku: '',
-  upc: '',
-  ean: '',
-  jan: '',
-  isbn: '',
-  mpn: '',
-  keyword: null,
-  shipping: '',
-  price: '',
-  tax_classes: [],
-  tax_class_id: '0',
-  date_available: '',
-  quantity: '0',
-  minimum: '0',
-  subtract: '0',
-  sort_order: '0',
-  stock_statuses: [],
-  stock_status_id: '',
-  status: '',
-  weight: '',
-  weight_classes: [],
-  weight_class_id: '',
-  length: '',
-  width: '',
-  height: '',
-  length_classes: [],
-  length_class_id: '',
-  manufacturer_id: '',
-  manufacturer: '',
-  yayinevi_id: '',
-  yayinevi: '',
-  yazar_id: '',
-  yazar: '',
-  product_categories: [],
-  product_attributes: [],
-  product_options: [],
-  option_values: [],
-  customer_groups: [],
-  product_specials: [],
-  product_images: [],
-  product_relateds: [],
-  points: '0',
-  product_layout: [],
-  price_currencies: [],
-  price_currency_code: '',
+  name: '',
+  keyword: '',
+  description: '',
+  meta_title: '',
+  meta_keyword: '',
+  product_code: '',
 };
 
 function toSeoUrl(url) {
@@ -106,22 +33,41 @@ function AddNewProductModal(props) {
   const [product, setProduct] = useState(productJSON);
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [isKeywordManuallySet, setIsKeywordManuallySet] = useState(false);
+
+  // const handleChange = (e) => {
+  //   setProduct((prev) => {
+  //     return {
+  //       ...prev,
+  //       [e.target.name]: e.target.value,
+  //     };
+  //   });
+  // };
 
   const handleChange = (e) => {
     setProduct((prev) => {
-      return {
+      const updatedProduct = {
         ...prev,
-        product_description: {
-          5: {
-            ...prev.product_description[5],
-            [e.target.name]: e.target.value,
-          },
-        },
         [e.target.name]: e.target.value,
       };
+
+      // If the name field is updated and the keyword field is not manually set,
+      // update the keyword field with the SEO-friendly version of the name
+      if (e.target.name === 'name' && !isKeywordManuallySet) {
+        updatedProduct.keyword = slugify(e.target.value, {
+          lower: true,
+          locale: 'tr',
+        });
+      }
+
+      // If the keyword field is manually updated, set isKeywordManuallySet to true
+      if (e.target.name === 'keyword') {
+        setIsKeywordManuallySet(e.target.value !== '');
+      }
+
+      return updatedProduct;
     });
   };
-  // };
 
   const handleSubmit = async (e) => {
     setSuccess(false);
@@ -134,13 +80,13 @@ function AddNewProductModal(props) {
     const response = await addNewProduct(product);
     console.log('RESPONSE from PruductList: ', response);
 
-    if (response.status === 200) {
+    if (response.status === 201) {
       console.log(response);
       setIsUpdate(false);
       setSuccess(true);
       if (!success) {
         console.log('success');
-        push('/admin/urunler/' + response?.data?.product_id);
+        push('/admin/urunler/' + response?.data);
       }
     } else {
       console.log('Error! Ürün eklenemedi.');
@@ -185,7 +131,7 @@ function AddNewProductModal(props) {
                             Ürün Adı
                           </label>
                           <input
-                            value={product.product_description[5].name}
+                            value={product.name}
                             className='appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
                             name='name'
                             type='text'
@@ -207,7 +153,7 @@ function AddNewProductModal(props) {
                             linkini oluşturur.)
                           </label>
                           <input
-                            value={product.product_description[5].keyw0rd}
+                            value={product.keyword}
                             className='appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
                             name='keyword'
                             type='text'
@@ -228,7 +174,7 @@ function AddNewProductModal(props) {
                             Ürün Açıklaması
                           </label>
                           <textarea
-                            value={product.product_description[5].description}
+                            value={product.description}
                             type='text'
                             rows='4'
                             name='description'
@@ -247,7 +193,7 @@ function AddNewProductModal(props) {
                             Ürün Meta Başlığı
                           </label>
                           <input
-                            value={product.product_description[5].meta_title}
+                            value={product.meta_title}
                             className='appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
                             name='meta_title'
                             type='text'
@@ -268,9 +214,9 @@ function AddNewProductModal(props) {
                             Ürün Kodu
                           </label>
                           <input
-                            value={product.model}
+                            value={product.product_code}
                             className='appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'
-                            name='model'
+                            name='product_code'
                             type='text'
                             placeholder='Ürün Kodu'
                             onChange={handleChange}

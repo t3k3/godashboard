@@ -290,10 +290,10 @@ function OrderComp(props) {
                     return (
                       <li
                         key={index}
-                        className='mb-10 ml-4 px-2 py-2 hover:bg-gray-100'
+                        className='mb-10 ml-4 px-2 py-2 hover:bg-gray-100 border-dashed border-2 border-gray-200 rounded-lg'
                       >
                         <div className='absolute w-3 h-3 bg-green-600 rounded-full mt-1.5 -left-1.5 border border-white'></div>
-                        <time className='mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500'>
+                        <time className='mb-1 text-sm font-normal leading-none text-gray-400'>
                           {new Date(history.CreatedAt).toLocaleString('tr')}
                         </time>
                         <h3 className='text-lg font-semibold text-gray-900'>

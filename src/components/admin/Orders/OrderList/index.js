@@ -1,6 +1,7 @@
 import OrderListItem from './OrderListItem';
 
 function OrderList({ orders, order_statuses }) {
+  console.log(orders);
   return (
     <div className='relative overflow-x-auto shadow-md sm:rounded-lg py-2 px-4'>
       <div className='flex items-center py-4 bg-white '>
@@ -119,6 +120,7 @@ function OrderList({ orders, order_statuses }) {
           </tr>
         </thead>
         <tbody>
+          {console.log('sadasdsadsads', orders)}
           {orders.map((order) => {
             return (
               <OrderListItem

@@ -29,6 +29,7 @@ function OptionListItem({ option, handleOptionEdit, handleDeleteOption }) {
         </td>
         <td className='px-6 py-1'>
           <div className='flex items-center'>
+            {console.log('OptionListItem component X: ', option)}
             {option?.values.map((value) => {
               return (
                 <span

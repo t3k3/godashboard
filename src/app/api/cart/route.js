@@ -8,23 +8,20 @@ export async function POST(request) {
 
   const data = await request.json();
 
-  let headers = new Headers();
-  cookies.map((cookie) => {
-    return headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+  // console.log('data12312312: ', data);
+
+  cookies.find((cookie) => {
+    if (cookie.name === 'CART_ID') {
+      data.cart_id = cookie.value;
+    }
   });
 
-  let formdata = new FormData();
-  formdata.append('product_id', data.product_id);
-  formdata.append('quantity', data.quantity);
-
-  data.option.map((opt) => {
-    return formdata.append(`option[${opt.name}]`, opt.value);
-  });
+  console.log('data12312312: ', data);
 
   var requestOptions = {
     method: 'POST',
     headers: headers,
-    body: formdata,
+    body: data,
     redirect: 'follow',
   };
 

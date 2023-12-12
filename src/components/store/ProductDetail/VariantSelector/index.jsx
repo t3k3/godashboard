@@ -49,6 +49,8 @@ function hasOptionValueId(optionValueId, option) {
 }
 
 function VariantSelector({ product }) {
+  console.log('product43534: ', product);
+
   const options = product.options;
   const variants = product.variants;
 

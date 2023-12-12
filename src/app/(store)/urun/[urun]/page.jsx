@@ -27,8 +27,6 @@ async function Urun(props) {
 
   const product = await getProductDetailBySeoUrl(props.params.urun);
 
-  // console.log('product4534: ', product);
-
   if (product?.error) {
     return 'Ürün Bulanamadı';
   }

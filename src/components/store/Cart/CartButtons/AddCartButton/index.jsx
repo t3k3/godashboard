@@ -7,6 +7,7 @@ import { useState } from 'react';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { addToCart } from '@/services/store/cart';
 
 function AddCartButton({ product }) {
   const notify = () =>
@@ -43,7 +44,6 @@ function AddCartButton({ product }) {
   });
 
   let arr = { option: selectedOptionIds };
-  console.log('ARR: ', arr);
 
   const increaseProductCount = () => {
     if (product.quantity <= productCount) {
@@ -62,31 +62,22 @@ function AddCartButton({ product }) {
   // console.log('AddCartButton component X: ', cartItems);
 
   const addCart = async (product_id) => {
-    setIsUpdate(true);
-    var requestOptions = {
-      method: 'POST',
-
-      body: JSON.stringify({
-        product_id: product_id,
-        quantity: productCount,
-        option: arr.option,
-      }),
+    const data = {
+      product_id: product_id,
+      quantity: productCount,
+      option: arr.option,
     };
 
-    const response = await fetch('/api/cart', requestOptions);
-    // .then((response) => {
-    //   response.text();
-    // })
-    // .then((result) => {
-    //   console.log('RESULT: ', result);
-    //   router.refresh();
-    //   setProductCount(1);
-    // })
-    // .catch((error) => console.log('error', error));
+    console.log('DATA43534: ', data);
 
-    const res = await response.json();
+    setIsUpdate(true);
 
-    console.log('RES45645: ', res);
+    const response = await addToCart(data);
+    // const response = await fetch('/api/cart', requestOptions);
+
+    // const res = await response.json();
+
+    console.log('response45645: ', response);
 
     if (res.error) {
       setWarnings(res.error);
@@ -200,7 +191,7 @@ function AddCartButton({ product }) {
           alamazsınız.
         </p>
       </div>
-      {console.log(warnings.stock_error)}
+
       {warnings
         ? warnings.stock_error && (
             <p className='text-sm text-red-500 mt-2'>{warnings.stock_error}</p>
