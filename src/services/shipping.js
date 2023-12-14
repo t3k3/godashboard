@@ -1,4 +1,4 @@
-import { BASE_URL, _API_URL_ADMIN } from '@/config/apiConfig';
+import { BASE_URL, _API_URL_ADMIN, _BASE_URL } from '@/config/apiConfig';
 
 const getShippingService = async (nextCookies, id = '') => {
   // headers.append('Cookie', `default=${nextCookies.get('default').value}`);
@@ -37,8 +37,8 @@ const getSingleShippingService = async (id) => {
 
   try {
     const res = await fetch(
-      `http://localhost:3000/api/admin/shippings/${id}`,
-      // `${_API_URL_ADMIN}/shippings/${id}`,
+      // `http://localhost:3000/api/admin/shippings/${id}`,
+      `${_BASE_URL}/api/admin/shippings/${id}`,
       requestOptions
     );
 
@@ -51,8 +51,8 @@ const getSingleShippingService = async (id) => {
   }
 };
 
-const putShippingService = async (data, name) => {
-  const res = await fetch(`/shippings/${name}`, {
+const putShippingService = async (data, id) => {
+  const res = await fetch(`${_BASE_URL}/api/admin/shippings/${id}`, {
     method: 'PUT',
     headers: {
       Accept: 'application/json, text/plain, */*',
@@ -80,8 +80,8 @@ const getShippingMethods = async (nextCookies) => {
   return getShippingService(nextCookies);
 };
 
-const editShipping = async (data, name) => {
-  return putShippingService(data, name);
+const editShipping = async (data, id) => {
+  return putShippingService(data, id);
 };
 
 export {

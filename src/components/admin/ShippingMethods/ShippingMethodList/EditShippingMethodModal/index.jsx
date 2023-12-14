@@ -23,9 +23,11 @@ function EditShippingMethodModal(props) {
 
   const handleChange = (e) => {
     setShippingMethod((prev) => {
+      const value =
+        e.target.name === 'status' ? e.target.value === 'true' : e.target.value;
       return {
         ...prev,
-        [e.target.name]: e.target.value,
+        [e.target.name]: value,
       };
     });
   };
@@ -38,10 +40,18 @@ function EditShippingMethodModal(props) {
 
     console.log('ShippingMethod EDİT GÖNDERİLEN DATA: ', shippingMethod);
 
-    const response = await editShipping(
-      shippingMethod,
-      props.shippingMethodData.edit
-    );
+    const data = {
+      name: shippingMethod?.name,
+      estimated_time: shippingMethod?.estimated_time,
+      price: Number(shippingMethod?.price),
+      logo: shippingMethod?.logo,
+      status: shippingMethod?.status,
+      minimum_order_amount: Number(shippingMethod?.minimum_order_amount),
+    };
+
+    console.log('ShippingMethod DATA: ', data);
+
+    const response = await editShipping(data, props.shippingMethodData.ID);
 
     // console.log('RESPONSE FROM CUSTOMER DATA EDİT MODAL: ', response);
     //TODO: Response Status 201 olmalı.

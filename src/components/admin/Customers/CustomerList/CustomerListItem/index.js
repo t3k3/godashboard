@@ -55,7 +55,9 @@ function OrderListItem({ customer }) {
         </div>
       </td>
       <td className='px-6 py-4'>
-        <div className='flex items-center'>{customer.CreatedAt}</div>
+        <div className='flex items-center'>
+          {new Date(customer.CreatedAt).toLocaleString('tr')}
+        </div>
       </td>
       <td className='px-6 py-4'>
         <div className='flex items-center'>{customer.ip}</div>

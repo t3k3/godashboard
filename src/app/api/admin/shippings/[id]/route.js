@@ -94,33 +94,24 @@ export async function GET(request, { params }) {
 }
 
 export async function PUT(request, { params }) {
-  const { name } = params;
+  const { id } = params;
   console.log('PUT ISTEK GELDİ');
 
   const data = await request.json();
+
+  console.log('data: ', data);
 
   const nextCookies = cookies();
 
   try {
     const response = await axios({
-      method: 'POST',
+      method: 'PUT',
       mode: 'no-cors',
-      url: `${API_URL_ADMIN}/extension/shipping/${name}&token=${
-        nextCookies.get('token').value
-      }`,
-
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Cookie: `default=${nextCookies.get('default').value}; PHPSESSID=${
-          nextCookies.get('PHPSESSID').value
-        }; language=${nextCookies.get('language').value}; currency=${
-          nextCookies.get('currency').value
-        }`,
-      },
+      url: `${_API_URL_ADMIN}/shippings/${id}`,
       data: data,
     });
 
-    // console.log('response.status: ', response);
+    console.log('response.status: ', response.data);
 
     // TODO: response.status 201 olmalı
     if (response.status === 200) {
@@ -133,6 +124,7 @@ export async function PUT(request, { params }) {
       );
     }
   } catch (error) {
+    console.log('error: ', error);
     return new Response(
       JSON.stringify({
         status: error.response.status,
