@@ -1,4 +1,4 @@
-import { API_URL_ADMIN } from '@/config/apiConfig';
+import { API_URL_ADMIN, _API_URL_ADMIN } from '@/config/apiConfig';
 
 //get filtered product
 export async function GET(request) {
@@ -9,40 +9,39 @@ export async function GET(request) {
   const filterName = searchParams.get('name');
   const filterValue = searchParams.get('value');
 
-  const cookiesHeader = request.headers.get('cookie');
+  // const cookiesHeader = request.headers.get('cookie');
 
-  const cookiesObject = {};
-  if (cookiesHeader) {
-    const cookiesArray = cookiesHeader.split('; ');
+  // const cookiesObject = {};
+  // if (cookiesHeader) {
+  //   const cookiesArray = cookiesHeader.split('; ');
 
-    cookiesArray.forEach((cookie) => {
-      const [key, value] = cookie.split('=');
-      cookiesObject[key] = value;
-    });
+  //   cookiesArray.forEach((cookie) => {
+  //     const [key, value] = cookie.split('=');
+  //     cookiesObject[key] = value;
+  //   });
 
-    // console.log('Cookies: ', cookiesObject);
-  } else {
-    console.log('No cookies found');
-  }
+  //   // console.log('Cookies: ', cookiesObject);
+  // } else {
+  //   console.log('No cookies found');
+  // }
   // console.log('request: ', request.cookies);
 
   // const { id } = params;
 
-  let headers = new Headers();
-  headers.append('Cookie', `default=${cookiesObject.default}`);
-  headers.append('Cookie', `PHPSESSID=${cookiesObject.PHPSESSID}`);
-  headers.append('Cookie', `language=${cookiesObject.language}`);
-  headers.append('Cookie', `currency=${cookiesObject.currency}`);
+  // let headers = new Headers();
+  // headers.append('Cookie', `default=${cookiesObject.default}`);
+  // headers.append('Cookie', `PHPSESSID=${cookiesObject.PHPSESSID}`);
+  // headers.append('Cookie', `language=${cookiesObject.language}`);
+  // headers.append('Cookie', `currency=${cookiesObject.currency}`);
 
   var requestOptions = {
     method: 'GET',
-
-    headers: headers,
+    // headers: headers,
     redirect: 'follow',
   };
 
   const response = await fetch(
-    `${API_URL_ADMIN}/catalog/product&sort=pd.name&order=DESC&${filterName}=${filterValue}&token=${cookiesObject.token}`,
+    `${_API_URL_ADMIN}/products/filter/${filterName}=${filterValue}`,
     requestOptions
   );
 

@@ -3,34 +3,6 @@ import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import clsx from 'clsx';
 
-function toSeoUrl(text) {
-  var trMap = {
-    çÇ: 'c',
-    ğĞ: 'g',
-    şŞ: 's',
-    üÜ: 'u',
-    ıİ: 'i',
-    öÖ: 'o',
-  };
-  for (var key in trMap) {
-    text = text.replace(new RegExp('[' + key + ']', 'g'), trMap[key]);
-  }
-  return text
-    .toString() // Convert to string
-    .replace(/[^-a-zA-Z0-9\s]+/gi, '') // remove non-alphanumeric chars
-    .replace(/\s/gi, '-') // convert spaces to dashes
-    .replace(/[-]+/gi, '-') // trim repeated dashes
-    .normalize('NFD') // Change diacritics
-    .replace(/[\u0300-\u036f]/g, '') // Remove illegal characters
-    .replace(/\s+/g, '-') // Change whitespace to dashes
-    .toLowerCase() // Change to lowercase
-    .replace(/&/g, '-and-') // Replace ampersand
-    .replace(/[^a-z0-9\-]/g, '') // Remove anything that is not a letter, number or dash
-    .replace(/-+/g, '-') // Remove duplicate dashes
-    .replace(/^-*/, '') // Remove starting dashes
-    .replace(/-*$/, ''); // Remove trailing dashes
-}
-
 export const createUrl = (pathname, params) => {
   const paramsString = params.toString();
   const queryString = `${paramsString.length ? '?' : ''}${paramsString}`;
@@ -38,41 +10,43 @@ export const createUrl = (pathname, params) => {
   return `${pathname}${queryString}`;
 };
 
-function hasOptionValueId(optionValueId, option) {
-  // product_option_value dizisindeki option_value_id'leri alalım
-  const optionValueIds = option.product_option_value.map(
-    (optionValue) => optionValue.option_value_id
-  );
+function hasOptionValueId(optionValueName, option) {
+  // console.log('optionValueName: ', optionValueName);
+  // console.log('option: ', option);
 
-  // optionValueId, optionValueIds dizisinde bulunuyorsa true, yoksa false döndürelim
-  return optionValueIds.includes(optionValueId);
+  // product_option_values dizisindeki optionValueName'leri alalım
+  const optionValueNames = option.product_option_values.map(
+    (optionValue) => optionValue.name
+  );
+  // console.log('optionValueNames: ', optionValueNames);
+
+  // optionValueName, optionValueNames dizisinde bulunuyorsa true, yoksa false döndürelim
+  return optionValueNames.includes(optionValueName);
 }
 
 function VariantSelector({ product }) {
   console.log('product43534: ', product);
 
-  const options = product.options;
-  const variants = product.variants;
+  const options = product.product_options;
+  const variants = product.product_combinations;
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const hasNoOptionsOrJustOneOption =
     !options.length ||
-    (options.length === 1 && options[0]?.product_option_value.length === 1);
+    (options.length === 1 && options[0]?.product_option_values.length === 1);
 
   if (hasNoOptionsOrJustOneOption) {
     return null;
   }
 
   const combinations = variants.map((variant) => ({
-    id: variant.combination_id,
-    availableForSale: variant.quantity,
-    // Adds key / value pairs for each variant (ie. "color": "Black" and "size": 'M").
-    ...variant.options.reduce(
-      (accumulator, option) => ({
-        ...accumulator,
-        // [option.name.toLowerCase()]: option.value,
+    id: variant.ID,
+    availableForSale: variant.quantity > 0 && variant.status,
+    options: variant.options.reduce(
+      (acc, option) => ({
+        ...acc,
         [option.name]: option.value,
       }),
       {}
@@ -82,11 +56,11 @@ function VariantSelector({ product }) {
   console.log('combinations: ', combinations);
 
   return options.map((option) => (
-    <dl className='mb-8 mt-4' key={option.option_id}>
+    <dl className='mb-8 mt-4' key={option.optionId}>
       <dt className='mb-4 text-sm uppercase tracking-wide'>{option.name}</dt>
       <dd className='flex flex-wrap gap-3'>
-        {option.product_option_value.map((value) => {
-          const optionNameLowerCase = option.option_id;
+        {option.product_option_values.map((value) => {
+          const optionNameLowerCase = option.name;
 
           // Base option params on current params so we can preserve any other param state in the url.
           const optionSearchParams = new URLSearchParams(
@@ -95,7 +69,7 @@ function VariantSelector({ product }) {
 
           // Update the option params using the current option to reflect how the url *would* change,
           // if the option was clicked.
-          optionSearchParams.set(optionNameLowerCase, value.option_value_id);
+          optionSearchParams.set(optionNameLowerCase, value.name);
           const optionUrl = createUrl(pathname, optionSearchParams);
 
           // In order to determine if an option is available for sale, we need to:
@@ -107,25 +81,26 @@ function VariantSelector({ product }) {
           // This is the "magic" that will cross check possible variant combinations and preemptively
           // disable combinations that are not available. For example, if the color gray is only available in size medium,
           // then all other sizes should be disabled.
+
           const filtered = Array.from(optionSearchParams.entries()).filter(
             ([key, value]) =>
               options.find(
                 (option) =>
-                  option.option_id == key && hasOptionValueId(value, option)
+                  option.name == key && hasOptionValueId(value, option)
                 //   option.product_option_value.includes(value)
               )
           );
 
-          const isAvailableForSale = combinations.find((combination) =>
+          const isAvailableForSale = combinations.some((combination) =>
             filtered.every(
               ([key, value]) =>
-                combination[key] == value && combination.availableForSale > 0
+                combination.options[key] === value &&
+                combination.availableForSale
             )
           );
 
           // The option is active if it's in the url params.
-          const isActive =
-            searchParams.get(optionNameLowerCase) === value.option_value_id;
+          const isActive = searchParams.get(optionNameLowerCase) === value.name;
 
           // You can't disable a link, so we need to render something that isn't clickable.
           const DynamicTag = isAvailableForSale ? Link : 'p';
@@ -135,7 +110,7 @@ function VariantSelector({ product }) {
 
           return (
             <DynamicTag
-              key={value.option_value_id}
+              key={value.optionValueId}
               aria-disabled={!isAvailableForSale}
               href={optionUrl}
               title={`${option.name} ${value.name}${
@@ -160,7 +135,7 @@ function VariantSelector({ product }) {
       </dd>
       {/* x temizle seçilenleri temizler*/}
       <Link
-        href={`/urun${product.share}`}
+        href={`/urun/${product.keyword}`}
         scroll={false}
         className='text-sm font-light'
       >

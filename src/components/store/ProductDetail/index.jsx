@@ -10,7 +10,7 @@ function ProductDetail({ product }) {
     <>
       <div className='container grid sm:grid-cols-2 gap-16'>
         {/* PRODUCT IMAGES */}
-        <ImageGallery images={product.images} />
+        <ImageGallery images={product.product_images} />
         {/* PRODUCT CONTENT */}
         <div>
           <h2 className='text-3xl font-medium uppercase mb-2'>
@@ -124,28 +124,11 @@ function ProductDetail({ product }) {
             </p>
             <p className='space-x-2'>
               <span className='text-gray-800 font-semibold'>Ürün Kodu:</span>
-              <span className='text-gray-600'>{product.model}</span>
+              <span className='text-gray-600'>{product.product_code}</span>
             </p>
           </div>
 
-          <div className='flex items-baseline mb-1 space-x-2 font-roboto mt-4'>
-            {product.special ? (
-              <>
-                <p className='text-2xl text-primary font-semibold'>
-                  {product.special}
-                </p>
-                <p className='text-base text-gray-400 line-through'>
-                  {product.price}
-                </p>
-              </>
-            ) : (
-              <p className='text-2xl text-primary font-semibold'>
-                {product.price}
-              </p>
-            )}
-          </div>
-
-          <p className='mt-4 text-gray-600 hidden'>
+          <p className='mt-4 text-gray-600 '>
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Placeat,
             adipisci repellendus, consequuntur sit.
           </p>

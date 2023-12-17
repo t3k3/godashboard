@@ -9,6 +9,22 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { addToCart } from '@/services/store/cart';
 
+function findProductCombination(productCombinations, selectedOptions) {
+  // Seçilen seçenekleri içeren product_combination nesnesini bul
+  const matchingCombination = productCombinations.find((combination) => {
+    return selectedOptions.option.every((selectedOption) => {
+      const foundOption = combination.options.find(
+        (combOption) => combOption.name === selectedOption.name
+      );
+      return foundOption && foundOption.value === selectedOption.value;
+    });
+  });
+
+  // Eğer eşleşen bir product_combination varsa, nesneyi döndür
+  // return matchingCombination ? matchingCombination : null;
+  return matchingCombination;
+}
+
 function AddCartButton({ product }) {
   const notify = () =>
     toast.success('Ürün sepete eklendi!', {
@@ -29,21 +45,20 @@ function AddCartButton({ product }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  var selectedOptionIds = [];
+  var selectedOptionValues = [];
   // console.log('PRODUCT options: ', product.options);
 
-  product.options.forEach((element) => {
-    selectedOptionIds.push({
-      name: element.option_id,
-      value: searchParams.get(element.option_id),
+  product.product_options.forEach((element) => {
+    selectedOptionValues.push({
+      name: element.name,
+      value: searchParams.get(element.name),
     });
-
-    // selectedOptionIds[`${element.option_id}`] = searchParams.get(
-    //   element.option_id
-    // );
   });
 
-  let arr = { option: selectedOptionIds };
+  //arr seçilen varyantın name ve value değerlerini altaşırır
+  let arr = { option: selectedOptionValues };
+
+  console.log('seçilen seçenekler arr: ', arr);
 
   const increaseProductCount = () => {
     if (product.quantity <= productCount) {
@@ -61,18 +76,58 @@ function AddCartButton({ product }) {
 
   // console.log('AddCartButton component X: ', cartItems);
 
+  // const variants = product.product_combinations;
+
+  // const combinations = variants.map((variant) => ({
+  //   id: variant.ID,
+  //   availableForSale: variant.quantity > 0 && variant.status,
+  //   options: variant.options.reduce(
+  //     (acc, option) => ({
+  //       ...acc,
+  //       [option.name]: option.value,
+  //     }),
+  //     {}
+  //   ),
+  // }));
+
+  // console.log('combinations FROM ADD TO CART: ', combinations);
+
+  // product_combinations ve arr nesnelerinizi kullanarak fonksiyonu çağırın
+
+  const selectedCombination = findProductCombination(
+    product.product_combinations,
+    arr
+  );
+
+  console.log('Seçilen Product Combination:', selectedCombination);
+
   const addCart = async (product_id) => {
+    //arr içinde value alanında null varsa return et ve warning içine boş olan value nesnesinin name'ini yazdır. null olanların tümünün name'ini yazdır.
+    if (arr.option.some((e) => e.value === null)) {
+      let nullValues = arr.option.filter((e) => e.value === null);
+      let nullValuesNames = nullValues.map((e) => e.name);
+      setWarnings({
+        option: nullValuesNames.reduce(
+          (acc, name) => ({ ...acc, [name]: `Lütfen ${name} seçiniz.` }),
+          {}
+        ),
+      });
+      return;
+    }
+    setWarnings(false);
+
     const data = {
       product_id: product_id,
       quantity: productCount,
       option: arr.option,
+      optionId: selectedCombination?.ID || false,
     };
 
     console.log('DATA43534: ', data);
 
     setIsUpdate(true);
 
-    const response = await addToCart(data);
+    // const response = await addToCart(data);
     // const response = await fetch('/api/cart', requestOptions);
 
     // const res = await response.json();
@@ -99,8 +154,8 @@ function AddCartButton({ product }) {
           Object.entries(warnings.option).map(([optionId, optionText]) => {
             console.log(`Option ID: ${optionId}, Option Text: ${optionText}`);
             return (
-              <p key={optionId} className='text-sm text-red-500 mt-2'>
-                {optionText} + selam
+              <p key={optionId} className='text-md text-red-500 mt-2'>
+                {optionText}
               </p>
             );
           })
@@ -161,6 +216,27 @@ function AddCartButton({ product }) {
       </div> */}
       {/* ALERT END */}
 
+      <div className='flex items-baseline mb-1 space-x-2 font-roboto mt-4'>
+        {product.special ? (
+          <>
+            <p className='text-2xl text-primary font-semibold'>
+              {product.special}
+            </p>
+            <p className='text-base text-gray-400 line-through'>
+              {product.price}
+            </p>
+          </>
+        ) : (
+          <p className='text-3xl text-primary font-semibold'>
+            {selectedCombination
+              ? selectedCombination.price.toFixed(2).replace('.', ',')
+              : product.price &&
+                product.price.toFixed(2).replace('.', ',')}{' '}
+            TL
+          </p>
+        )}
+      </div>
+
       <div className='mt-4'>
         <h3 className='text-md text-gray-800 mb-3 uppercase font-medium'>
           Adet
@@ -197,6 +273,7 @@ function AddCartButton({ product }) {
             <p className='text-sm text-red-500 mt-2'>{warnings.stock_error}</p>
           )
         : null}
+
       <div className='flex space-x-2'>
         <div>
           {/* QUANTITY END */}
@@ -206,7 +283,7 @@ function AddCartButton({ product }) {
               className={`${
                 isUpdate && 'opacity-75'
               } bg-primary border border-primary text-white px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:bg-transparent hover:text-primary transition`}
-              onClick={() => addCart(product.product_id)}
+              onClick={() => addCart(product.ID)}
             >
               {isUpdate && (
                 <div

@@ -116,20 +116,34 @@ const deleteProductService = async (data) => {
 };
 
 const getFilteredProductService = async (filterObject) => {
-  console.log('filterObject FROM Product Service: ', filterObject);
   var requestOptions = {
     cache: 'no-store',
     method: 'GET',
     redirect: 'follow',
   };
+
+  if (filterObject.value === '') {
+    try {
+      const res = await fetch(
+        `${_BASE_URL}/api/admin/products`,
+        requestOptions
+      );
+
+      const response = await res.json();
+
+      return response;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   try {
     const res = await fetch(
-      `${BASE_URL}/api/admin/products/getFilteredProducts?name=${filterObject.name}&value=${filterObject.value}`,
+      `${_BASE_URL}/api/admin/products/getFilteredProducts?name=${filterObject.name}&value=${filterObject.value}`,
       requestOptions
     );
 
     const response = await res.json();
-    console.log('response: ', response);
 
     return response;
   } catch (error) {

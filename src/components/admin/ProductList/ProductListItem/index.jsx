@@ -19,11 +19,9 @@ function ProductListItem({ product, selectedProducts, handleCheckboxChange }) {
           </label>
         </div>
       </td>
+
       <td className='w-4 p-4'>
-        <div className='flex items-center'>#{product.ID}</div>
-      </td>
-      <td className='w-4 p-4'>
-        <div className='flex items-center'>{product.productCode}</div>
+        <div className='flex items-center'>{product.product_code}</div>
       </td>
       <td className='w-4 p-4'>
         <div className='flex items-center'>
@@ -50,7 +48,7 @@ function ProductListItem({ product, selectedProducts, handleCheckboxChange }) {
         className='flex items-center px-2 py-1 text-gray-900 whitespace-nowrap '
       >
         <div className='pl-3 pt-4'>
-          <div className='text-base font-semibold'>{product.name}</div>
+          <div className='text-sm font-semibold'>{product.name}</div>
           <div className='font-normal text-gray-500'>
             <span className='text-xs'>{product.name}</span>
           </div>
@@ -59,9 +57,7 @@ function ProductListItem({ product, selectedProducts, handleCheckboxChange }) {
 
       <td className='px-6 py-1'>
         <span className='text-xs'>
-          <span className='bg-purple-100 text-purple-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded'>
-            {product.CreatedAt}
-          </span>
+          {new Date(product.CreatedAt).toLocaleString('tr')}
         </span>
       </td>
       <td className='px-6 py-1'>

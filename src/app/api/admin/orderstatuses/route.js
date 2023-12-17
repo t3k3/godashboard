@@ -1,11 +1,7 @@
-import { API_URL_ADMIN, _API_URL_ADMIN } from '@/config/apiConfig';
+import { _API_URL_ADMIN } from '@/config/apiConfig';
 import { cookies } from 'next/headers';
-import axios from 'axios';
 
-//get single product
-export async function GET(request, { params }) {
-  const { id } = params;
-
+export async function GET(request) {
   const nextCookies = cookies();
 
   let headers = new Headers();
@@ -21,12 +17,14 @@ export async function GET(request, { params }) {
   };
 
   const response = await fetch(
-    `${_API_URL_ADMIN}/products/${id}`,
+    `${_API_URL_ADMIN}/orderstatuses`,
     requestOptions
   );
 
-  // console.log('response.status: ', response.status);
+  console.log('response.status: ', response.status);
   const res = await response.json();
+
+  console.log('res: ', res);
 
   if (response.status == 401) {
     return new Response(
@@ -45,39 +43,28 @@ export async function GET(request, { params }) {
       JSON.stringify({
         status: 200,
         statusText: 'login true',
-        product: res,
+        orderstatuses: res,
       })
     );
   }
 }
 
-export async function PUT(request, { params }) {
-  console.log('PUT ISTEK GELDİ');
-  console.log('params12312323: ', params);
-  const { id } = params;
-
+export async function POST(request) {
   const data = await request.json();
 
-  console.log('data4233234: ', data);
-
-  const nextCookies = cookies();
+  console.log('DATA123: ', data);
 
   try {
-    const response = await axios({
-      method: 'PUT',
+    const response = await fetch(`${_API_URL_ADMIN}/orderstatuses`, {
+      method: 'POST',
       mode: 'no-cors',
-      url: `${_API_URL_ADMIN}/products/${id}`,
-
       headers: {
         'Content-Type': 'application/json',
       },
-      data: JSON.stringify(data),
+      body: JSON.stringify(data), // Stringify the data before sending
     });
 
-    console.log('response.status: ', response.status);
-
-    //TODO: response.status 201 olmalı
-    if (response.status === 200) {
+    if (response.status === 201) {
       return new Response(
         JSON.stringify({
           status: response.status,
@@ -87,6 +74,7 @@ export async function PUT(request, { params }) {
       );
     }
   } catch (error) {
+    console.log('ERRRRROSOS: ', error);
     return new Response(
       JSON.stringify({
         status: error.response.status,
@@ -95,6 +83,4 @@ export async function PUT(request, { params }) {
       })
     );
   }
-
-  // console.log('RES: ', res);
 }

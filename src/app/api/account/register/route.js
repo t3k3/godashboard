@@ -19,7 +19,7 @@ export async function POST(request) {
     const response = await fetch({
       method: 'POST',
       //   mode: 'no-cors',
-      url: `${_API_URL_ADMIN}/customers/add`,
+      url: `${_API_URL_ADMIN}/customers`,
 
       headers: {
         'Content-Type': 'application/json',

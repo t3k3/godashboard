@@ -170,6 +170,17 @@ function Sidebar({ isOpen, toggleSidebar }) {
             </div>
             <div className='ml-1 mt-2 -mx-3'>
               <Link
+                href='/admin/siparisdurumlari'
+                className={`flex justify-between items-center px-3 py-2 my-0.5 text-gray-700 hover:text-white hover:bg-gradient-to-r hover:from-purple-700 hover:to-blue-500 hover:rounded-lg  ${
+                  pathName.startsWith('/admin/siparisdurumlari') &&
+                  'text-white bg-gradient-to-r from-purple-700 to-blue-500 rounded-lg '
+                }`}
+              >
+                <span className='text-sm font-medium '>Sipariş Durumları</span>
+              </Link>
+            </div>
+            <div className='ml-1 mt-2 -mx-3'>
+              <Link
                 href='/admin/muhasebe'
                 className={`flex justify-between items-center px-3 py-2 my-0.5 text-gray-700 hover:text-white hover:bg-gradient-to-r hover:from-purple-700 hover:to-blue-500 hover:rounded-lg  ${
                   pathName.startsWith('/admin/muhasebe') &&

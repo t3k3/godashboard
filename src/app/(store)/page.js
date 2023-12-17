@@ -11,7 +11,7 @@ export const metadata = {
 };
 
 export default async function Home() {
-  const { products } = await getNewProductList();
+  const products = await getNewProductList();
   // console.log('products: ', products);
 
   return (

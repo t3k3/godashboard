@@ -1,19 +1,29 @@
-import { API_URL_STORE, API_URL_STORE_WO_ROUTE } from '@/config/apiConfig';
+import {
+  API_URL_STORE,
+  API_URL_STORE_WO_ROUTE,
+  _API_URL_STORE,
+} from '@/config/apiConfig';
 
-const getProductService = async (pathname, query = '') => {
+const getProductService = async (pathname = '', query = '') => {
   try {
-    const res = await fetch(`${API_URL_STORE}/${pathname}`, {
+    const res = await fetch(`${_API_URL_STORE}/products`, {
       cache: 'no-store',
     });
 
-    return res.json();
+    if (!res.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await res.json();
+
+    return data;
   } catch (error) {
     throw new Error(error);
   }
 };
 
 const getProductServiceBySeo = async (pathname, query = '') => {
-  const res = await fetch(`${API_URL_STORE_WO_ROUTE}/${pathname}`, {
+  const res = await fetch(`${_API_URL_STORE}/products/${pathname}`, {
     cache: 'no-store',
   });
 
@@ -29,14 +39,14 @@ const getProductServiceBySeo = async (pathname, query = '') => {
 // };
 
 const getNewProductList = async () => {
-  return getProductService('product/product/yeniurunler');
+  return getProductService();
 };
 
 const getProductDetail = async (id) => {
   return getProductService(`product/product&product_id=${id}`);
 };
 
-const getProductDetailBySeoUrl = async (seo_url) => {
+const getProductDetailBySlug = async (seo_url) => {
   return getProductServiceBySeo(seo_url);
 };
 
@@ -44,5 +54,5 @@ export {
   getProductService,
   getNewProductList,
   getProductDetail,
-  getProductDetailBySeoUrl,
+  getProductDetailBySlug,
 };

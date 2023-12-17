@@ -14,13 +14,13 @@ function ProductWrapper({ wrapperName, products }) {
         {products?.map((product) => {
           return (
             <div
-              key={product?.product_id}
+              key={product?.ID}
               className='shadow bg-gray-50 hover:bg-white hover:border-1 border hover:scale-105 transition duration-300 rounded overflow-hidden group'
             >
               <div className='relative'>
-                <Link href={`/urun${product.href}`}>
+                <Link href={`/urun/${product.keyword}`}>
                   <Image
-                    src={product?.thumb}
+                    src={product?.product_images[0]?.thumb}
                     alt='product'
                     width={100}
                     height={100}
@@ -28,7 +28,7 @@ function ProductWrapper({ wrapperName, products }) {
                   ></Image>
                 </Link>
               </div>
-              <Link href={`/urun/${product.href}`}>
+              <Link href={`/urun/${product.keyword}`}>
                 <div className='pt-4 pb-3 sm:min-h-[8rem] px-4'>
                   <h4 className='uppercase font-medium text-md mb-2 text-gray-800 hover:text-primary transition'>
                     {product.name}

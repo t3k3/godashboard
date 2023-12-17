@@ -9,7 +9,7 @@ function ImageGallery({ images }) {
     <div>
       <Image
         src={
-          images[currentImageIndex]?.popup ||
+          images[currentImageIndex]?.thumb ||
           'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
         }
         alt='product9'
