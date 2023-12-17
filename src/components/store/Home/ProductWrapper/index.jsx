@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 function ProductWrapper({ wrapperName, products }) {
-  console.log(products);
+  // console.log(products);
   return (
     <div className='container pb-16'>
       <h2 className='text-2xl font-medium font-roboto text-gray-800 uppercase pb-6'>

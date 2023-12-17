@@ -119,23 +119,23 @@ function AddCartButton({ product }) {
     const data = {
       product_id: product_id,
       quantity: productCount,
-      option: arr.option,
-      optionId: selectedCombination?.ID || false,
+      //option karşısındaki değer string olmalı
+      option: JSON.stringify(arr.option),
+      // option: '',
+      option_id: selectedCombination?.ID,
+      user_id: 0,
     };
 
     console.log('DATA43534: ', data);
 
     setIsUpdate(true);
 
-    // const response = await addToCart(data);
-    // const response = await fetch('/api/cart', requestOptions);
+    const response = await addToCart(data);
 
-    // const res = await response.json();
+    console.log('response43332443324: ', response);
 
-    console.log('response45645: ', response);
-
-    if (res.error) {
-      setWarnings(res.error);
+    if (response) {
+      // setWarnings(response.error);
       setIsUpdate(false);
       return;
     }

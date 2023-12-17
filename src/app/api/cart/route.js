@@ -1,5 +1,48 @@
-import { API_URL_STORE } from '@/config/apiConfig';
+import { API_URL_STORE, _API_URL_STORE } from '@/config/apiConfig';
 import getClientHeaders from '@/app/libs/getHeaders';
+
+export async function GET() {
+  // console.log('PUT ISTEK GELDİ');
+  const cookies = await getClientHeaders();
+
+  // const data = await request.json();
+
+  let headers = new Headers();
+  cookies.find((cookie) => {
+    if (cookie.name === 'CART_ID') {
+      headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+    }
+  });
+
+  var requestOptions = {
+    cache: 'no-store',
+    method: 'GET',
+    headers: headers,
+    redirect: 'follow',
+  };
+
+  const response = await fetch(`${_API_URL_STORE}/cart`, requestOptions);
+
+  const res = await response.json();
+
+  if (res.error) {
+    return new Response(
+      JSON.stringify({
+        status: 404,
+
+        error: res.error,
+      })
+    );
+  }
+
+  return new Response(
+    JSON.stringify({
+      status: 200,
+
+      cart: res,
+    })
+  );
+}
 
 export async function POST(request) {
   console.log('POST ISTEK GELDİ');
@@ -16,30 +59,26 @@ export async function POST(request) {
     }
   });
 
-  console.log('data12312312: ', data);
-
   var requestOptions = {
     method: 'POST',
-    headers: headers,
-    body: data,
+    // headers: headers,
+    body: JSON.stringify(data),
     redirect: 'follow',
   };
 
-  const response = await fetch(
-    `${API_URL_STORE}checkout/cart/add`,
-    requestOptions
-  );
-  const res = await response.json();
-  console.log('RESPONSE76657: ', res);
+  const response = await fetch(`${_API_URL_STORE}/cart`, requestOptions);
 
-  return new Response(
-    JSON.stringify({
-      status: res.status,
-      statusText: res.statusText,
-      data: res.data,
-      error: res.error,
-    })
-  );
+  if (response.status === 201) {
+    const res = await response.json();
+
+    return new Response(
+      JSON.stringify({
+        status: response.status,
+        statusText: response.statusText,
+        data: res,
+      })
+    );
+  }
 }
 
 export async function DELETE(request) {
@@ -47,36 +86,32 @@ export async function DELETE(request) {
   const cookies = await getClientHeaders();
   // console.log('cookies: ', cookies)
   const { searchParams } = new URL(request.url);
-  const cart_id = searchParams.get('cart_id');
+  const cart_item_id = searchParams.get('cart_item_id');
 
   let headers = new Headers();
-  cookies.map((cookie) => {
-    return headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+  cookies.find((cookie) => {
+    if (cookie.name === 'CART_ID') {
+      headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+    }
   });
 
-  let formdata = new FormData();
-  formdata.append('key', cart_id);
-
   var requestOptions = {
-    method: 'POST',
+    method: 'DELETE',
     headers: headers,
-    body: formdata,
     redirect: 'follow',
   };
 
   const response = await fetch(
-    `${API_URL_STORE}checkout/cart/remove`,
+    `${_API_URL_STORE}/cart/${cart_item_id}`,
     requestOptions
   );
 
-  const res = await response.json();
+  console.log('RESPONSE STATUS: ', response.status);
 
   return new Response(
     JSON.stringify({
-      status: res.status,
-      statusText: res.statusText,
-      success: res.success,
-      total: res.total,
+      status: response.status,
+      statusText: response.statusText,
     })
   );
 }
@@ -87,33 +122,26 @@ export async function PATCH(request) {
   // console.log('cookies: ', cookies);
 
   const data = await request.json();
-  console.log('DATA: ', data);
+
+  console.log('PATCH DATADATA: ', data);
+
   let headers = new Headers();
-  cookies.map((cookie) => {
-    return headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+  cookies.find((cookie) => {
+    if (cookie.name === 'CART_ID') {
+      data.cart_id = cookie.value;
+    }
   });
 
-  let formdata = new FormData();
-
-  formdata.append('key', data.cart_id);
-  formdata.append(`quantity[${data.cart_id}]`, data.quantity);
-
-  //TODO manuel eklendi düzenlenecek
-  formdata.append('product_id', '7352');
-
-  console.log('formdata: ', formdata);
-
   var requestOptions = {
-    method: 'POST',
+    method: 'PATCH',
     headers: headers,
-    body: formdata,
+    body: JSON.stringify(data),
     redirect: 'follow',
   };
 
-  const response = await fetch(
-    `${API_URL_STORE}checkout/cart/guncelle`,
-    requestOptions
-  );
+  const response = await fetch(`${_API_URL_STORE}/cart`, requestOptions);
+
+  console.log('RESPONSE STATUS 242343: ', response.status);
 
   const res = await response.text();
 

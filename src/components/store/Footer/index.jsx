@@ -15,7 +15,7 @@ function Footer({ footerData, logo = '' }) {
             </p>
             <div className='flex space-x-6'>
               <Link
-                href={footerData?.facebook}
+                href={footerData?.footer_facebook}
                 className='text-gray-400 hover:text-gray-500'
               >
                 <svg
@@ -28,7 +28,7 @@ function Footer({ footerData, logo = '' }) {
                 </svg>
               </Link>
               <Link
-                href={footerData?.instagram}
+                href={footerData?.footer_instagram}
                 className='text-gray-400 hover:text-gray-500'
               >
                 <svg
@@ -41,7 +41,7 @@ function Footer({ footerData, logo = '' }) {
                 </svg>
               </Link>
               <Link
-                href={footerData?.twitter}
+                href={footerData?.footer_twitter}
                 className='text-gray-400 hover:text-gray-500'
               >
                 <svg
@@ -54,7 +54,7 @@ function Footer({ footerData, logo = '' }) {
                 </svg>
               </Link>
               <Link
-                href={footerData?.youtube}
+                href={footerData?.footer_youtube}
                 className='text-gray-400 hover:text-gray-500'
               >
                 <svg

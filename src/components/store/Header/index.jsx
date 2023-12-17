@@ -10,7 +10,7 @@ function Header({ headerData }) {
         {/* logo */}
         <Link href={'/'}>
           <Image
-            src={headerData?.logo}
+            src={headerData?.header_logo}
             alt='logo'
             width={128}
             height={23}
@@ -95,17 +95,16 @@ function Header({ headerData }) {
             <div className='text-xs leading-3'>Sepet</div>
 
             <span className='absolute right-0 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs'>
-              {headerData.text_items}
+              {headerData?.header_cart_items_count}
             </span>
           </Link>
 
-          <AccountMenu
+          {/* <AccountMenu
             user={{
               user_id: headerData.logged,
               firstname: headerData.firstname,
-              lastname: headerData.lastname,
             }}
-          />
+          /> */}
         </div>
       </div>
     </header>

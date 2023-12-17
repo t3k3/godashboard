@@ -6,8 +6,10 @@ import { getNewProductList } from '@/services/store/product';
 
 async function Sepet() {
   const cookies = await getClientHeaders();
-  const cart = await getCart(cookies);
-  const { products } = await getNewProductList();
+
+  const { cart } = await getCart(cookies);
+
+  const products = await getNewProductList();
 
   return (
     <>

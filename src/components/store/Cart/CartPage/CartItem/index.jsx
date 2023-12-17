@@ -7,6 +7,11 @@ import { useRouter } from 'next/navigation';
 function CartItem({ product, removeCart }) {
   const [itemCount, setItemCount] = useState(product.quantity);
 
+  let optionsObject = {};
+  if (product?.option_id > 0) {
+    optionsObject = JSON.parse(product.option);
+  }
+
   const router = useRouter();
 
   const decreaseItemCount = () => {
@@ -25,7 +30,7 @@ function CartItem({ product, removeCart }) {
       var requestOptions = {
         method: 'PATCH',
         body: JSON.stringify({
-          cart_id: product.cart_id,
+          cart_item_id: product.ID,
           quantity: newItemCount,
         }),
       };
@@ -57,7 +62,7 @@ function CartItem({ product, removeCart }) {
       var requestOptions = {
         method: 'PATCH',
         body: JSON.stringify({
-          cart_id: product.cart_id,
+          cart_item_id: product.ID,
           quantity: newItemCount,
         }),
       };
@@ -84,8 +89,8 @@ function CartItem({ product, removeCart }) {
       var requestOptions = {
         method: 'PATCH',
         body: JSON.stringify({
-          cart_id: product.cart_id,
-          quantity: e.target.value,
+          cart_item_id: product.ID,
+          quantity: Number(e.target.value),
         }),
       };
 
@@ -119,9 +124,11 @@ function CartItem({ product, removeCart }) {
             {product.name}
           </Link>
 
-          <p className='text-base font-medium text-primary'>{product.price}</p>
-          {product?.option &&
-            product?.option.map((opt) => {
+          <p className='text-base font-medium text-primary'>
+            {product.price.toFixed(2)} TL
+          </p>
+          {product?.option_id > 0 &&
+            optionsObject.map((opt) => {
               return (
                 <div key={opt.name} className='flex space-x-2 '>
                   <p className='text-base '>{opt.name}:</p>
@@ -138,23 +145,23 @@ function CartItem({ product, removeCart }) {
           <div className='mt-4'>
             <div className='flex border border-gray-300 text-gray-600 divide-x divide-gray-300 w-max'>
               <div
-                className='h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none'
+                className='h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none border'
                 onClick={() => decreaseItemCount()}
               >
                 -
               </div>
-              <div className='h-8 w-12 text-base flex items-center justify-center'>
+              <div className='h-8 w-12 text-base flex items-center justify-center border'>
                 <input
                   type='number'
                   name='quantity'
                   min={1}
-                  className='h-8 w-12 p-1 border-none text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+                  className='h-8 w-12 p-2 border-none text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
                   value={itemCount}
                   onChange={(e, itemCount) => handleChange(e, itemCount)}
                 />
               </div>
               <div
-                className='h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none'
+                className='h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none border'
                 onClick={() => increaseItemCount()}
               >
                 +
@@ -162,13 +169,15 @@ function CartItem({ product, removeCart }) {
             </div>
           </div>
           <div className='mx-auto'>
-            <p className='text-primary px-4 md:px-10'>{product.total}</p>
+            <p className='text-primary px-4 md:px-10'>
+              {(product.price * product.quantity).toFixed(2)} TL
+            </p>
           </div>
 
           <span
             className='p-1 hover:text-primary transition cursor-pointer'
             onClick={() => {
-              removeCart(product.cart_id);
+              removeCart(product.ID);
             }}
           >
             {/* <TrashIcon className='w-8 h-8' /> */}

@@ -31,7 +31,7 @@ async function Urun(props) {
     return 'Ürün Bulanamadı';
   }
 
-  console.log('product435345: ', product.product_combinations.options);
+  // console.log('product435345: ', product.product_combinations.options);
   // product_option_values için bir map oluştur
   const optionValuesMap = {};
   product.product_options.forEach((option) => {
@@ -64,7 +64,7 @@ async function Urun(props) {
     product_combinations: updatedProductCombinations,
   };
 
-  console.log('Güncellenmiş Ürün:', updatedProduct);
+  // console.log('Güncellenmiş Ürün:', updatedProduct);
 
   return (
     <div className='bg-gray-50'>

@@ -1,36 +1,34 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import CartItem from './CartItem';
 import CartCoupon from './CartCoupon';
 import ProductWrapper from '../../Home/ProductWrapper';
+import { deleteCart } from '@/services/store/cart';
 
 function CartPage({ cart, products }) {
   const router = useRouter();
 
-  const removeCart = async (cart_id) => {
-    var requestOptions = {
-      method: 'DELETE',
-    };
+  const removeCart = async (cart_item_id) => {
+    const response = await deleteCart(cart_item_id);
 
-    const response = await fetch(
-      `/api/cart?cart_id=${cart_id}`,
-      requestOptions
-    );
+    console.log('response12321321322342443: ', response.status);
 
-    const res = await response.json();
+    // if (res.error) {
+    //   setWarnings(res.error);
+    //   return;
+    // }
 
-    if (res.error) {
-      setWarnings(res.error);
-      return;
+    if (response.status === 200) {
+      router.refresh();
     }
 
     // console.log('RES: ', res);
-
-    router.refresh();
   };
+
+  console.log('cart 43543534534: ', cart);
 
   return (
     <>
@@ -41,92 +39,15 @@ function CartPage({ cart, products }) {
           <span className='w-3/12'>Adet</span>
           <span className='w-3/5'>Toplam Tutar</span>
         </h1> */}
-          {cart.error
+          {cart.cart_items.length === 0
             ? 'Sepetiniz Boş'
-            : cart?.products?.map((product, index) => {
+            : cart?.cart_items?.map((product) => {
                 return (
                   <CartItem
-                    key={index}
+                    key={product.ID}
                     product={product}
-                    index={index}
                     removeCart={removeCart}
                   />
-                  // <div
-                  //   key={index}
-                  //   className='border mb-2 border-gray-200 p-5 rounded flex flex-col md:flex-row gap-5 md:items-center justify-between'
-                  // >
-                  //   <div className='flex flex-col sm:flex-row gap-5 sm:items-center'>
-                  //     <div className='sm:max-w-[150px]'>
-                  //       <Image
-                  //         src={product?.thumb && product?.thumb}
-                  //         alt='urun'
-                  //         width={200}
-                  //         height={200}
-                  //         className='w-full sm:max-h-[150px]'
-                  //       />
-                  //     </div>
-                  //     <div className='max-w-sm'>
-                  //       <Link
-                  //         href={`/urun/${product.href}`}
-                  //         className='text-lg block mb-4 font-medium uppercase text-gray-800 hover:text-primary transition'
-                  //       >
-                  //         {product.name}
-                  //       </Link>
-
-                  //       <p className='text-base font-medium text-primary'>
-                  //         {product.price}
-                  //       </p>
-                  //       {product?.option &&
-                  //         product?.option.map((opt) => {
-                  //           return (
-                  //             <div key={opt.name} className='flex space-x-2 '>
-                  //               <p className='text-base '>{opt.name}:</p>
-                  //               <p
-                  //                 key={opt}
-                  //                 className='text-base font-bold text-gray-900'
-                  //               >
-                  //                 {opt.value}
-                  //               </p>
-                  //             </div>
-                  //           );
-                  //         })}
-                  //     </div>
-                  //   </div>
-
-                  //   <div className='flex items-center justify-between'>
-                  //     <div className='mt-4'>
-                  //       <div className='flex border border-gray-300 text-gray-600 divide-x divide-gray-300 w-max'>
-                  //         <div className='h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none'>
-                  //           -
-                  //         </div>
-                  //         <div className='h-8 w-8 text-base flex items-center justify-center'>
-                  //           <input
-                  //             type='number'
-                  //             className='h-8 w-8 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
-                  //             value={product.quantity}
-                  //           />
-                  //         </div>
-                  //         <div className='h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none'>
-                  //           +
-                  //         </div>
-                  //       </div>
-                  //     </div>
-                  //     <div className='mx-auto'>
-                  //       <p className='text-primary px-4 md:px-10'>
-                  //         {product.total}
-                  //       </p>
-                  //     </div>
-                  //     <button
-                  //       className='px-5 py-3 hover:text-primary transition'
-                  //       onClick={() => {
-                  //         removeCart(product.cart_id);
-                  //       }}
-                  //     >
-                  //       {/* <TrashIcon className='w-8 h-8' /> */}
-                  //       Kaldır
-                  //     </button>
-                  //   </div>
-                  // </div>
                 );
               })}
         </div>
@@ -136,33 +57,28 @@ function CartPage({ cart, products }) {
               Sepet Özeti
             </h3>
             <div className='space-y-3'>
-              {cart?.totals?.map((total) => {
-                return (
-                  <div
-                    key={total.title}
-                    className='flex items-center justify-between'
-                  >
-                    <p className='font-medium'>{total.title}</p>
+              <div className='flex items-center justify-between'>
+                <p className='font-medium'>Ara Toplam:</p>
+                <p className='font-medium'>
+                  {cart.totals.sub_total.toFixed(2)} TL
+                </p>
+              </div>
+              <div className='flex items-center justify-between'>
+                <p className='font-medium'>KDV (%{cart.totals.vat_rate}) </p>
+                <p className='font-medium'>{cart.totals.vat.toFixed(2)} TL</p>
+              </div>
+              <div className='flex items-center justify-between'>
+                <p className='font-medium'>Toplam: </p>
+                <p className='font-medium'>{cart.totals.total.toFixed(2)} TL</p>
+              </div>
 
-                    <p className='font-medium'>{total.text}</p>
-                  </div>
-                );
-              })}
               <CartCoupon />
             </div>
-            {cart?.totals?.map((total, index, arr) => {
-              if (arr.length - 1 === index) {
-                return (
-                  <h2
-                    key={index}
-                    className='mt-4 pt-4 text-2xl font-semibold border-t border-gray-200 flex items-center justify-between'
-                  >
-                    <span>{total.title}</span>
-                    <span>{total.text}</span>
-                  </h2>
-                );
-              }
-            })}
+
+            <h2 className='mt-4 pt-4 text-2xl font-semibold border-t border-gray-200 flex items-center justify-between'>
+              <span>Toplam:</span>
+              <span>{cart.totals.total.toFixed(2)} TL</span>
+            </h2>
 
             <Link href={'/checkout'}>
               <button

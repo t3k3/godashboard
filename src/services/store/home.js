@@ -1,6 +1,6 @@
-import { API_URL_STORE } from '@/config/apiConfig';
+import { API_URL_STORE, _BASE_URL } from '@/config/apiConfig';
 
-const getHomeService = async (pathname = '', cookies = []) => {
+const getHomeService = async (cookies = []) => {
   if (cookies) {
     let headers = new Headers();
     cookies.map((cookie) => {
@@ -8,16 +8,16 @@ const getHomeService = async (pathname = '', cookies = []) => {
     });
 
     try {
-      const res = await fetch(`${API_URL_STORE}/${pathname}`, {
+      const res = await fetch(`${_BASE_URL}/api/home`, {
         cache: 'no-store',
         headers: headers,
       });
 
       const response = await res.json();
 
-      return response;
+      return response.data;
     } catch (error) {
-      console.log('Header data alınamadı');
+      console.log('Layout data alınamadı');
       throw new Error(error);
     }
   }
@@ -37,6 +37,10 @@ const getHomeService = async (pathname = '', cookies = []) => {
 //   return getAttributeService(`catalog/category/edit&category_id=${id}`);
 // };
 
+const getLayout = async (cookies) => {
+  return getHomeService(cookies);
+};
+
 const getHeader = async (cookies) => {
   return getHomeService('common/header', cookies);
 };
@@ -44,4 +48,4 @@ const getFooter = async () => {
   return getHomeService('common/footer');
 };
 
-export { getHomeService, getHeader, getFooter };
+export { getHomeService, getLayout, getHeader, getFooter };

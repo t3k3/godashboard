@@ -4,6 +4,8 @@ import { getNewCookiesFromApiServer } from './services/init';
 import isLogged from './app/libs/isLogged';
 import isAdmin from './app/libs/isAdmin';
 
+import { v4 as uuidv4 } from 'uuid';
+
 export async function middleware(request) {
   const response = NextResponse.next();
 
@@ -18,10 +20,11 @@ export async function middleware(request) {
     //   parsedData[key] = value.split(';')[0];
     // });
 
+    const cartID = uuidv4();
+
     response.cookies.set({
       name: 'CART_ID',
-      // value: parsedData.PHPSESSID,
-      value: '12345',
+      value: cartID,
       // httpOnly: true,
       secure: false,
       sameSite: 'strict',

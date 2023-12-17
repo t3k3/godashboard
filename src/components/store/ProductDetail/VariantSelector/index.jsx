@@ -25,7 +25,7 @@ function hasOptionValueId(optionValueName, option) {
 }
 
 function VariantSelector({ product }) {
-  console.log('product43534: ', product);
+  // console.log('product43534: ', product);
 
   const options = product.product_options;
   const variants = product.product_combinations;
@@ -52,8 +52,6 @@ function VariantSelector({ product }) {
       {}
     ),
   }));
-
-  console.log('combinations: ', combinations);
 
   return options.map((option) => (
     <dl className='mb-8 mt-4' key={option.optionId}>
