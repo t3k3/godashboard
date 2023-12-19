@@ -13,11 +13,15 @@ const getSettingsService = async (query = '') => {
   // headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
 
   try {
-    const res = await fetch(`${_BASE_URL}/api/admin/settings`, {
+    // const res = await fetch(`${_BASE_URL}/api/admin/settings`, {
+    const res = await fetch(`http://localhost:3000/api/admin/settings`, {
       cache: 'no-store',
       headers: headers,
     });
-    return res.json();
+
+    const response = await res.json();
+
+    return response;
   } catch (error) {
     throw new Error(error);
   }

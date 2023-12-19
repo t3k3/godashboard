@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import AccountMenu from './AccountMenu';
+import { _BASE_URL } from '@/config/apiConfig';
 
 function Header({ headerData }) {
   return (
@@ -10,7 +11,7 @@ function Header({ headerData }) {
         {/* logo */}
         <Link href={'/'}>
           <Image
-            src={headerData?.header_logo}
+            src={`/${headerData?.header_logo}`}
             alt='logo'
             width={128}
             height={23}
@@ -99,12 +100,10 @@ function Header({ headerData }) {
             </span>
           </Link>
 
-          {/* <AccountMenu
-            user={{
-              user_id: headerData.logged,
-              firstname: headerData.firstname,
-            }}
-          /> */}
+          <AccountMenu
+            user_id={headerData.header_user_id}
+            firstname={headerData.header_user_firstname}
+          />
         </div>
       </div>
     </header>

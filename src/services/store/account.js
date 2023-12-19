@@ -57,10 +57,7 @@ async function loginService(data) {
   };
 
   try {
-    const res = await fetch(
-      `${BASE_URL}/api/account/address/${data.address_id}`,
-      requestOptions
-    );
+    const res = await fetch(`${_BASE_URL}/api/account/login`, requestOptions);
 
     const response = await res.json();
 
@@ -79,7 +76,10 @@ async function registerService(data) {
   };
 
   try {
-    const response = await fetch(`/api/account/register`, requestOptions);
+    const response = await fetch(
+      `${_BASE_URL}/api/account/register`,
+      requestOptions
+    );
 
     return response;
   } catch (error) {
@@ -99,4 +99,8 @@ const register = async (data) => {
   return registerService(data);
 };
 
-export { saveNewAddress, editAddress, register };
+const login = async (data) => {
+  return loginService(data);
+};
+
+export { saveNewAddress, editAddress, register, login };

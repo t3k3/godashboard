@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Menu, Transition } from '@headlessui/react';
 import { useRouter } from 'next/navigation';
 
-function AccountMenu({ user }) {
+function AccountMenu({ user_id, firstname }) {
   const router = useRouter();
 
   const logoutHandle = async () => {
@@ -27,7 +27,7 @@ function AccountMenu({ user }) {
 
   return (
     <div>
-      {!user.user_id ? (
+      {user_id === 0 ? (
         <Link href={'/uyelik'}>
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -81,7 +81,7 @@ function AccountMenu({ user }) {
                   // className='origin-top-right z-50 absolute right-0 mt-2 w-52 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'
                   className='absolute z-50 -right-12 sm:right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'
                 >
-                  {user && (
+                  {user_id > 0 && (
                     <div className='py-2 px-3'>
                       <h3 className='text-center mt-1 text-gray-600 font-medium'>
                         Hoşgeldiniz!
@@ -102,7 +102,7 @@ function AccountMenu({ user }) {
                       </div> */}
                       <div className='flex items-center justify-center'>
                         <p className='w-full text-gray-700 font-bold  text-sm text-center inline-block'>
-                          {user.firstname} {user.lastname}
+                          {firstname}
                         </p>
                       </div>
                     </div>
@@ -207,7 +207,7 @@ function AccountMenu({ user }) {
                       )}
                     </Menu.Item>
                   </div>
-                  {user && (
+                  {user_id > 0 && (
                     <Menu.Item>
                       {({ active }) => (
                         <button

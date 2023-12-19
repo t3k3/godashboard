@@ -1,17 +1,25 @@
-// http://demo.actsistem.com/api/v1/store/index.php?route=checkout/checkout
-import { API_URL_STORE, BASE_URL } from '@/config/apiConfig';
+import { BASE_URL, _BASE_URL } from '@/config/apiConfig';
 
-const getCheckoutService = async (pathname, cookies = []) => {
+const getCheckoutService = async (
+  cookies = [],
+  ShippingOptionID = 0,
+  couponCode = ''
+) => {
   let headers = new Headers();
-  cookies.map((cookie) => {
-    return headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+  cookies.find((cookie) => {
+    if (cookie.name === 'CART_ID') {
+      headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+    }
   });
 
   try {
-    const res = await fetch(`${API_URL_STORE}/${pathname}`, {
-      cache: 'no-store',
-      headers: headers,
-    });
+    const res = await fetch(
+      `${_BASE_URL}/api/checkout?shipping=${ShippingOptionID}&coupon=${couponCode}`,
+      {
+        cache: 'no-store',
+        headers: headers,
+      }
+    );
 
     if (res.status == 404) {
       return { status: 404 };
@@ -53,17 +61,17 @@ const getCheckoutFromClientSideService = async () => {
   }
 };
 
-async function saveShippingMethodService(cart) {
+async function saveShippingMethodService(id) {
   var requestOptions = {
     cache: 'no-store',
-    method: 'POST',
-    body: JSON.stringify(cart),
+    method: 'PATCH',
+    body: JSON.stringify({ shipping_option_id: id }),
     redirect: 'follow',
   };
 
   try {
     const res = await fetch(
-      `${BASE_URL}/api/checkout/setCheckoutShippingMethod`,
+      `${_BASE_URL}/api/checkout/setCheckoutShippingMethod`,
       requestOptions
     );
 
@@ -97,7 +105,7 @@ async function saveOrderAddressesForMemberService(data) {
   }
 }
 
-async function saveShippingAndFaturaService(data) {
+async function createOrderService(data) {
   var requestOptions = {
     cache: 'no-store',
     method: 'POST',
@@ -107,10 +115,7 @@ async function saveShippingAndFaturaService(data) {
   };
 
   try {
-    const res = await fetch(
-      `${BASE_URL}/api/checkout/setCheckoutShippingAndFatura`,
-      requestOptions
-    );
+    const res = await fetch(`${_BASE_URL}/api/order`, requestOptions);
 
     const response = await res.json();
 
@@ -140,24 +145,24 @@ async function confirm(data) {
   }
 }
 
-const getCheckout = async (cookies) => {
-  return getCheckoutService('checkout/checkout', cookies);
+const getCheckout = async (cookies, ShippingOptionID, couponCode) => {
+  return getCheckoutService(cookies, ShippingOptionID, couponCode);
 };
 
 const getCheckoutFromClientSide = async () => {
   return getCheckoutFromClientSideService();
 };
 
-const saveShippingMethod = async (cart) => {
-  return saveShippingMethodService(cart);
+const saveShippingMethod = async (id) => {
+  return saveShippingMethodService(id);
 };
 
 const saveOrderAddressesForMember = async (data) => {
   return saveOrderAddressesForMemberService(data);
 };
 
-const saveShippingAndFatura = async (data) => {
-  return saveShippingAndFaturaService(data);
+const createOrder = async (data) => {
+  return createOrderService(data);
 };
 
 export {
@@ -166,6 +171,6 @@ export {
   getCheckoutFromClientSide,
   saveShippingMethod,
   saveOrderAddressesForMember,
-  saveShippingAndFatura,
+  createOrder,
   confirm,
 };

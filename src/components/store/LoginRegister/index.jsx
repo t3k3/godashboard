@@ -5,7 +5,7 @@ import { Tab } from '@headlessui/react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
-import { register } from '@/services/store/account';
+import { register, login } from '@/services/store/account';
 
 function LoginRegister() {
   const pathname = usePathname();
@@ -44,15 +44,12 @@ function LoginRegister() {
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
 
-    var requestOptions = {
-      method: 'POST',
-      body: JSON.stringify({
-        email: loginFormData.email,
-        password: loginFormData.password,
-      }),
+    var data = {
+      email: loginFormData.email,
+      password: loginFormData.password,
     };
 
-    const response = await fetch(`/api/account/login`, requestOptions);
+    const response = await login(data);
 
     const res = await response.json();
 
@@ -83,7 +80,7 @@ function LoginRegister() {
       lastname: registerFormData.lastname,
       email: registerFormData.email,
       password: registerFormData.password,
-      agree: registerAggrement,
+      aggrement: registerAggrement,
     };
 
     const response = await register(data);

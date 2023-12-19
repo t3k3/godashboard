@@ -2,10 +2,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { RadioGroup } from '@headlessui/react';
 
 export default function SelectShipping({
-  shipping_methods,
+  shipping_options,
   haldeShippingSelect,
 }) {
-  const [selected, setSelected] = useState(shipping_methods[0]);
+  const [selected, setSelected] = useState(shipping_options[0]);
 
   useEffect(() => {
     haldeShippingSelect(selected);
@@ -17,7 +17,7 @@ export default function SelectShipping({
         <RadioGroup value={selected} onChange={setSelected}>
           <RadioGroup.Label className='sr-only'>Server size</RadioGroup.Label>
           <div className='space-y-2'>
-            {shipping_methods.map((plan, index) => {
+            {shipping_options.map((plan, index) => {
               return (
                 <RadioGroup.Option
                   key={index}
@@ -45,7 +45,7 @@ export default function SelectShipping({
                                 checked ? 'text-white' : 'text-gray-900'
                               }`}
                             >
-                              {plan.title}
+                              {plan.name}
                             </RadioGroup.Label>
                             <RadioGroup.Description
                               as='span'
@@ -53,10 +53,10 @@ export default function SelectShipping({
                                 checked ? 'text-sky-100' : 'text-gray-500'
                               }`}
                             >
-                              <span>{plan.shipping}</span>{' '}
+                              <span>{plan.estimated_time}</span>{' '}
                               <span aria-hidden='true'>&middot;</span>{' '}
                               <span className=' text-lg font-semibold'>
-                                {`+ ${plan.text}`}
+                                {`+ ${plan.price} TL`}
                               </span>
                             </RadioGroup.Description>
                           </div>

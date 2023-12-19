@@ -960,7 +960,7 @@ function SettingsComp(props) {
             <div className='w-2/3 '>
               <div className='mx-2 my-2 bg-white text-gray-600 rounded-lg overflow-hidden shadow-lg'>
                 <div className=' border-r py-6 border-l text-sm px-8'>
-                  <div className='mb-4'>
+                  {/* <div className='mb-4'>
                     <label
                       className='block tracking-wide text-gray-700 text-sm font-bold mb-2'
                       htmlFor='grid-first-name'
@@ -983,7 +983,7 @@ function SettingsComp(props) {
                         );
                       })}
                     </select>
-                  </div>
+                  </div> */}
                   <div className='mb-4'>
                     <label
                       className='block tracking-wide text-gray-700 text-sm font-bold mb-2'

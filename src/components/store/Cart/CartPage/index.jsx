@@ -28,7 +28,7 @@ function CartPage({ cart, products }) {
     // console.log('RES: ', res);
   };
 
-  console.log('cart 43543534534: ', cart);
+  // console.log('cart 43543534534: ', cart);
 
   return (
     <>
@@ -82,7 +82,7 @@ function CartPage({ cart, products }) {
 
             <Link href={'/checkout'}>
               <button
-                disabled={cart.error}
+                disabled={cart.cart_items.length === 0}
                 className={`${
                   cart.error && 'disabled:opacity-75'
                 } focus:outline-none mt-8 uppercase font-medium rounded border border-primary w-full py-2 flex items-center justify-center space-x-2 bg-primary text-white hover:text-primary hover:bg-transparent transition`}
@@ -98,7 +98,7 @@ function CartPage({ cart, products }) {
           </div>
         </div>
       </div>
-      <ProductWrapper wrapperName={'Birlikte Alinanlar'} products={products} />
+      {/* <ProductWrapper wrapperName={'Birlikte Alinanlar'} products={products} /> */}
     </>
   );
 }

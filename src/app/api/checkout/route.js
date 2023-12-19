@@ -1,16 +1,17 @@
-import {
-  API_URL_STORE,
-  _API_URL_ADMIN,
-  _API_URL_STORE,
-} from '@/config/apiConfig';
+import { _API_URL_STORE } from '@/config/apiConfig';
 import getClientHeaders from '@/app/libs/getHeaders';
 
-export async function POST(request) {
+export async function GET(request) {
+  const url = new URL(request.url);
+
+  const searchParams = url.searchParams;
+
+  const shipping = searchParams.get('shipping');
+  const coupon = searchParams.get('coupon');
+
   const cookies = await getClientHeaders();
 
-  const data = await request.json();
-
-  console.log('DATA 12345: ', data);
+  // const data = await request.json();
 
   let headers = new Headers();
   cookies.find((cookie) => {
@@ -20,23 +21,18 @@ export async function POST(request) {
   });
 
   var requestOptions = {
-    method: 'PATCH',
     cache: 'no-store',
+    method: 'GET',
     headers: headers,
-    body: data,
     redirect: 'follow',
   };
 
-  // console.log('FORMDATA: ', formdata);
-
   const response = await fetch(
-    `${_API_URL_STORE}/cart/checkout`,
+    `${_API_URL_STORE}/cart/checkout?shipping=${shipping}&coupon=${coupon}`,
     requestOptions
   );
 
-  // console.log('RESPONSE: ', response);
   const res = await response.json();
-  console.log('RES345345: ', res);
 
   if (res.error) {
     return new Response(
@@ -50,7 +46,7 @@ export async function POST(request) {
   return new Response(
     JSON.stringify({
       status: 200,
-      cart: res,
+      checkout: res,
     })
   );
 }

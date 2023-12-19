@@ -1,6 +1,6 @@
 import CheckoutPage from '@/components/store/Checkout';
 import { cookies } from 'next/headers';
-import isLoggedStore from '@/app/libs/isLoggedStore';
+import isLoggedCustomer from '@/app/libs/isLoggedCustomer';
 import LoginRegister from '@/components/store/LoginRegister';
 // import { getCart } from '@/services/store/cart';
 import getClientHeaders from '@/app/libs/getHeaders';
@@ -9,51 +9,41 @@ import { redirect } from 'next/navigation';
 import { saveShippingMethod } from '@/services/store/checkout';
 
 async function Checkout({ searchParams }) {
-  const cookiesX = await getClientHeaders();
+  const cookies = await getClientHeaders();
 
-  const cartTemp = await getCheckout(cookiesX);
+  const { checkout } = await getCheckout(cookies);
 
-  const nextCookies = cookies();
-
-  const isLogged = await isLoggedStore(nextCookies);
-
-  if (cartTemp.status == 404) {
-    console.log('getCheckout 404 dondu');
+  if (checkout.cart.cart_items.length == 0) {
     redirect('/sepet');
   }
 
-  if (cartTemp.status == 500) {
-    console.log('status: ', cartTemp.status);
-    return 'Sepet alınamadı. Sunucu hatası: ', cartTemp.status;
-  }
+  const isLogged = await isLoggedCustomer(cookies);
 
-  if (cartTemp.shipping_methods.length > 0) {
-    const response = await saveShippingMethod(
-      cartTemp.shipping_methods[0].code
-    );
-  } else {
-    console.log('Kargo metodu bulunamadı');
-    return 'Kargo metodu bulunamadı';
-  }
+  // if (checkout.cart.cart_items.length > 0) {
+  //   const response = await saveShippingMethod(checkout.shipping_option[0].ID);
+  // } else {
+  //   console.log('Kargo metodu bulunamadı');
+  //   return 'Kargo metodu bulunamadı';
+  // }
 
-  const cart = await getCheckout(cookiesX);
+  // console.log('CHECKOUT 43243: ', checkout);
 
-  // console.log('CART: ', cart);
-
-  if (isLogged) {
+  if (isLogged > 0) {
     return (
       <CheckoutPage
-        cart={cart}
-        shipping_methods={cart.shipping_methods}
+        cart={checkout.cart}
+        shipping_options={checkout.shipping_option}
         isLogged={isLogged}
+        cookies={cookies}
       />
     );
   } else if (searchParams.account == 0) {
     return (
       <CheckoutPage
-        cart={cart}
-        shipping_methods={cart.shipping_methods}
+        cart={checkout.cart}
+        shipping_options={checkout.shipping_option}
         isLogged={isLogged}
+        cookies={cookies}
       />
     );
   } else {

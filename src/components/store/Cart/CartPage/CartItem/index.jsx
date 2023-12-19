@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { _BASE_URL } from '@/config/apiConfig';
 
 function CartItem({ product, removeCart }) {
   const [itemCount, setItemCount] = useState(product.quantity);
@@ -38,9 +39,9 @@ function CartItem({ product, removeCart }) {
       const response = await fetch(`/api/cart`, requestOptions);
 
       const res = await response.json();
-
       router.refresh();
     };
+
     if (newItemCount != '' && newItemCount > 0) {
       changeCartItemQuantity();
     }
@@ -109,7 +110,9 @@ function CartItem({ product, removeCart }) {
       <div className='flex flex-col sm:flex-row gap-5 sm:items-center'>
         <div className='sm:max-w-[150px]'>
           <Image
-            src={product?.thumb && product?.thumb}
+            // src={product?.thumb && `${_BASE_URL}/${product?.thumb}`}
+            //Localdek ibir resmi nasılk gösteririz
+            src={`/${product?.thumb}`}
             alt='urun'
             width={200}
             height={200}
@@ -143,9 +146,11 @@ function CartItem({ product, removeCart }) {
       <form action=''>
         <div className='flex items-center justify-between'>
           <div className='mt-4'>
-            <div className='flex border border-gray-300 text-gray-600 divide-x divide-gray-300 w-max'>
+            <div
+              className={`flex border border-gray-300 text-gray-600 divide-x divide-gray-300 w-max`}
+            >
               <div
-                className='h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none border'
+                className={`h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none border`}
                 onClick={() => decreaseItemCount()}
               >
                 -

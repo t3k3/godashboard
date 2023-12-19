@@ -2,7 +2,7 @@ import { API_URL_ADMIN } from '@/config/apiConfig';
 
 //get all categories
 export async function GET(request) {
-  console.log('GET ATTRİBUTES API');
+  // console.log('GET ATTRİBUTES API');
   const cookiesHeader = request.headers.get('cookie');
 
   const cookiesObject = {};

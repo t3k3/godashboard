@@ -4,8 +4,6 @@ import { cookies } from 'next/headers';
 export async function GET(request) {
   const nextCookies = cookies();
 
-  console.log('GELDİ mi');
-
   let headers = new Headers();
   // headers.append('Cookie', `default=${nextCookies.get('default').value}`);
   // headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);

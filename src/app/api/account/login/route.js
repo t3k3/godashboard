@@ -1,4 +1,4 @@
-import { API_URL_STORE } from '@/config/apiConfig';
+import { API_URL_STORE, _API_URL_STORE } from '@/config/apiConfig';
 import getClientHeaders from '@/app/libs/getHeaders';
 
 export async function POST(request) {
@@ -11,25 +11,25 @@ export async function POST(request) {
   console.log('data: ', data);
 
   let headers = new Headers();
-  cookies.map((cookie) => {
-    return headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+  cookies.find((cookie) => {
+    if (cookie.name === 'CART_ID') {
+      headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+    }
   });
-  // headers.append('Content-Type', 'multipart/form-data');
-
-  let formdata = new FormData();
-  formdata.append('email', data.email);
-  formdata.append('password', data.password);
 
   // console.log('formdata: ', formdata);
 
   var requestOptions = {
     method: 'POST',
     headers: headers,
-    body: formdata,
+    body: JSON.stringify(data),
     redirect: 'follow',
   };
 
-  const response = await fetch(`${API_URL_STORE}account/login`, requestOptions);
+  const response = await fetch(
+    `${_API_URL_STORE}/account/login`,
+    requestOptions
+  );
 
   //   console.log('response FROM ROUTEJS: ', response);
 

@@ -1,10 +1,17 @@
-import { API_URL_STORE, _BASE_URL } from '@/config/apiConfig';
+import { _BASE_URL } from '@/config/apiConfig';
 
 const getHomeService = async (cookies = []) => {
   if (cookies) {
     let headers = new Headers();
-    cookies.map((cookie) => {
-      return headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+    cookies.find((cookie) => {
+      if (cookie.name === 'CART_ID') {
+        headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+      }
+    });
+    cookies.find((cookie) => {
+      if (cookie.name === 'SESSION_ID') {
+        headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+      }
     });
 
     try {
@@ -21,21 +28,7 @@ const getHomeService = async (cookies = []) => {
       throw new Error(error);
     }
   }
-
-  // try {
-  //   const res = await fetch(`${API_URL_STORE}/${pathname}`, {
-  //     cache: 'no-store',
-  //   });
-
-  //   return res.json();
-  // } catch (error) {
-  //   throw new Error(error);
-  // }
 };
-
-// const getSingleAttribute = async (id) => {
-//   return getAttributeService(`catalog/category/edit&category_id=${id}`);
-// };
 
 const getLayout = async (cookies) => {
   return getHomeService(cookies);

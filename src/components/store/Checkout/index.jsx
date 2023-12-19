@@ -8,13 +8,19 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import cities from '/public/cities.json';
 
+import CartCoupon from '../Cart/CartPage/CartCoupon';
+
 import {
+  createOrder,
+  getCheckout,
   getCheckoutFromClientSide,
   saveShippingAndFatura,
   saveShippingMethod,
 } from '@/services/store/checkout';
+
 import GuestAddresses from './GuestAddresses';
 import ClientAddresses from './ClientAddresses';
+import { getCart } from '@/services/store/cart';
 
 const ilceler = [
   {
@@ -94,6 +100,37 @@ const ilceler = [
   },
 ];
 
+const orderJSON = {
+  customer_id: 0,
+  firstname: 'Kimberly',
+  lastname: 'Pruitt',
+  tckn: '12345678901',
+  email: 'test@123.com',
+  phone: '1234567890',
+  order_status_id: 0,
+  totals: '',
+  payment_method: 'bank_transfer',
+  payment_code: 'bank_transfer',
+  shipping_method: 'free_shipping',
+  shipping_code: 'free_shipping',
+  coupon: '',
+  comment: '',
+  shipping_country: 'Austria',
+  shipping_city: 'Caldwellfurt',
+  shipping_ilce: 'burgh',
+  shipping_postcode: '12345',
+  shipping_mahalle: 'Jerry Viaduct',
+  shipping_address: '79138 Hernandez Mountain Suite 627',
+  payment_country: 'Vanuatu',
+  payment_city: 'Lake Michaelfort',
+  payment_ilce: 'ville',
+  payment_mahalle: 'Garrison Station',
+  payment_address: '13748 Jose Vista',
+  vkn: '2713682997',
+  vd: 'Port Carrietown',
+  company: 'Patterson-Hawkins',
+};
+
 function CheckoutPage(props) {
   const router = useRouter();
 
@@ -103,6 +140,9 @@ function CheckoutPage(props) {
   // }
 
   const [cart, setCart] = useState(props.cart);
+  const [order, setOrder] = useState(orderJSON);
+  const [couponCode, setCouponCode] = useState('');
+  console.log('order45654646 : ', order);
 
   // const [formData, setFormData] = useState(props.cart);
   const [sameAddresses, setSameAddresses] = useState(1);
@@ -112,35 +152,41 @@ function CheckoutPage(props) {
   const haldeShippingSelect = async (selected) => {
     console.log('haldeShippingSelect', selected);
 
-    let cartTemp = { ...cart };
-    cartTemp.shipping_method = selected.code;
+    // let cartTemp = { ...cart };
+    // cartTemp.shipping_method = selected.code;
 
-    console.log('cartTemp: ', cartTemp);
+    // console.log('cartTemp: ', cartTemp);
 
-    const response = await saveShippingMethod(cartTemp);
+    const response = await getCheckout(props.cookies, selected.ID, couponCode);
+    console.log('response21321312: ', response);
 
-    const newCheckoutData = await getCheckoutFromClientSide();
-    console.log('newCheckoutData: ', newCheckoutData);
-    setCart(newCheckoutData);
+    setCart(response.checkout.cart);
+    setOrder((prevCart) => ({
+      ...prevCart,
+      shipping_method: selected.name,
+      shipping_code: selected.ID,
+    }));
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCart((prevCart) => ({ ...prevCart, [name]: value }));
+    setOrder((prevCart) => ({ ...prevCart, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let cartTemp = { ...cart };
-    cartTemp.sameAddresses = sameAddresses;
+    console.log('order: ', order);
 
-    const response = await saveShippingAndFatura(cartTemp);
-    setCart(cartTemp);
-    router.refresh();
+    const response = await createOrder(order);
+    // setCart(cartTemp);
+    // router.refresh();
 
-    if (response.status === 200) {
+    console.log('response4242424234: ', response);
+
+    if (response.status === 201) {
       console.log('SUCCESS: ', response.status);
+      console.log('response.data: ', response.data);
 
       router.push('/payment?account=0');
 
@@ -166,11 +212,11 @@ function CheckoutPage(props) {
         {/* ADRESLER */}
         <div className='lg:col-span-5'>
           {/* sepet boş */}
-          {/* {!cart && router.push('/sepet')} */}
+          {cart.cart_items.length < 1 && router.push('/sepet')}
 
-          {cart.addresses.length < 1 && !props.isLogged ? (
+          {props.isLogged == 0 ? (
             <GuestAddresses
-              cart={cart}
+              order={order}
               handleChange={handleChange}
               sameAddresses={sameAddresses}
               setSameAddresses={setSameAddresses}
@@ -187,7 +233,7 @@ function CheckoutPage(props) {
             Sepet Özeti
           </h2>
 
-          {cart?.products?.map((product, index) => {
+          {cart?.cart_items?.map((product, index) => {
             return (
               <div
                 key={index}
@@ -196,9 +242,9 @@ function CheckoutPage(props) {
                 <div className='flex flex-col sm:flex-row gap-5 sm:items-center'>
                   <div className='sm:max-w-[150px]'>
                     <Image
-                      className='w-24 h-24 rounded-full object-cover'
+                      className='w-24 h-24 rounded-sm '
                       src={
-                        product?.thumb ||
+                        `/${product?.thumb}` ||
                         'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
                       }
                       alt={product.name}
@@ -212,22 +258,22 @@ function CheckoutPage(props) {
                         {product.name}
                       </p>
                     </Link>
-                    {product?.option &&
-                      product?.option.map((opt) => {
-                        return (
-                          <div key={opt.name} className='flex space-x-2 '>
-                            <p className='text-base '>{opt.name}:</p>
-                            <p
-                              key={opt}
-                              className='text-base font-bold text-gray-900'
-                            >
-                              {opt.value}
-                            </p>
-                          </div>
-                        );
-                      })}
+
+                    {JSON.parse(product.option).map((opt) => {
+                      return (
+                        <div key={opt.name} className='flex space-x-2 '>
+                          <p className='text-base '>{opt.name}:</p>
+                          <p
+                            key={opt}
+                            className='text-base font-bold text-gray-900'
+                          >
+                            {opt.value}
+                          </p>
+                        </div>
+                      );
+                    })}
                     <p className='text-base font-medium text-primary'>
-                      {product.total}
+                      {product.price * product.quantity} TL
                     </p>
                     <p className='text-base'>Adet: {product.quantity}</p>
                   </div>
@@ -242,7 +288,7 @@ function CheckoutPage(props) {
             </h2>
             {cart && (
               <SelectShipping
-                shipping_methods={props.cart.shipping_methods}
+                shipping_options={props.shipping_options}
                 haldeShippingSelect={haldeShippingSelect}
               />
             )}
@@ -253,41 +299,52 @@ function CheckoutPage(props) {
                 Sepet Özeti
               </h3>
               <div className='space-y-3'>
-                {cart?.totals?.map((total, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className='flex items-center justify-between'
-                    >
-                      <p className='font-medium'>{total.title}</p>
-                      <p className='font-medium'>{total.text}</p>
-                    </div>
-                  );
-                })}
-              </div>
-              {cart?.totals?.map((total, index, arr) => {
-                if (arr.length - 1 === index) {
-                  return (
-                    <h2
-                      key={index}
-                      className='mt-4 pt-4 text-2xl font-semibold border-t border-gray-200 flex items-center justify-between'
-                    >
-                      <span>{total.title}</span>
-                      <span>{total.text}</span>
-                    </h2>
-                  );
-                }
-              })}
+                <div className='flex items-center justify-between'>
+                  <p className='font-medium'>Ara Toplam:</p>
+                  <p className='font-medium'>
+                    {cart.totals.sub_total.toFixed(2)} TL
+                  </p>
+                </div>
+                <div className='flex items-center justify-between'>
+                  <p className='font-medium'>KDV (%{cart.totals.vat_rate}) </p>
+                  <p className='font-medium'>{cart.totals.vat.toFixed(2)} TL</p>
+                </div>
+                <div className='flex items-center justify-between'>
+                  <p className='font-medium'>Kargo Ücreti</p>
+                  <p className='font-medium'>
+                    {cart.totals.shipping.toFixed(2)} TL
+                  </p>
+                </div>
 
-              {/* <CartCoupon /> */}
-              {/* <Link href={'/payment?account=0'}> */}
-              <span
-                className='focus:outline-none mt-8 uppercase font-medium rounded border border-primary w-full py-2 flex items-center justify-center space-x-2 bg-primary text-white hover:text-primary hover:bg-transparent transition cursor-pointer'
+                {/* <div className='flex items-center justify-between'>
+                  <p className='font-medium'>Toplam: </p>
+                  <p className='font-medium'>
+                    {cart.totals.total.toFixed(2)} TL
+                  </p>
+                </div> */}
+
+                <CartCoupon />
+              </div>
+
+              <h2 className='mt-4 pt-4 text-2xl font-semibold border-t border-gray-200 flex items-center justify-between'>
+                <span>Toplam:</span>
+                <span>{cart.totals.total.toFixed(2)} TL</span>
+              </h2>
+
+              <button
+                disabled={cart.error}
+                className={`${
+                  cart.error && 'disabled:opacity-75'
+                } focus:outline-none mt-8 uppercase font-medium rounded border border-primary w-full py-2 flex items-center justify-center space-x-2 bg-primary text-white hover:text-primary hover:bg-transparent transition`}
                 onClick={handleSubmit}
               >
-                ÖDEME İŞLEMLERİ
-              </span>
-              {/* </Link> */}
+                ALIŞVERİŞİ TAMAMLA
+              </button>
+              {cart.error && (
+                <span className='text-sm text-red-400'>
+                  Devam edebilmek için sepete ürün eklemelisiniz.
+                </span>
+              )}
             </div>
           </div>
         </div>

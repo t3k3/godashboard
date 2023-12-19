@@ -1,7 +1,7 @@
 import React from 'react';
 
 function GuestAddresses({
-  cart,
+  order,
   handleChange,
   sameAddresses,
   setSameAddresses,
@@ -17,51 +17,45 @@ function GuestAddresses({
 
         <div className='flex flex-col md:flex-row items-center gap-5 m-2'>
           <div className='w-full'>
-            <label
-              htmlFor='shipping_firstname'
-              className='text-gray-600 mb-2 block'
-            >
+            <label htmlFor='firstname' className='text-gray-600 mb-2 block'>
               İsim
             </label>
             <input
               required
               type='text'
-              name='shipping_firstname'
-              id='shipping_firstname'
-              value={cart.shipping_firstname}
+              name='firstname'
+              id='firstname'
+              value={order.firstname}
               onChange={handleChange}
               className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
               placeholder='İsim'
             />
           </div>
           <div className='w-full'>
-            <label
-              htmlFor='shipping_lastname'
-              className='text-gray-600 mb-2 block'
-            >
+            <label htmlFor='lastname' className='text-gray-600 mb-2 block'>
               Soyisim
             </label>
             <input
               required
               type='text'
-              name='shipping_lastname'
-              id='shipping_lastname'
-              value={cart.shipping_lastname}
+              name='lastname'
+              id='lastname'
+              value={order.lastname}
               onChange={handleChange}
               className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
               placeholder='Soyisim'
             />
           </div>
           <div className='w-full'>
-            <label htmlFor='shipping_tckn' className='text-gray-600 mb-2 block'>
+            <label htmlFor='tckn' className='text-gray-600 mb-2 block'>
               TC Kimlik No
             </label>
             <input
               required
               type='text'
-              name='shipping_tckn'
-              id='shipping_tckn'
-              value={cart.shipping_tckn}
+              name='tckn'
+              id='tckn'
+              value={order.tckn}
               onChange={handleChange}
               className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
               placeholder='TC Kimlik No'
@@ -78,25 +72,22 @@ function GuestAddresses({
               type='email'
               name='email'
               id='email'
-              value={cart.email}
+              value={order.email}
               onChange={handleChange}
               className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
               placeholder='example@mail.com'
             />
           </div>
           <div className='w-full'>
-            <label
-              htmlFor='shipping_telephone'
-              className='text-gray-600 mb-2 block'
-            >
+            <label htmlFor='phone' className='text-gray-600 mb-2 block'>
               Telefon
             </label>
             <input
               required
               type='text'
-              name='shipping_telephone'
-              id='shipping_telephone'
-              value={cart.shipping_telephone}
+              name='phone'
+              id='phone'
+              value={order.phone}
               onChange={handleChange}
               className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
               placeholder='5xx-xxx-xx-xx'
@@ -105,7 +96,7 @@ function GuestAddresses({
         </div>
         <div className='w-full'>
           <label
-            htmlFor='shipping_address_1'
+            htmlFor='shipping_address'
             className='text-gray-600 mb-2 block'
           >
             Adres
@@ -113,9 +104,9 @@ function GuestAddresses({
           <textarea
             required
             type='text'
-            name='shipping_address_1'
-            id='shipping_address_1'
-            value={cart.shipping_address_1}
+            name='shipping_address'
+            id='shipping_address'
+            value={order.shipping_address}
             onChange={handleChange}
             rows='2'
             className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
@@ -134,7 +125,7 @@ function GuestAddresses({
               className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
               name='shipping_country_id'
               id='shipping_country_id'
-              value={cart.shipping_country_id}
+              value={order.shipping_country_id}
               // disabled
               onChange={handleChange}
             >
@@ -146,24 +137,21 @@ function GuestAddresses({
             type='text'
             name='country_id'
             id='country_id'
-            value={cart.country_id}
+            value={order.country_id}
             onChange={handleChange}
             className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
             placeholder='Türkiye'
           /> */}
           </div>
           <div className='w-full'>
-            <label
-              htmlFor='shipping_zone_id'
-              className='text-gray-600 mb-2 block'
-            >
+            <label htmlFor='shipping_city' className='text-gray-600 mb-2 block'>
               Şehir
             </label>
             <select
               className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
-              name='shipping_zone_id'
-              id='shipping_zone_id'
-              value={cart.shipping_zone_id}
+              name='shipping_city'
+              id='shipping_city'
+              value={order.shipping_city}
               onChange={handleChange}
             >
               {cities.zone.map((city) => {
@@ -179,7 +167,7 @@ function GuestAddresses({
             type='text'
             name='city'
             id='city'
-            value={cart.city}
+            value={order.city}
             onChange={handleChange}
             className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
             placeholder='İstanbul'
@@ -187,14 +175,14 @@ function GuestAddresses({
           </div>
 
           <div className='w-full'>
-            <label htmlFor='shipping_city' className='text-gray-600 mb-2 block'>
+            <label htmlFor='shipping_ilce' className='text-gray-600 mb-2 block'>
               İlçe
             </label>
             <select
               className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
-              name='shipping_city'
-              id='shipping_city'
-              value={cart.shipping_city}
+              name='shipping_ilce'
+              id='shipping_ilce'
+              value={order.shipping_ilce}
               onChange={handleChange}
             >
               {ilceler.map((ilce) => {
@@ -210,7 +198,7 @@ function GuestAddresses({
             type='text'
             name='city'
             id='city'
-            value={cart.city}
+            value={order.city}
             onChange={handleChange}
             className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
             placeholder='İstanbul'
@@ -228,7 +216,7 @@ function GuestAddresses({
               type='text'
               name='shipping_postcode'
               id='shipping_postcode'
-              value={cart.shipping_postcode}
+              value={order.shipping_postcode}
               onChange={handleChange}
               className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
               placeholder='34656'
@@ -266,18 +254,15 @@ function GuestAddresses({
 
           <div className='flex flex-col md:flex-row items-center gap-5 m-2'>
             <div className='w-full'>
-              <label
-                htmlFor='payment_company'
-                className='text-gray-600 mb-2 block'
-              >
+              <label htmlFor='company' className='text-gray-600 mb-2 block'>
                 İsim / Ünvan
               </label>
               <input
                 required
                 type='text'
-                name='payment_company'
-                id='payment_company'
-                value={cart.payment_company}
+                name='company'
+                id='company'
+                value={order.company}
                 onChange={handleChange}
                 className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
                 placeholder='İsim / Ünvan'
@@ -286,29 +271,29 @@ function GuestAddresses({
           </div>
           <div className='flex flex-col md:flex-row items-center gap-5 m-2'>
             <div className='w-full'>
-              <label htmlFor='payment_vkn' className='text-gray-600 mb-2 block'>
+              <label htmlFor='vkn' className='text-gray-600 mb-2 block'>
                 Vergi No / TC Kimlik No
               </label>
               <input
                 required
                 type='text'
-                name='payment_vkn'
-                id='payment_vkn'
-                value={cart.payment_vkn}
+                name='vkn'
+                id='vkn'
+                value={order.vkn}
                 onChange={handleChange}
                 className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
                 placeholder='1111111111'
               />
             </div>
             <div className='w-full'>
-              <label htmlFor='payment_vd' className='text-gray-600 mb-2 block'>
+              <label htmlFor='vd' className='text-gray-600 mb-2 block'>
                 Vergi Dairesi
               </label>
               <input
                 type='text'
-                name='payment_vd'
-                id='payment_vd'
-                value={cart.payment_vd}
+                name='vd'
+                id='vd'
+                value={order.vd}
                 onChange={handleChange}
                 className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
                 placeholder='Vergi Dairesi'
@@ -317,7 +302,7 @@ function GuestAddresses({
           </div>
           <div className='w-full'>
             <label
-              htmlFor='payment_address_1'
+              htmlFor='payment_address'
               className='text-gray-600 mb-2 block'
             >
               Adres
@@ -325,10 +310,10 @@ function GuestAddresses({
             <textarea
               required
               type='text'
-              name='payment_address_1'
-              id='payment_address_1'
+              name='payment_address'
+              id='payment_address'
               rows='2'
-              value={cart.payment_address_1}
+              value={order.payment_address}
               onChange={handleChange}
               className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
               placeholder='Açık adres giriniz...'
@@ -337,15 +322,15 @@ function GuestAddresses({
           <div className='flex flex-col md:flex-row items-center gap-5 m-2'>
             <div className='w-full'>
               <label
-                htmlFor='payment_country_id'
+                htmlFor='payment_country'
                 className='text-gray-600 mb-2 block'
               >
                 Ülke
               </label>
               <select
                 className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
-                name='payment_country_id'
-                id='payment_country_id'
+                name='payment_country'
+                id='payment_country'
                 value={'Türkiye'}
                 disabled
                 // onChange={handleChange}
@@ -359,7 +344,7 @@ function GuestAddresses({
             type='text'
             name='country_id'
             id='country_id'
-            value={cart.country_id}
+            value={order.country_id}
             onChange={handleChange}
             className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
             placeholder='Türkiye'
@@ -367,16 +352,16 @@ function GuestAddresses({
             </div>
             <div className='w-full'>
               <label
-                htmlFor='payment_zone_id'
+                htmlFor='payment_city'
                 className='text-gray-600 mb-2 block'
               >
                 Şehir
               </label>
               <select
                 className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
-                name='payment_zone_id'
-                id='payment_zone_id'
-                value={cart.payment_zone_id}
+                name='payment_city'
+                id='payment_city'
+                value={order.payment_city}
                 onChange={handleChange}
               >
                 {cities.zone.map((city) => {
@@ -392,7 +377,7 @@ function GuestAddresses({
             type='text'
             name='city'
             id='city'
-            value={cart.city}
+            value={order.city}
             onChange={handleChange}
             className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
             placeholder='İstanbul'
@@ -400,14 +385,17 @@ function GuestAddresses({
             </div>
 
             <div className='w-full'>
-              <label htmlFor='city' className='text-gray-600 mb-2 block'>
+              <label
+                htmlFor='payment_ilce'
+                className='text-gray-600 mb-2 block'
+              >
                 İlçe
               </label>
               <select
                 className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
-                name='city'
-                id='city'
-                value={cart.city}
+                name='payment_ilce'
+                id='payment_ilce'
+                value={order.payment_ilce}
                 onChange={handleChange}
               >
                 {ilceler.map((ilce) => {
@@ -423,29 +411,11 @@ function GuestAddresses({
             type='text'
             name='city'
             id='city'
-            value={cart.city}
+            value={order.city}
             onChange={handleChange}
             className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
             placeholder='İstanbul'
           /> */}
-            </div>
-
-            <div className='w-full'>
-              <label
-                htmlFor='payment_postcode'
-                className='text-gray-600 mb-2 block'
-              >
-                Posta Kodu
-              </label>
-              <input
-                type='text'
-                name='payment_postcode'
-                id='payment_postcode'
-                value={cart.shipping_postcode}
-                onChange={handleChange}
-                className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
-                placeholder='34656'
-              />
             </div>
           </div>
         </div>
@@ -462,7 +432,7 @@ function GuestAddresses({
           name='comment'
           id='comment'
           rows='2'
-          value={cart.comment}
+          value={order.comment}
           onChange={handleChange}
           className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
           placeholder={'Siparişinizle ilgili not girebilirsiniz.'}

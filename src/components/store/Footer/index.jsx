@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { _BASE_URL } from '@/config/apiConfig';
 
 function Footer({ footerData, logo = '' }) {
   return (
@@ -8,7 +9,7 @@ function Footer({ footerData, logo = '' }) {
       <footer className='bg-white pt-16 pb-12 border-t border-gray-100'>
         <div className='container grid sm:grid-cols-3'>
           <div className='col-span-1 space-y-8'>
-            <Image src={logo} alt='logo' width={128} height={23}></Image>
+            <Image src={`/${logo}`} alt='logo' width={128} height={23}></Image>
 
             <p className='text-gray-500'>
               Lorem ipsum dolor sit amet consectetur adipisicing elit.

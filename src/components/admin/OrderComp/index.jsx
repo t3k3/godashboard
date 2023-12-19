@@ -17,6 +17,8 @@ function OrderComp(props) {
     props.order_statuses.find((status) => status.ID === order.order_status_id)
   );
 
+  const totals = JSON.parse(order.totals);
+
   const [orderHistory, setOrderHistory] = useState(false);
 
   //Order history sipariş datasıyla birlikte gelir. Sayfa yüklendikten sonra ayrıca çekilmek istenirse burası kullanılabilir.
@@ -148,49 +150,38 @@ function OrderComp(props) {
                           className='px-6 py-4 font-medium text-gray-900 whitespace-nowrap'
                         >
                           <Link
-                            href={`/admin/urunler/${order_product.ID}`}
+                            href={`/admin/urunler/${order_product.product_id}`}
                             className='hover:text-blue-500'
                           >
                             {order_product.name}
                           </Link>
                         </th>
                         <td className='px-6 py-4'>
-                          {order_product?.option?.map((opt) => {
-                            return (
-                              <div key={opt.product_option_value_id}>
-                                <p>
-                                  <span>{opt.name} :</span>
-                                  <span className='font-bold'>{opt.value}</span>
-                                </p>
-                              </div>
-                            );
-                          })}
+                          {order_product?.option_id > 0 &&
+                            JSON.parse(order_product.option).map((opt) => {
+                              return (
+                                <div key={opt.name} className='flex space-x-2 '>
+                                  <p className='text-base '>{opt.name}:</p>
+                                  <p
+                                    key={opt}
+                                    className='text-base font-bold text-gray-900'
+                                  >
+                                    {opt.value}
+                                  </p>
+                                </div>
+                              );
+                            })}
                         </td>
                         <td className='px-6 py-4'>
                           ₺{Number(order_product.price).toFixed(2)}
                         </td>
                         <td className='px-6 py-4'>{order_product.quantity}</td>
                         <td className='px-6 py-4'>
-                          ₺{Number(order_product.total).toFixed(2)}
+                          ₺
+                          {Number(
+                            order_product.total * order_product.quantity
+                          ).toFixed(2)}
                         </td>
-                      </tr>
-                    );
-                  })}
-
-                  {order.totals?.map((total, index) => {
-                    return (
-                      <tr key={index} className='bg-white'>
-                        <th
-                          scope='row'
-                          className='px-6 py-1 font-medium text-gray-900 whitespace-nowrap '
-                        ></th>
-                        <td className='px-6 py-1'></td>
-                        <td className='px-6 py-1'></td>
-                        <td className='px-6 py-1'></td>
-                        <td className='px-6 py-1 font-semibold'>
-                          {total.title}
-                        </td>
-                        <td className='px-6 py-1 font-bold'>{total.text}</td>
                       </tr>
                     );
                   })}
@@ -219,7 +210,7 @@ function OrderComp(props) {
 
                       <div className='ml-2'>
                         <span className='text-md font-semibold'>
-                          Yurtiçi kargo
+                          {order.shipping_method}
                         </span>
                         <br />
                         <span className='text-xs'>1-3 İş günü </span>
@@ -249,26 +240,45 @@ function OrderComp(props) {
                         height={40}
                         alt='kargo'
                       />
+
                       <div>
                         <div className='ml-1 my-2 flex justify-between'>
                           <span className='text-md font-semibold'>
                             Ara Toplam
                           </span>
-                          <span className='text-xs'>₺6999</span>
+                          <span className='text-xs'>
+                            ₺
+                            {Number(totals.sub_total)
+                              .toFixed(2)
+                              .replace('.', ',')}
+                          </span>
                         </div>
                         <div className='ml-1 my-2 flex justify-between'>
                           <span className='text-md font-semibold'>Kargo</span>
-                          <span className='text-xs'>₺30 </span>
+                          <span className='text-xs'>
+                            {' '}
+                            ₺
+                            {Number(totals.shipping)
+                              .toFixed(2)
+                              .replace('.', ',')}{' '}
+                          </span>
                         </div>
                         <div className='ml-1 my-2 flex justify-between'>
                           <span className='text-md font-semibold'>
-                            KDV (%20)
+                            KDV (%
+                            {totals.vat_rate})
                           </span>
-                          <span className='text-xs'>₺699</span>
+                          <span className='text-xs'>
+                            {' '}
+                            ₺{Number(totals.vat).toFixed(2).replace('.', ',')}
+                          </span>
                         </div>
                         <div className='ml-1 my-3 flex justify-between border-t'>
                           <span className='text-md font-semibold'>Toplam</span>
-                          <span className='text-xs'>₺7399</span>
+                          <span className='text-xs'>
+                            {' '}
+                            ₺{Number(totals.total).toFixed(2).replace('.', ',')}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -439,7 +449,7 @@ function OrderComp(props) {
               </div>
               <div className='flex items-center justify-between px-2 pt-4 '>
                 <span className='font-medium'>Tel:</span>
-                <span>{order.telephone}</span>
+                <span>{order.phone}</span>
               </div>
               <div className='flex items-center justify-between px-2 pt-4'>
                 <span className='font-medium'>Mail:</span>
@@ -484,13 +494,11 @@ function OrderComp(props) {
             <div className=' h-40 border-r border-l text-xs'>
               <div className='flex items-center justify-between px-2 pt-4 '>
                 <span className='font-medium'>Adı:</span>
-                <span>
-                  {order.shipping_firstname + ' ' + order.shipping_lastname}
-                </span>
+                <span>{order.firstname + ' ' + order.lastname}</span>
               </div>
               <div className='flex items-center justify-between px-2 pt-4 '>
                 <span className='font-medium'>Tel:</span>
-                <span>{order.telephone}</span>
+                <span>{order.phone}</span>
               </div>
               <div className='flex items-center justify-between px-2 pt-4'>
                 <span className='font-medium'>Mail:</span>
@@ -552,11 +560,11 @@ function OrderComp(props) {
             <div className=' h-40 border-r border-l text-xs'>
               <div className='flex items-center justify-between px-2 pt-4 '>
                 <span className='font-medium'>Adı:</span>
-                <span>{order.payment_company}</span>
+                <span>{order.company}</span>
               </div>
               <div className='flex items-center justify-between px-2 pt-4 '>
                 <span className='font-medium'>Tel:</span>
-                <span>{order.telephone}</span>
+                <span>{order.phone}</span>
               </div>
               <div className='flex items-center justify-between px-2 pt-4'>
                 <span className='font-medium'>Mail:</span>
