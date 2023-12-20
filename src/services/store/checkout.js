@@ -125,26 +125,6 @@ async function createOrderService(data) {
   }
 }
 
-async function confirm(data) {
-  var requestOptions = {
-    cache: 'no-store',
-    method: 'POST',
-    body: JSON.stringify(data),
-    // body: data,
-    redirect: 'follow',
-  };
-
-  try {
-    const res = await fetch(`${BASE_URL}/api/payment/confirm`, requestOptions);
-
-    const response = await res.json();
-
-    return response;
-  } catch (error) {
-    throw new Error(error);
-  }
-}
-
 const getCheckout = async (cookies, ShippingOptionID, couponCode) => {
   return getCheckoutService(cookies, ShippingOptionID, couponCode);
 };
@@ -172,5 +152,4 @@ export {
   saveShippingMethod,
   saveOrderAddressesForMember,
   createOrder,
-  confirm,
 };

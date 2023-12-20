@@ -1,14 +1,16 @@
 // http://demo.actsistem.com/api/v1/store/index.php?route=checkout/checkout
-import { API_URL_STORE, BASE_URL } from '@/config/apiConfig';
+import { _BASE_URL } from '@/config/apiConfig';
 
-const getPaymentService = async (pathname, cookies = []) => {
+const getPaymentService = async (cookies = [], orderID = 0) => {
   let headers = new Headers();
-  cookies.map((cookie) => {
-    return headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+  cookies.find((cookie) => {
+    if (cookie.name === 'CART_ID') {
+      headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+    }
   });
 
   try {
-    const res = await fetch(`${API_URL_STORE}/${pathname}`, {
+    const res = await fetch(`${_BASE_URL}/api/order?orderid=${orderID}`, {
       cache: 'no-store',
       headers: headers,
     });
@@ -24,130 +26,57 @@ const getPaymentService = async (pathname, cookies = []) => {
     return res.json();
   } catch (error) {
     console.log('ERROR');
-    return new Error('CART DATA ÇEKİLEMEDİ');
+    return new Error('Payment DATA ÇEKİLEMEDİ');
   }
 };
 
-const getCheckoutFromClientSideService = async () => {
-  var requestOptions = {
-    cache: 'no-store',
-    method: 'GET',
-    redirect: 'follow',
-  };
+const confirmOrderEftService = async (
+  cookies = [],
+  orderID = 0,
+  payment_method = null,
+  payment_code = null
+) => {
+  if (payment_method != null && payment_code != null) {
+    let headers = new Headers();
+    cookies.find((cookie) => {
+      if (cookie.name === 'CART_ID') {
+        headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+      }
+    });
 
-  try {
-    const res = await fetch(
-      `${BASE_URL}/api/checkout/getCheckoutFromClientSide`,
-      requestOptions
-    );
+    try {
+      const res = await fetch(
+        `${_BASE_URL}/api/payment/confirmEFT?orderid=${orderID}&payment_method=${payment_method}&payment_code=${payment_code}`,
+        {
+          cache: 'no-store',
+          headers: headers,
+          method: 'POST',
+        }
+      );
 
-    const response = await res.json();
+      const response = await res.json();
 
-    // console.log('response: ', response);
-
-    return response.cart;
-  } catch (error) {
-    throw new Error(error);
+      return response;
+    } catch (error) {
+      console.log('ERROR');
+      return new Error('Payment DATA ÇEKİLEMEDİ');
+    }
+  } else {
+    return { status: 400, statusText: 'Ödeme metodu seçilmelidir.' };
   }
 };
 
-async function savePaymentMethodService(cart) {
-  var requestOptions = {
-    cache: 'no-store',
-    method: 'POST',
-    body: JSON.stringify(cart),
-    redirect: 'follow',
-  };
-
-  try {
-    const res = await fetch(
-      `${BASE_URL}/api/payment/setPaymentMethod`,
-      requestOptions
-    );
-
-    const response = await res.json();
-
-    return response;
-  } catch (error) {
-    throw new Error(error);
-  }
-}
-
-async function saveShippingAndFaturaService(data) {
-  // var jsonString = JSON.stringify(data, replacer);
-
-  // function replacer(key, value) {
-  //   if (typeof value === 'boolean') {
-  //     return String(value);
-  //   }
-  //   return value;
-  // }
-
-  // console.log(
-  //   '------------------------------------------------------------------------'
-  // );
-  // console.log('DATA12345: ', data);
-
-  // console.log(
-  //   '------------------------------------------------------------------------'
-  // );
-  // var temp = {};
-  // data.map((key, value) => {
-  //   temp[key] = String.value;
-  // });
-
-  // console.log(
-  //   '------------------------------------------------------------------------'
-  // );
-  // console.log('DATA12345: ', [data]);
-
-  // console.log(
-  //   '------------------------------------------------------------------------'
-  // );
-
-  var requestOptions = {
-    cache: 'no-store',
-    method: 'POST',
-    body: JSON.stringify(data),
-    // body: data,
-    redirect: 'follow',
-  };
-
-  // console.log('requestOptions: ', requestOptions);
-
-  try {
-    const res = await fetch(
-      `${BASE_URL}/api/checkout/setCheckoutShippingAndFatura`,
-      requestOptions
-    );
-
-    const response = await res.json();
-
-    return response;
-  } catch (error) {
-    throw new Error(error);
-  }
-}
-
-const getCheckout = async (cookies) => {
-  return getCheckoutService('checkout/checkout', cookies);
+const getPayment = async (cookies, orderID) => {
+  return getPaymentService(cookies, orderID);
 };
 
-const getCheckoutFromClientSide = async () => {
-  return getCheckoutFromClientSideService();
+const confirmOrderEft = async (
+  cookies,
+  orderID,
+  payment_method,
+  payment_code
+) => {
+  return confirmOrderEftService(cookies, orderID, payment_method, payment_code);
 };
 
-const savePaymentMethod = async (cart) => {
-  return savePaymentMethodService(cart);
-};
-
-const saveShippingAndFatura = async (data) => {
-  return saveShippingAndFaturaService(data);
-};
-
-export {
-  getCheckout,
-  getCheckoutFromClientSide,
-  savePaymentMethod,
-  saveShippingAndFatura,
-};
+export { getPayment, confirmOrderEft };

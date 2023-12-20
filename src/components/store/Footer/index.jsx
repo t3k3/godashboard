@@ -6,7 +6,7 @@ import { _BASE_URL } from '@/config/apiConfig';
 function Footer({ footerData, logo = '' }) {
   return (
     <>
-      <footer className='bg-white pt-16 pb-12 border-t border-gray-100'>
+      <footer className='bg-white pt-16 pb-12 border-t border-gray-100 '>
         <div className='container grid sm:grid-cols-3'>
           <div className='col-span-1 space-y-8'>
             <Image src={`/${logo}`} alt='logo' width={128} height={23}></Image>

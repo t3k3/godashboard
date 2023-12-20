@@ -109,10 +109,10 @@ const orderJSON = {
   phone: '1234567890',
   order_status_id: 0,
   totals: '',
-  payment_method: 'bank_transfer',
-  payment_code: 'bank_transfer',
+  payment_method: 0,
+  payment_code: 0,
   shipping_method: 'free_shipping',
-  shipping_code: 'free_shipping',
+  shipping_code: 0,
   coupon: '',
   comment: '',
   shipping_country: 'Austria',
@@ -188,7 +188,7 @@ function CheckoutPage(props) {
       console.log('SUCCESS: ', response.status);
       console.log('response.data: ', response.data);
 
-      router.push('/payment?account=0');
+      router.push('/payment?account=0&orderid=' + response.data);
 
       // console.log('newCheckoutData: ', newCheckoutData);
     } else {

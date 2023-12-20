@@ -120,7 +120,6 @@ function OrderList({ orders, order_statuses }) {
           </tr>
         </thead>
         <tbody>
-          {console.log('sadasdsadsads', orders)}
           {orders.map((order) => {
             return (
               <OrderListItem

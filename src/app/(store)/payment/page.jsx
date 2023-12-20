@@ -1,19 +1,27 @@
-import { cookies } from 'next/headers';
 import isLoggedCustomer from '@/app/libs/isLoggedCustomer';
 import LoginRegister from '@/components/store/LoginRegister';
 import getClientHeaders from '@/app/libs/getHeaders';
 import { getCheckout } from '@/services/store/checkout';
 import { redirect } from 'next/navigation';
 import PaymentPage from '@/components/store/Payment';
+import { getPayment } from '@/services/store/payment';
 
 async function Payment({ searchParams }) {
   const cookies = await getClientHeaders();
-  const cart = await getCheckout(cookies);
 
+  if (!(searchParams.orderid > 0)) {
+    redirect('/sepet');
+  }
+
+  console.log('searchParams: ', searchParams.orderid);
+
+  const { payment } = await getPayment(cookies, searchParams.orderid);
   const isLogged = await isLoggedCustomer(cookies);
 
-  console.log('PAYMENT 43243: ', cart);
-
+  if (payment == undefined) {
+    redirect('/sepet');
+  }
+  console.log('payment2423423: ', payment);
   // if (cart.status == 404) {
   //   console.log('getCheckout 404 dondu');
   //   redirect('/sepet');
@@ -25,9 +33,21 @@ async function Payment({ searchParams }) {
   // }
 
   if (isLogged) {
-    return <PaymentPage cart={cart} payment_methods={cart.payment_methods} />;
+    return (
+      <PaymentPage
+        payment={payment}
+        // payment_methods={payment.payment_methods}
+        cookies={cookies}
+      />
+    );
   } else if (searchParams.account == 0) {
-    return <PaymentPage cart={cart} payment_methods={cart.payment_methods} />;
+    return (
+      <PaymentPage
+        payment={payment}
+        // payment_methods={payment.payment_methods}
+        cookies={cookies}
+      />
+    );
   } else {
     return <LoginRegister />;
   }

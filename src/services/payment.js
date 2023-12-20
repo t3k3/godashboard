@@ -1,7 +1,7 @@
-import { BASE_URL } from '@/config/apiConfig';
+import { BASE_URL, _BASE_URL } from '@/config/apiConfig';
 
-const getPaymentService = async (nextCookies, id = '') => {
-  let headers = new Headers();
+const getPaymentMethodsService = async () => {
+  // let headers = new Headers();
   // headers.append('Cookie', `default=${nextCookies.get('default').value}`);
   // headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
   // headers.append('Cookie', `language=${nextCookies.get('language').value}`);
@@ -11,12 +11,12 @@ const getPaymentService = async (nextCookies, id = '') => {
   var requestOptions = {
     cache: 'no-store',
     method: 'GET',
-    headers: headers,
+    // headers: headers,
     redirect: 'follow',
   };
 
   try {
-    const res = await fetch(`${BASE_URL}/api/admin/payments`, requestOptions);
+    const res = await fetch(`${_BASE_URL}/api/payment`, requestOptions);
 
     const response = await res.json();
 
@@ -53,15 +53,15 @@ const getSinglePaymentMethod = async (name) => {
 };
 
 const getPaymentMethods = async (nextCookies) => {
-  return getPaymentService(nextCookies);
+  return getPaymentMethodsService(nextCookies);
 };
 
-const savePaymentMethod = async (payment_method) => {
-  return savePaymentMethodService(payment_method);
+const savePaymentMethod = async () => {
+  return savePaymentMethodService();
 };
 
 export {
-  getPaymentService,
+  savePaymentMethodService,
   getSinglePaymentMethod,
   getPaymentMethods,
   savePaymentMethod,

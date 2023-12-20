@@ -3,6 +3,7 @@ import React from 'react';
 import Image from 'next/image';
 
 function OrderListItem({ order, order_statuses }) {
+  const totals = JSON.parse(order.totals);
   return (
     <tr className=' bg-white border-b-2 hover:bg-gray-200'>
       <td className='w-4 p-4'>
@@ -47,7 +48,7 @@ function OrderListItem({ order, order_statuses }) {
       </td>
       <td className='px-6 py-4'>
         <div className='flex items-center font-bold'>
-          ₺{Number(order.total).toFixed(2)}
+          ₺{Number(totals.total).toFixed(2)}
         </div>
       </td>
       <td className='px-6 py-4'>

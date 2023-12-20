@@ -37,3 +37,52 @@ export async function POST(request) {
     );
   }
 }
+
+export async function GET(request) {
+  const url = new URL(request.url);
+
+  const searchParams = url.searchParams;
+
+  const orderid = searchParams.get('orderid');
+
+  const cookies = await getClientHeaders();
+
+  // const data = await request.json();
+
+  let headers = new Headers();
+  cookies.find((cookie) => {
+    if (cookie.name === 'CART_ID') {
+      headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+    }
+  });
+
+  var requestOptions = {
+    cache: 'no-store',
+    method: 'GET',
+    headers: headers,
+    redirect: 'follow',
+  };
+
+  const response = await fetch(
+    `${_API_URL_STORE}/orders/payment/${orderid}`,
+    requestOptions
+  );
+
+  const res = await response.json();
+
+  if (res.error) {
+    return new Response(
+      JSON.stringify({
+        status: 404,
+        error: res.error,
+      })
+    );
+  }
+
+  return new Response(
+    JSON.stringify({
+      status: 200,
+      payment: res,
+    })
+  );
+}

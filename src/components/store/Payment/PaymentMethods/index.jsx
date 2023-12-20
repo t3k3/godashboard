@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { savePaymentMethod } from '@/services/payment';
+import { getPaymentMethods } from '@/services/payment';
 
 {
   /* VAKIFBANK: 
@@ -38,14 +39,14 @@ import { savePaymentMethod } from '@/services/payment';
 }
 
 export default function PaymentMethods({
-  payment_methods,
   payment_method,
   handleChangePaymentMethod,
+  handleChangePaymentEFTMethod,
 }) {
   // const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
   //   payment_methods[0].code
   // );
-
+  const [paymentMethods, setPaymentMethods] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
     payment_method || false
   );
@@ -53,74 +54,46 @@ export default function PaymentMethods({
     payment_method || false
   );
 
-  const handleChange = (selectedCode) => {
+  console.log('selectedEFTMethod: ', selectedEFTMethod);
+
+  useEffect(() => {
+    const fetchPaymentMethods = async () => {
+      const paymentMethods = await getPaymentMethods();
+      setPaymentMethods(paymentMethods);
+    };
+    fetchPaymentMethods();
+  }, []);
+
+  const formatIBAN = (iban) => {
+    // "TR" kısmını kaldır
+    const mainPart = iban.slice(2);
+
+    // İlk iki ve son iki rakamı ayır
+    const firstTwo = mainPart.slice(0, 2);
+    const lastTwo = mainPart.slice(-2);
+
+    // Ortadaki kısmı dört haneli gruplara ayır
+    const middlePart = mainPart.slice(2, -2).replace(/(.{4})/g, '$1 ');
+
+    return `${firstTwo} ${middlePart} ${lastTwo}`;
+  };
+
+  const handleChangePayment = (selectedCode) => {
     setSelectedPaymentMethod(selectedCode);
     handleChangePaymentMethod(selectedCode);
     console.log('Seçilen ödeme yöntemi: ', selectedCode);
     // İşlem yapmak için seçilen ödeme yöntemini kullanabilirsiniz.
   };
 
-  // return (
-  //   <div className='w-full px-4 space-y-2'>
-  //     {/* Payment Methods */}
-  //     {payment_methods.map((payment_method, index) => {
-  //       return (
-  //         <div
-  //           key={index}
-  //           className='items-center pl-4 border border-gray-200 rounded'
-  //         >
-  //           <div className='flex items-center pl-2'>
-  //             <input
-  //               id={`bordered-radio-${index}`}
-  //               type='radio'
-  //               checked={selectedPaymentMethod === payment_method.code}
-  //               name='payment-method'
-  //               className='w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 '
-  //               onChange={() => handleChange(payment_method.code)}
-  //             />
-  //             <label
-  //               htmlFor={`bordered-radio-${index}`}
-  //               className='w-full py-4 ml-4 text-sm font-medium text-gray-900 '
-  //             >
-  //               <div className='flex space-x-4'>
-  //                 <svg
-  //                   xmlns='http://www.w3.org/2000/svg'
-  //                   fill='none'
-  //                   viewBox='0 0 24 24'
-  //                   strokeWidth={1.5}
-  //                   stroke='currentColor'
-  //                   className='w-16 h-16'
-  //                 >
-  //                   {/* SVG içeriği */}
-  //                 </svg>
-  //                 <div className='mt-2'>
-  //                   <h3 className='text-base font-semibold text-heading'>
-  //                     {payment_method.title}
-  //                   </h3>
-  //                   <div className='text-sm'>{payment_method.title}</div>
-  //                 </div>
-  //               </div>
-  //             </label>
-  //           </div>
-  //           <div
-  //             className={
-  //               selectedPaymentMethod === payment_method.code
-  //                 ? 'block'
-  //                 : 'hidden'
-  //             }
-  //           >
-  //             <div className='bg-gray-50 ml-12 mr-8 '>asd</div>
-  //           </div>
-  //         </div>
-  //       );
-  //     })}
-  //   </div>
-  // );
-
-  // }
+  const handleChangeEFT = (selectedCode) => {
+    setSelectedEFTMethod(selectedCode);
+    handleChangePaymentEFTMethod(selectedCode);
+    console.log('Seçilen ödeme yöntemi: ', selectedCode);
+    // İşlem yapmak için seçilen ödeme yöntemini kullanabilirsiniz.
+  };
 
   return (
-    <div className='w-full px-4 space-y-2'>
+    <>
       {/* Payment Methods */}
       <div className='items-center pl-4 border border-gray-200 rounded'>
         <div className='flex items-center pl-2'>
@@ -129,8 +102,8 @@ export default function PaymentMethods({
             type='radio'
             checked={selectedPaymentMethod == 0}
             name='payment-method'
-            className='w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 '
-            onChange={() => handleChange(0)}
+            className='w-6 h-6 text-blue-600  border-gray-300 focus:ring-blue-500 focus:ring-2 '
+            onChange={() => handleChangePayment(0)}
           />
           <label
             htmlFor='bordered-radio-1'
@@ -161,7 +134,7 @@ export default function PaymentMethods({
           </label>
         </div>
         <div className={`${selectedPaymentMethod == 0 ? 'block ' : 'hidden'}`}>
-          <div className='bg-gray-50 ml-12 mr-8 '>
+          <div className=' ml-12 mr-8 '>
             <div className='flex flex-col md:flex-row items-center gap-5 m-2'>
               <div className='w-full'>
                 <label
@@ -253,8 +226,8 @@ export default function PaymentMethods({
             type='radio'
             checked={selectedPaymentMethod == 1}
             name='payment-method'
-            className='w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 '
-            onChange={() => handleChange(1)}
+            className='w-6 h-6 text-blue-600  border-gray-300 focus:ring-blue-500 focus:ring-2 '
+            onChange={() => handleChangePayment(1)}
           />
           <label
             htmlFor='bordered-radio-2'
@@ -287,166 +260,99 @@ export default function PaymentMethods({
         </div>
         <div className={`${selectedPaymentMethod == 1 ? 'block' : 'hidden'}`}>
           {/* EFT METHOD */}
-          <div className='bg-gray-50 ml-2 '>
-            <div className='items-center pl-4 border border-gray-200 rounded'>
-              <div className='flex items-center pl-2 '>
-                <input
-                  id='havale-radio-1'
-                  type='radio'
-                  checked={selectedEFTMethod == 0}
-                  name='havale-radio'
-                  className='w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 '
-                  onChange={() => setSselectedEFTMethod(0)}
-                />
-                <label
-                  htmlFor='havale-radio-1'
-                  className='w-full py-4 ml-4 text-sm font-medium text-gray-900 '
-                >
-                  <div className='flex space-x-4'>
-                    <Image
-                      className='w-32 h-12 sm:w-48 sm:h-12'
-                      src={'/akbank.png'}
-                      alt='akbank-logo'
-                      width={192}
-                      height={20}
-                    ></Image>
+          {paymentMethods &&
+            paymentMethods.banks.map((paymentMethod, index) => {
+              return (
+                <div key={paymentMethod.ID} className='bg-white ml-2 py-0.5'>
+                  <div className='items-center pl-4 border border-gray-200 rounded'>
+                    <div className='flex items-center pl-2 '>
+                      <input
+                        id={`havale-radio-${index}`}
+                        type='radio'
+                        checked={selectedEFTMethod == paymentMethod.ID}
+                        name='havale-radio'
+                        className='w-6 h-6 text-blue-600  border-gray-300 focus:ring-blue-500 focus:ring-2 '
+                        onChange={() => handleChangeEFT(paymentMethod.ID)}
+                      />
+                      <label
+                        htmlFor={`havale-radio-${index}`}
+                        className='w-full py-4 ml-4 text-sm font-medium text-gray-900 '
+                      >
+                        <div className='flex space-x-4'>
+                          <Image
+                            className='w-32 h-12 sm:w-48 sm:h-12'
+                            src={`/${paymentMethod.bank_logo}`}
+                            alt={`${paymentMethod.bank_name}-logo}`}
+                            width={192}
+                            height={20}
+                          ></Image>
 
-                    <div className='mt-2'>
-                      <h3 className='text-base font-semibold text-heading'>
-                        AKBANK
-                      </h3>
-                      <div className='text-sm'>TL Hesabı</div>
+                          <div className='mt-2'>
+                            <h3 className='text-base font-semibold text-heading'>
+                              {paymentMethod.bank_name}
+                            </h3>
+                            <div className='text-sm'>TL Hesabı</div>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    <div
+                      className={`${
+                        selectedEFTMethod == paymentMethod.ID
+                          ? 'block'
+                          : 'hidden'
+                      }`}
+                    >
+                      <div className=' ml-2 sm:ml-14 mr-2'>
+                        <h4 className='text-sm text-gray-600'>
+                          Sipariş sonrası IBAN / Hesap No’ya Havale / EFT ile
+                          ödeyin, ödemeniz sonrası siparişiniz onaylansın
+                        </h4>
+
+                        <h4 className='text-lg font-semibold text-gray-600 my-4'>
+                          {paymentMethod.bank_name}
+                        </h4>
+                        <div className='my-2'>
+                          <span className='text-lg text-gray-500'>TR</span>
+                          <span className='text-2xl font-bold text-gray-700'>
+                            {' '}
+                            {formatIBAN(paymentMethod.iban)}
+                          </span>
+                        </div>
+                        <Image
+                          src={`/${paymentMethod.qr_code}`}
+                          alt='iban'
+                          width={200}
+                          height={200}
+                        ></Image>
+
+                        <div className='my-4'>
+                          <h6 className='my-4 font-bold text-gray-700'>
+                            Bunları Unutmayın
+                          </h6>
+                          <ul className=''>
+                            <li className='text-xs my-4 text-gray-500'>
+                              * Havale / EFT işlemini yaparken açıklama kısmına{' '}
+                              <strong>sipariş numaranızı</strong> mutlaka
+                              yazmalısınız.
+                            </li>
+                            <li className='text-xs my-4 text-gray-500'>
+                              * Havale / EFT ile ödeme yaptıktan sonra
+                              siparişiniz onaylanacak ve işlemleriniz
+                              başlayacaktır. Siparişinizin iptal olmaması için{' '}
+                              <strong>1 iş günü</strong> içerisinde ödeme
+                              işlemini tamamlamalısınız.
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </label>
-              </div>
-              <div className={`${selectedEFTMethod == 0 ? 'block' : 'hidden'}`}>
-                <div className='bg-gray-50 ml-2 sm:ml-14 mr-2'>
-                  <h4 className='text-sm text-gray-600'>
-                    Sipariş sonrası IBAN / Hesap No’ya Havale / EFT ile ödeyin,
-                    ödemeniz sonrası siparişiniz onaylansın
-                  </h4>
-
-                  <h4 className='text-lg font-semibold text-gray-600 my-4'>
-                    KARDEŞLER DERİ SANAYİ VE TİCARET LİMİTED ŞİRKETİ
-                  </h4>
-                  <div className='my-2'>
-                    <span className='text-lg text-gray-500'>TR</span>
-                    <span className='text-2xl font-bold text-gray-700'>
-                      {' '}
-                      37 0001 2003 4567 8000 9012 34
-                    </span>
-                  </div>
-                  <Image
-                    src={'/iban-example.png'}
-                    alt='iban'
-                    width={200}
-                    height={200}
-                  ></Image>
-
-                  <div className='my-4'>
-                    <h6 className='my-4 font-bold text-gray-700'>
-                      Bunları Unutmayın
-                    </h6>
-                    <ul className=''>
-                      <li className='text-xs my-4 text-gray-500'>
-                        * Havale / EFT işlemini yaparken açıklama kısmına{' '}
-                        <strong>sipariş numaranızı</strong> mutlaka
-                        yazmalısınız.
-                      </li>
-                      <li className='text-xs my-4 text-gray-500'>
-                        * Havale / EFT ile ödeme yaptıktan sonra siparişiniz
-                        onaylanacak ve işlemleriniz başlayacaktır. Siparişinizin
-                        iptal olmaması için <strong>1 iş günü</strong>{' '}
-                        içerisinde ödeme işlemini tamamlamalısınız.
-                      </li>
-                    </ul>
-                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          {/* EFT METHOD */}
-          <div className='bg-gray-50 ml-2 '>
-            <div className='items-center pl-4 border border-gray-200 rounded'>
-              <div className='flex items-center pl-2 '>
-                <input
-                  id='havale-radio-2'
-                  type='radio'
-                  checked={selectedEFTMethod == 1}
-                  name='havale-radio'
-                  className='w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 '
-                  onChange={() => setSselectedEFTMethod(1)}
-                />
-                <label
-                  htmlFor='havale-radio-2'
-                  className='w-full py-4 ml-4 text-sm font-medium text-gray-900 '
-                >
-                  <div className='flex space-x-4'>
-                    <Image
-                      className='w-32 h-12 sm:w-48 sm:h-12'
-                      src={'/isbank.png'}
-                      alt='isbank-logo'
-                      width={192}
-                      height={20}
-                    ></Image>
-
-                    <div className='mt-2'>
-                      <h3 className='text-base font-semibold text-heading'>
-                        Türkiye İş Bankası
-                      </h3>
-                      <div className='text-sm'>TL Hesabı</div>
-                    </div>
-                  </div>
-                </label>
-              </div>
-              <div className={`${selectedEFTMethod == 1 ? 'block' : 'hidden'}`}>
-                <div className='bg-gray-50 ml-2 sm:ml-14 mr-2'>
-                  <h4 className='text-sm text-gray-600'>
-                    Sipariş sonrası IBAN / Hesap No’ya Havale / EFT ile ödeyin,
-                    ödemeniz sonrası siparişiniz onaylansın
-                  </h4>
-
-                  <h4 className='text-lg font-semibold text-gray-600 my-4'>
-                    KARDEŞLER DERİ SANAYİ VE TİCARET LİMİTED ŞİRKETİ
-                  </h4>
-                  <div className='my-2'>
-                    <span className='text-lg text-gray-500'>TR</span>
-                    <span className='text-2xl font-bold text-gray-700'>
-                      {' '}
-                      37 0001 2003 4567 8000 9012 34
-                    </span>
-                  </div>
-                  <Image
-                    src={'/iban-example.png'}
-                    alt='iban'
-                    width={200}
-                    height={200}
-                  ></Image>
-                  <div className='my-4'>
-                    <h6 className='my-4 font-bold text-gray-700'>
-                      Bunları Unutmayın
-                    </h6>
-                    <ul className=''>
-                      <li className='text-xs my-4 text-gray-500'>
-                        * Havale / EFT işlemini yaparken açıklama kısmına{' '}
-                        <strong>sipariş numaranızı</strong> mutlaka
-                        yazmalısınız.
-                      </li>
-                      <li className='text-xs my-4 text-gray-500'>
-                        * Havale / EFT ile ödeme yaptıktan sonra siparişiniz
-                        onaylanacak ve işlemleriniz başlayacaktır. Siparişinizin
-                        iptal olmaması için <strong>1 iş günü</strong>{' '}
-                        içerisinde ödeme işlemini tamamlamalısınız.
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+              );
+            })}
         </div>
       </div>
-    </div>
+    </>
   );
 }
