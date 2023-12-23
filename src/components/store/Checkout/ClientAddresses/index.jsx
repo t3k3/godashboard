@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AddClientShippingAddressModal from './AddClientShippingAddressModal';
 import AddClientPaymentAddressModal from './AddClientPaymentAddressModal';
 import EditClientShippingAddressModal from './EditClientShippingAddressModal';
@@ -6,12 +6,16 @@ import EditClientPaymentAddressModal from './EditClientPaymentAddressModal';
 
 import { useState } from 'react';
 import { saveOrderAddressesForMember } from '@/services/store/checkout';
+import { getCustomerAddresses } from '@/services/store/account';
 
-function ClientAddresses({ addresses }) {
-  const [selectedShippingMethod, setSelectedShippingMethod] = useState(false);
+function ClientAddresses(props) {
+  const [selectedShippingAddress, setSelectedShippingAddress] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(false);
 
-  // console.log('selectedShippingMethod: ', selectedShippingMethod);
+  const [shippingAddresses, setShippingAddresses] = useState([]);
+  const [paymentAddresses, setPaymentAddresses] = useState([]);
+
+  // console.log('selectedShippingAddress: ', selectedShippingAddress);
   // console.log('selectedPaymentMethod: ', selectedPaymentMethod);
 
   const [addClientShippingAddressModal, setAddClientShippingAddressModal] =
@@ -25,41 +29,73 @@ function ClientAddresses({ addresses }) {
   const [editClientPaymentAddressModal, setEditClientPaymentAddressModal] =
     useState(false);
 
-  const shippingAddresses = addresses.filter(
-    (address) => address.address_type == 0
-  );
+  useEffect(() => {
+    const getAddressesMethod = async () => {
+      const response = await getCustomerAddresses();
+      // console.log('Address data: ', response);
 
-  const paymentAddresses = addresses.filter(
-    (address) => address.address_type == 1
-  );
+      if (response && response.data && response.data.length > 0) {
+        const shippingAddressesTemp = response.data.filter(
+          (address) => address.type === 1
+        );
+        setShippingAddresses(shippingAddressesTemp);
+
+        const paymentAddressesTemp = response.data.filter(
+          (address) => address.type === 2
+        );
+        setPaymentAddresses(paymentAddressesTemp);
+      }
+    };
+
+    getAddressesMethod();
+  }, []);
+
+  console.log('shippingAddresses: ', shippingAddresses);
+  console.log('paymentAddresses: ', paymentAddresses);
 
   const handleChange = async (address, addressType) => {
-    if (addressType == 'shipping_address') {
-      setSelectedShippingMethod(address);
+    if (addressType === 'shipping_address') {
+      props.setOrder((prevOrder) => ({
+        ...prevOrder,
+        firstname: address.firstname,
+        lastname: address.lastname,
+        phone: address.phone,
+        tckn: address.tckn,
+        email: address.email,
+        shipping_address: address.shipping_address,
+        shipping_country: address.shipping_country,
+        shipping_city: address.shipping_city,
+        shipping_ilce: address.shipping_ilce,
+        shipping_mahalle: address.shipping_mahalle,
+        shipping_postcode: address.shipping_postcode,
+      }));
+
+      setSelectedShippingAddress(address);
     }
 
-    if (addressType == 'payment_address') {
+    if (addressType === 'payment_address') {
+      props.setOrder((prevOrder) => ({
+        ...prevOrder,
+        company: address.company,
+        vkn: address.vkn,
+        vd: address.vd,
+        payment_address: address.payment_address,
+        payment_country: address.payment_country,
+        payment_city: address.payment_city,
+        payment_ilce: address.payment_ilce,
+        payment_mahalle: address.payment_mahalle,
+      }));
+
       setSelectedPaymentMethod(address);
     }
 
-    console.log('VALUE: ', address.address_id);
+    console.log('VALUE: ', address);
     console.log('addressType: ', addressType);
-
-    const response = await saveOrderAddressesForMember({
-      address_id: address.address_id,
-      address_type: addressType,
-    });
-
-    if (response.status === 200) {
-      console.log('SUCCESS: ', response.status);
-    } else {
-      console.log('FAİL: ', response.status);
-    }
   };
 
   const handleEditShipping = (address) => {
     console.log('ADDRESS Shipping: ', address);
-    setSelectedShippingMethod(address);
+    setSelectedShippingAddress(address);
     setEditClientShippingAddressModal(true);
   };
 
@@ -81,7 +117,7 @@ function ClientAddresses({ addresses }) {
       {/* EDİT SHIPPING ADDRESS MODAL */}
       {editClientShippingAddressModal ? (
         <EditClientShippingAddressModal
-          address={selectedShippingMethod}
+          address={selectedShippingAddress}
           closeModal={setEditClientShippingAddressModal}
         />
       ) : null}
@@ -89,6 +125,7 @@ function ClientAddresses({ addresses }) {
       {/* ADD PAYMENT ADDRESS ADD MODAL */}
       {addClientPaymentAddressModal ? (
         <AddClientPaymentAddressModal
+          setPaymentAddresses={setPaymentAddresses}
           closeModal={setAddClientPaymentAddressModal}
         />
       ) : null}
@@ -132,10 +169,12 @@ function ClientAddresses({ addresses }) {
                         <h3 className='text-base font-semibold text-heading'>
                           {address.firstname + ' ' + address.lastname}
                         </h3>
-                        <div className='text-sm'>{address.telephone}</div>
-                        <div className='text-sm'>{address.address_1}</div>
+                        <div className='text-sm'>{address.phone}</div>
                         <div className='text-sm'>
-                          {address.city + ' ' + address.zone}
+                          {address.shipping_address}
+                        </div>
+                        <div className='text-sm'>
+                          {address.shipping_ilce + ' ' + address.shipping_city}
                         </div>
                       </div>
 
@@ -213,9 +252,9 @@ function ClientAddresses({ addresses }) {
                         <div className='text-sm'>
                           {address.vkn + ' ' + address.vd}
                         </div>
-                        <div className='text-sm'>{address.address_1}</div>
+                        <div className='text-sm'>{address.payment_address}</div>
                         <div className='text-sm'>
-                          {address.city + ' ' + address.zone}
+                          {address.payment_ilce + ' ' + address.payment_city}
                         </div>
                       </div>
 

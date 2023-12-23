@@ -81,37 +81,33 @@ const ilceler = [
   },
 ];
 
-let addressTemp = {
-  vd: '',
-  vkn: '',
-  tckn: '',
+const addressJSON = {
+  type: 1, //Shipping
   firstname: '',
   lastname: '',
-  company: '',
-  address_1: '',
-  address_2: '',
+  tckn: '',
   email: '',
-  telephone: '',
-  postcode: '',
-  address_type: '0',
-  city: '',
-  zone_id: '',
-  zone: '',
-  zone_code: '',
-  country_id: '',
-  country: '',
-  iso_code_2: '',
-  iso_code_3: '',
-  address_format: '',
-  custom_field: [],
+  phone: '',
+  shipping_country: '',
+  shipping_city: '',
+  shipping_ilce: '',
+  shipping_postcode: '',
+  shipping_mahalle: '',
+  shipping_address: '',
+  payment_country: '',
+  payment_city: '',
+  payment_ilce: '',
+  payment_mahalle: '',
+  payment_address: '',
+  vkn: '',
+  vd: '',
+  company: '',
 };
 
 function AddClientShippingAddressModal(props) {
-  const [address, setAddress] = useState(addressTemp);
+  const [address, setAddress] = useState(addressJSON);
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
-
-  console.log('address: ', address);
 
   const handleChange = (e) => {
     console.log('name: ', e.target.name);
@@ -135,6 +131,7 @@ function AddClientShippingAddressModal(props) {
     console.log('address GÖNDERİLEN address DATA:: ', address);
     const response = await saveNewAddress(address);
 
+    console.log('response 55566666: ', response);
     //TODO: Response Status 201 olmalı.
     if (response.status === 200) {
       setSuccess(true);
@@ -152,11 +149,11 @@ function AddClientShippingAddressModal(props) {
       <div className='fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity'></div>
 
       <div className='fixed inset-0 z-50 overflow-y-auto'>
-        <div className='flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0'>
+        <div className='min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0'>
           <div className='relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl resize'>
             <div className=' px-4 bg-white pb-4 pt-5 sm:p-6 sm:pb-4 '>
               <div className='sm:flex sm:items-start '>
-                <div className='mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left  w-full'>
+                <div className='mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full'>
                   <h3
                     className='text-base font-semibold leading-6 text-gray-600  border-b'
                     id='modal-title'
@@ -253,7 +250,7 @@ function AddClientShippingAddressModal(props) {
                           </div>
                           <div className='w-full'>
                             <label
-                              htmlFor='telephone'
+                              htmlFor='phone'
                               className='text-gray-600 mb-2 block'
                             >
                               Telefon
@@ -261,9 +258,9 @@ function AddClientShippingAddressModal(props) {
                             <input
                               required
                               type='text'
-                              name='telephone'
-                              id='telephone'
-                              value={address.telephone}
+                              name='phone'
+                              id='phone'
+                              value={address.phone}
                               onChange={handleChange}
                               className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
                               placeholder='5xx-xxx-xx-xx'
@@ -272,7 +269,7 @@ function AddClientShippingAddressModal(props) {
                         </div>
                         <div className='w-full'>
                           <label
-                            htmlFor='address_1'
+                            htmlFor='shipping_address'
                             className='text-gray-600 mb-2 block'
                           >
                             Adres
@@ -280,9 +277,9 @@ function AddClientShippingAddressModal(props) {
                           <textarea
                             required
                             type='text'
-                            name='address_1'
-                            id='address_1'
-                            value={address.address_1}
+                            name='shipping_address'
+                            id='shipping_address'
+                            value={address.shipping_address}
                             onChange={handleChange}
                             rows='2'
                             className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
@@ -321,16 +318,16 @@ function AddClientShippingAddressModal(props) {
                           </div>
                           <div className='w-full'>
                             <label
-                              htmlFor='zone_id'
+                              htmlFor='shipping_city'
                               className='text-gray-600 mb-2 block'
                             >
                               Şehir
                             </label>
                             <select
                               className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
-                              name='zone_id'
-                              id='zone_id'
-                              value={address.zone_id}
+                              name='shipping_city'
+                              id='shipping_city'
+                              value={address.shipping_city}
                               onChange={handleChange}
                             >
                               {cities.zone.map((city) => {
@@ -358,16 +355,16 @@ function AddClientShippingAddressModal(props) {
 
                           <div className='w-full'>
                             <label
-                              htmlFor='city'
+                              htmlFor='shipping_ilce'
                               className='text-gray-600 mb-2 block'
                             >
                               İlçe
                             </label>
                             <select
                               className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
-                              name='city'
-                              id='city'
-                              value={address.city}
+                              name='shipping_ilce'
+                              id='shipping_ilce'
+                              value={address.shipping_ilce}
                               onChange={handleChange}
                             >
                               {ilceler.map((ilce) => {
@@ -392,16 +389,16 @@ function AddClientShippingAddressModal(props) {
 
                           <div className='w-full'>
                             <label
-                              htmlFor='postcode'
+                              htmlFor='shipping_postcode'
                               className='text-gray-600 mb-2 block'
                             >
                               Posta Kodu
                             </label>
                             <input
                               type='text'
-                              name='postcode'
-                              id='postcode'
-                              value={address.postcode}
+                              name='shipping_postcode'
+                              id='shipping_postcode'
+                              value={address.shipping_postcode}
                               onChange={handleChange}
                               className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
                               placeholder='34656'

@@ -19,11 +19,11 @@ function LoginRegister() {
   });
 
   const [registerFormData, setRegisterFormData] = useState({
-    firstname: '',
-    lastname: '',
+    first_name: '',
+    last_name: '',
     email: '',
     password: '',
-    aggrement: 1,
+    aggrement: true,
   });
 
   const [errorLogin, setErrorLogin] = useState(false);
@@ -51,20 +51,21 @@ function LoginRegister() {
 
     const response = await login(data);
 
-    const res = await response.json();
-
-    if (res.status == 401) {
-      setErrorLogin(res.error);
+    if (response.status === 401) {
+      setErrorLogin('Kullnıcı adı veya şifre hatalı.');
+      return;
     }
 
-    if (res.status == 200) {
-      setErrorLogin(res.customer.name);
+    if (response.status === 200) {
+      setErrorLogin('Giriş başarılı.');
       router.refresh();
+      return;
       // router.push('/');
     }
 
-    console.log('RES LOGİN:', res);
+    // const res = await response.json();
 
+    setErrorLogin('Bir sorun oluştu.');
     router.refresh();
   };
 
@@ -76,32 +77,28 @@ function LoginRegister() {
     e.preventDefault();
 
     var data = {
-      firstname: registerFormData.firstname,
-      lastname: registerFormData.lastname,
+      first_name: registerFormData.first_name,
+      last_name: registerFormData.last_name,
       email: registerFormData.email,
       password: registerFormData.password,
-      aggrement: registerAggrement,
+      aggrement: registerFormData.aggrement,
     };
 
     const response = await register(data);
 
     const res = await response.json();
 
-    if (res.status == 401) {
-      if (res.error_warning != '') {
-        setErrorRegister(res.error_warning);
-      }
-      if (res.error_email != '') {
-        setErrorRegister(res.error_email);
-      }
-      if (res.error_password != '') {
-        setErrorRegister(res.error_password);
-      }
-    }
+    console.log('res 00000: ', res);
 
     if (res.status == 201) {
       setErrorRegister('Başarılı!');
       router.refresh();
+      // router.push('/');
+    }
+
+    if (res.status == 409) {
+      setErrorRegister('Kayit Yapilamadi. Eposta adresi zaten kayitli.');
+
       // router.push('/');
     }
   };

@@ -12,7 +12,7 @@ async function saveNewAddressService(data) {
   };
 
   try {
-    const res = await fetch(`${BASE_URL}/api/account/address`, requestOptions);
+    const res = await fetch(`${_BASE_URL}/api/account/address`, requestOptions);
 
     const response = await res.json();
 
@@ -39,6 +39,27 @@ async function editAddressService(data) {
     );
 
     const response = await res.json();
+
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+async function getCustomerAddressService() {
+  var requestOptions = {
+    cache: 'no-store',
+    method: 'GET',
+    // body: JSON.stringify(data),
+    redirect: 'follow',
+  };
+
+  try {
+    const res = await fetch(`${_BASE_URL}/api/account/address`, requestOptions);
+
+    const response = await res.json();
+
+    // console.log('response 342234: ', response);
 
     return response;
   } catch (error) {
@@ -94,6 +115,9 @@ const saveNewAddress = async (data) => {
 const editAddress = async (data) => {
   return editAddressService(data);
 };
+const getCustomerAddresses = async () => {
+  return getCustomerAddressService();
+};
 
 const register = async (data) => {
   return registerService(data);
@@ -103,4 +127,4 @@ const login = async (data) => {
   return loginService(data);
 };
 
-export { saveNewAddress, editAddress, register, login };
+export { saveNewAddress, editAddress, getCustomerAddresses, register, login };

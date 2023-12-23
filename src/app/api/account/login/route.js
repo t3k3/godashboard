@@ -31,27 +31,41 @@ export async function POST(request) {
     requestOptions
   );
 
-  //   console.log('response FROM ROUTEJS: ', response);
+  // console.log('response FROM ROUTEJS: ', response);
 
-  const res = await response.json();
-
-  if (res.error_warning) {
+  if (response.status === 401) {
     return new Response(
       JSON.stringify({
         status: 401,
         statusText: 'Unauthorized!',
-        error: res.error_warning,
+        error: 'Unauthorized!',
       })
     );
   }
 
-  if (res.customer) {
-    return new Response(
-      JSON.stringify({
-        status: 200,
-        statusText: 'Login true',
-        customer: res.customer,
-      })
-    );
+  if (response.status === 200) {
+    const res = await response.json();
+    if (res != '') {
+      let response = new Response(
+        JSON.stringify({
+          status: 200,
+          statusText: 'Login true',
+        })
+      );
+
+      response.headers.set(
+        'Set-Cookie',
+        'SESSION_ID=' + res + '; path=/; HttpOnly'
+      );
+
+      return response;
+    }
   }
+
+  return new Response(
+    JSON.stringify({
+      status: 404,
+      statusText: 'Login false',
+    })
+  );
 }

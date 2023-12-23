@@ -1,48 +1,62 @@
-import { _API_URL_ADMIN } from '@/config/apiConfig';
-// import getClientHeaders from '@/app/libs/getHeaders';
+import { _API_URL_ADMIN, _API_URL_STORE } from '@/config/apiConfig';
+import getClientHeaders from '@/app/libs/getHeaders';
 
 export async function POST(request) {
+  const cookies = await getClientHeaders();
+  // console.log('cookies: ', cookies);
+
   const data = await request.json();
 
-  // const nextCookies = cookies();
+  console.log('data: ', data);
 
-  // let headers = new Headers();
+  let headers = new Headers();
+  cookies.find((cookie) => {
+    if (cookie.name === 'CART_ID') {
+      headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+    }
+  });
 
-  // headers.append('Cookie', `default=${nextCookies.get('default').value}`);
-  // headers.append('Cookie', `PHPSESSID=${nextCookies.get('PHPSESSID').value}`);
-  // headers.append('Cookie', `language=${nextCookies.get('language').value}`);
-  // headers.append('Cookie', `currency=${nextCookies.get('currency').value}`);
+  // console.log('formdata: ', formdata);
 
-  // console.log('requestOptions: ', requestOptions);
+  var requestOptions = {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(data),
+    redirect: 'follow',
+  };
 
-  try {
-    const response = await fetch({
-      method: 'POST',
-      //   mode: 'no-cors',
-      url: `${_API_URL_ADMIN}/customers`,
-
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (response.status === 201) {
-      return new Response(
+  const response = await fetch(
+    `${_API_URL_STORE}/account/register`,
+    requestOptions
+  );
+  console.log('response.status 1111111111: ', response.status);
+  if (response.status === 201) {
+    const res = await response.json();
+    if (res != '') {
+      let response = new Response(
         JSON.stringify({
-          status: response.status,
-          statusText: response.statusText,
-          data: response.data,
+          status: 201,
+          statusText: 'Register success',
         })
       );
+
+      response.headers.set(
+        'Set-Cookie',
+        'SESSION_ID=' + res + '; path=/; HttpOnly'
+      );
+
+      return response;
     }
-  } catch (error) {
-    return new Response(
+  }
+
+  if (response.status === 409) {
+    let response = new Response(
       JSON.stringify({
-        status: error.response.status,
-        statusText: error.response.statusText,
-        data: error.response.data,
+        status: 409,
+        statusText: 'Kayit yapilamadi. Eposta adresi zaten kayitli.',
       })
     );
+
+    return response;
   }
 }

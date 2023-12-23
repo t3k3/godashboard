@@ -81,33 +81,31 @@ const ilceler = [
   },
 ];
 
-let addressTemp = {
-  vd: '',
-  vkn: '',
-  tckn: '',
+const addressJSON = {
+  type: 2, //Payment Address
   firstname: '',
   lastname: '',
-  company: '',
-  address_1: '',
-  address_2: '',
+  tckn: '',
   email: '',
-  telephone: '',
-  postcode: '',
-  address_type: '1',
-  city: '',
-  zone_id: '',
-  zone: '',
-  zone_code: '',
-  country_id: '',
-  country: '',
-  iso_code_2: '',
-  iso_code_3: '',
-  address_format: '',
-  custom_field: [],
+  phone: '',
+  shipping_country: '',
+  shipping_city: '',
+  shipping_ilce: '',
+  shipping_postcode: '',
+  shipping_mahalle: '',
+  shipping_address: '',
+  payment_country: '',
+  payment_city: '',
+  payment_ilce: '',
+  payment_mahalle: '',
+  payment_address: '',
+  vkn: '',
+  vd: '',
+  company: '',
 };
 
 function AddClientPaymentAddressModal(props) {
-  const [address, setAddress] = useState(addressTemp);
+  const [address, setAddress] = useState(addressJSON);
   const [isUpdate, setIsUpdate] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -132,11 +130,17 @@ function AddClientPaymentAddressModal(props) {
     e.preventDefault();
 
     // Handle validations
-    console.log('address GÖNDERİLEN address DATA:: ', address);
+
     const response = await saveNewAddress(address);
 
+    console.log('response 4235345345: ', response);
+
     //TODO: Response Status 201 olmalı.
-    if (response.status === 200) {
+    if (response.status === 201) {
+      props.setPaymentAddresses((prev) => {
+        return [...prev, response.data];
+      });
+
       setSuccess(true);
     }
     setIsUpdate(false);
@@ -152,11 +156,11 @@ function AddClientPaymentAddressModal(props) {
       <div className='fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity'></div>
 
       <div className='fixed inset-0 z-50 overflow-y-auto'>
-        <div className='flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0'>
+        <div className='min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0'>
           <div className='relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl resize'>
             <div className=' px-4 bg-white pb-4 pt-5 sm:p-6 sm:pb-4 '>
               <div className='sm:flex sm:items-start '>
-                <div className='mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left  w-full'>
+                <div className='mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full'>
                   <h3
                     className='text-base font-semibold leading-6 text-gray-600  border-b'
                     id='modal-title'
@@ -235,7 +239,7 @@ function AddClientPaymentAddressModal(props) {
                         </div>
                         <div className='w-full'>
                           <label
-                            htmlFor='address_1'
+                            htmlFor='payment_address'
                             className='text-gray-600 mb-2 block'
                           >
                             Adres
@@ -243,10 +247,10 @@ function AddClientPaymentAddressModal(props) {
                           <textarea
                             required
                             type='text'
-                            name='address_1'
-                            id='address_1'
+                            name='payment_address'
+                            id='payment_address'
                             rows='2'
-                            value={address.address_1}
+                            value={address.payment_address}
                             onChange={handleChange}
                             className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
                             placeholder='Açık adres giriniz...'
@@ -285,16 +289,16 @@ function AddClientPaymentAddressModal(props) {
                           </div>
                           <div className='w-full'>
                             <label
-                              htmlFor='zone_id'
+                              htmlFor='payment_city'
                               className='text-gray-600 mb-2 block'
                             >
                               Şehir
                             </label>
                             <select
                               className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
-                              name='zone_id'
-                              id='zone_id'
-                              value={address.zone_id}
+                              name='payment_city'
+                              id='payment_city'
+                              value={address.payment_city}
                               onChange={handleChange}
                             >
                               {cities.zone.map((city) => {
@@ -322,16 +326,16 @@ function AddClientPaymentAddressModal(props) {
 
                           <div className='w-full'>
                             <label
-                              htmlFor='city'
+                              htmlFor='payment_ilce'
                               className='text-gray-600 mb-2 block'
                             >
                               İlçe
                             </label>
                             <select
                               className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 '
-                              name='city'
-                              id='city'
-                              value={address.city}
+                              name='payment_ilce'
+                              id='payment_ilce'
+                              value={address.payment_ilce}
                               onChange={handleChange}
                             >
                               {ilceler.map((ilce) => {
@@ -352,24 +356,6 @@ function AddClientPaymentAddressModal(props) {
             className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
             placeholder='İstanbul'
           /> */}
-                          </div>
-
-                          <div className='w-full'>
-                            <label
-                              htmlFor='postcode'
-                              className='text-gray-600 mb-2 block'
-                            >
-                              Posta Kodu
-                            </label>
-                            <input
-                              type='text'
-                              name='postcode'
-                              id='postcode'
-                              value={address.postcode}
-                              onChange={handleChange}
-                              className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
-                              placeholder='34656'
-                            />
                           </div>
                         </div>
                       </div>

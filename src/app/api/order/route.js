@@ -15,6 +15,11 @@ export async function POST(request) {
       headers.append('Cookie', `${cookie.name}=${cookie.value}`);
     }
   });
+  cookies.find((cookie) => {
+    if (cookie.name === 'SESSION_ID') {
+      headers.append('Cookie', `${cookie.name}=${cookie.value}`);
+    }
+  });
 
   var requestOptions = {
     method: 'POST',

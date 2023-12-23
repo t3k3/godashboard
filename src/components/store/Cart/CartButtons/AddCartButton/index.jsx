@@ -58,7 +58,7 @@ function AddCartButton({ product }) {
   //arr seçilen varyantın name ve value değerlerini altaşırır
   let arr = { option: selectedOptionValues };
 
-  console.log('seçilen seçenekler arr: ', arr);
+  // console.log('seçilen seçenekler arr: ', arr);
 
   const increaseProductCount = () => {
     if (product.quantity <= productCount) {
@@ -99,7 +99,7 @@ function AddCartButton({ product }) {
     arr
   );
 
-  console.log('Seçilen Product Combination:', selectedCombination);
+  // console.log('Seçilen Product Combination:', selectedCombination);
 
   const addCart = async (product_id) => {
     //arr içinde value alanında null varsa return et ve warning içine boş olan value nesnesinin name'ini yazdır. null olanların tümünün name'ini yazdır.

@@ -1,7 +1,8 @@
 // const BASE_URL = 'http://127.0.0.1:3000'; // API URL burada tanımlanır
 const BASE_URL = 'https://test.actsistem.com'; // API URL burada tanımlanır
 
-const _BASE_URL = 'http://localhost:3000'; // API URL burada tanımlanır
+const _BASE_URL = 'http://lesber.com:3000'; // API URL burada tanımlanır
+// const _BASE_URL = 'http://localhost:3000'; // API URL burada tanımlanır
 // const _BASE_URL = 'http://127.0.0.1:3000'; // API URL burada tanımlanır
 
 const API_URL_ADMIN = 'http://demo.actsistem.com/api/v1/admin/index.php?route='; // API URL burada tanımlanır

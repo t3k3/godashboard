@@ -142,7 +142,7 @@ function CheckoutPage(props) {
   const [cart, setCart] = useState(props.cart);
   const [order, setOrder] = useState(orderJSON);
   const [couponCode, setCouponCode] = useState('');
-  console.log('order45654646 : ', order);
+  // console.log('order45654646 : ', order);
 
   // const [formData, setFormData] = useState(props.cart);
   const [sameAddresses, setSameAddresses] = useState(1);
@@ -158,7 +158,7 @@ function CheckoutPage(props) {
     // console.log('cartTemp: ', cartTemp);
 
     const response = await getCheckout(props.cookies, selected.ID, couponCode);
-    console.log('response21321312: ', response);
+    // console.log('response21321312: ', response);
 
     setCart(response.checkout.cart);
     setOrder((prevCart) => ({
@@ -224,7 +224,7 @@ function CheckoutPage(props) {
               ilceler={ilceler}
             />
           ) : (
-            <ClientAddresses addresses={cart.addresses} />
+            <ClientAddresses setOrder={setOrder} />
           )}
         </div>
 
@@ -253,11 +253,9 @@ function CheckoutPage(props) {
                     />
                   </div>
                   <div className='max-w-sm'>
-                    <Link href={`/urun${product.href}`}>
-                      <p className='text-lg block mb-2 font-medium uppercase text-gray-800 hover:text-primary transition'>
-                        {product.name}
-                      </p>
-                    </Link>
+                    <p className='text-lg block mb-2 font-medium uppercase text-gray-800'>
+                      {product.name}
+                    </p>
 
                     {JSON.parse(product.option).map((opt) => {
                       return (
