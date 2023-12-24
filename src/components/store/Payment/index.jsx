@@ -21,6 +21,7 @@ import { confirmOrderEft } from '@/services/store/payment';
 
 function PaymentPage(props) {
   const [payment, setPayment] = useState(props.payment);
+  const [warning, setWarning] = useState(false);
 
   const totals = JSON.parse(payment.order.totals);
 
@@ -53,14 +54,19 @@ function PaymentPage(props) {
     e.preventDefault();
 
     var response = null;
-    // 1: Kredi Kartı 2: Havale/EFT, 3: Kapıda Ödeme,
+    // 0: Kredi Kartı 1: Havale/EFT, 2: Kapıda Ödeme,
     if (payment.order.payment_method == 1) {
-      response = await confirmOrderEft(
-        props.cookies,
-        payment.order.ID,
-        payment.order.payment_method,
-        payment.order.payment_code
-      );
+      if (payment.order.payment_code == 0) {
+        setWarning(true);
+        return;
+      } else {
+        response = await confirmOrderEft(
+          props.cookies,
+          payment.order.ID,
+          payment.order.payment_method,
+          payment.order.payment_code
+        );
+      }
     }
 
     console.log('response.status: ', response.status);
@@ -78,6 +84,7 @@ function PaymentPage(props) {
     }
   };
 
+  // console.log('payment  456554656: ', payment);
   return (
     <>
       <Breadcrums />
@@ -100,6 +107,7 @@ function PaymentPage(props) {
         <PaymentOkButtonDesktop
           payment={payment}
           totals={totals}
+          warning={warning}
           handleSubmit={handleSubmit}
         />
       </div>

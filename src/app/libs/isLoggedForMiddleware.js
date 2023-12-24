@@ -1,20 +1,13 @@
 import { _API_URL_STORE } from '@/config/apiConfig';
-export async function isLoggedCustomer(nextCookies) {
+export async function isLoggedForMiddleware(nextCookies) {
   const headers = new Headers();
 
   // console.log('nextCookies 55556666: ', nextCookies);
 
-  const sessionCookie = nextCookies.find(
-    (cookie) => cookie.name === 'SESSION_ID'
-  );
-
-  if (!sessionCookie) {
+  if (!nextCookies.cookies.has('SESSION_ID')) {
     return false;
   }
-  // if (!nextCookies.cookies.has('SESSION_ID')) {
-  //   return false;
-  // }
-  // const sessionCookie = nextCookies.cookies.get('SESSION_ID');
+  const sessionCookie = nextCookies.cookies.get('SESSION_ID');
 
   headers.append('Cookie', `${sessionCookie.name}=${sessionCookie.value}`);
 
@@ -32,4 +25,4 @@ export async function isLoggedCustomer(nextCookies) {
   }
 }
 
-export default isLoggedCustomer;
+export default isLoggedForMiddleware;

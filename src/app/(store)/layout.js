@@ -18,7 +18,7 @@ export default async function StoreLayout({ children }) {
 
   // const footerData = await getFooter();
 
-  const categoryList = await getAllCategoryList();
+  // const categoryList = await getAllCategoryList();
 
   return (
     layoutData && (
@@ -27,7 +27,7 @@ export default async function StoreLayout({ children }) {
           <div>
             <Header headerData={layoutData.header_data} cookies={cookies} />
 
-            <Navbar categoryList={categoryList} />
+            <Navbar categoryList={layoutData.layout_category_list} />
             <div>{children}</div>
             <Footer
               footerData={layoutData.footer_data}

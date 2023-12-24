@@ -102,8 +102,8 @@ const ilceler = [
 
 const orderJSON = {
   customer_id: 0,
-  firstname: 'Kimberly',
-  lastname: 'Pruitt',
+  firstname: '',
+  lastname: '',
   tckn: '12345678901',
   email: 'test@123.com',
   phone: '1234567890',

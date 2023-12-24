@@ -1,4 +1,4 @@
-function PaymentOkButtonDesktop({ totals, payment, handleSubmit }) {
+function PaymentOkButtonDesktop({ totals, payment, handleSubmit, warning }) {
   return (
     <div className='lg:block hidden lg:col-span-4 xl:col-span-3 border-l pl-8 border-dashed max-lg:fixed max-lg:bottom-0 max-lg:min-w-screen'>
       <div className='border border-gray-200 p-5 rounded sticky top-12 max-h-screen'>
@@ -27,18 +27,18 @@ function PaymentOkButtonDesktop({ totals, payment, handleSubmit }) {
 
         <button
           className={`${
-            payment.payment_method == '' && 'disabled:opacity-75'
+            payment.order.payment_method == '' && 'disabled:opacity-75'
           } focus:outline-none mt-8 uppercase font-medium rounded border border-primary w-full py-2 flex items-center justify-center space-x-2 bg-primary text-white hover:text-primary hover:bg-transparent transition`}
           disabled={payment.payment_method == ''}
           onClick={handleSubmit}
         >
           SİPARİŞİ TAMAMLA
         </button>
-        {payment.payment_method == '' && (
-          <span className='text-sm text-red-400'>
-            Ödeme yöntemi seçmediniz.
-          </span>
-        )}
+        {warning &&
+          payment.order.payment_method == 1 &&
+          payment.order.payment_code == 0 && (
+            <span className='text-sm text-red-400'>Banka seçmediniz.</span>
+          )}
       </div>
     </div>
   );

@@ -26,11 +26,11 @@ function Navbar({ categoryList }) {
           </span>
           <span className='capitalize ml-2 text-white'>Tum Kategoriler</span>
           <div className=' absolute w-full left-0 top-full bg-white shadow-md py-3 divide-y divide-gray-300 divide-dashed hidden group-hover:block'>
-            {categoryList.categories.map((category) => {
+            {categoryList.map((category) => {
               return (
                 <Link
-                  key={category.category_id}
-                  href={`/kategori/${category.href}`}
+                  key={category.ID}
+                  href={`/kategori/${category.keyword}`}
                   className='flex items-center px-6 py-3 hover:bg-gray-100 transition'
                 >
                   <Image

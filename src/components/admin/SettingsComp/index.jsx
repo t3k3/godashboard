@@ -220,7 +220,7 @@ function SettingsComp(props) {
                     </label>
                     <div className='flex'>
                       <Image
-                        src={settings?.logo}
+                        src={`/${settings?.logo}`}
                         alt='logo'
                         width={100}
                         height={100}
@@ -244,7 +244,7 @@ function SettingsComp(props) {
                     </label>
                     <div className='flex'>
                       <Image
-                        src={settings?.icon}
+                        src={`/${settings?.icon}`}
                         alt='favicon'
                         width={100}
                         height={100}
@@ -269,7 +269,7 @@ function SettingsComp(props) {
                     </label>
                     <div className='flex'>
                       <Image
-                        src={settings?.header_banner}
+                        src={`/${settings?.header_banner}`}
                         alt='header_banner'
                         width={100}
                         height={100}
@@ -301,7 +301,7 @@ function SettingsComp(props) {
                     </label>
                     <div className='flex'>
                       <Image
-                        src={settings?.footer_banner}
+                        src={`/${settings?.footer_banner}`}
                         alt='footer_banner'
                         width={100}
                         height={100}

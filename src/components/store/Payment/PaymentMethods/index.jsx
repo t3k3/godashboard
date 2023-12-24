@@ -38,6 +38,33 @@ import { getPaymentMethods } from '@/services/payment';
                   */
 }
 
+const taksitler = [
+  {
+    taksit: 1,
+    tutar: 260,
+  },
+  {
+    taksit: 3,
+    tutar: 260,
+  },
+  {
+    taksit: 6,
+    tutar: 260,
+  },
+  {
+    taksit: 12,
+    tutar: 260,
+  },
+];
+
+const kk_data = {
+  card_holder: '',
+  card_number: '',
+  card_valid_thru: '',
+  card_ccv: '',
+  installment: 1,
+};
+
 export default function PaymentMethods({
   payment_method,
   handleChangePaymentMethod,
@@ -46,6 +73,51 @@ export default function PaymentMethods({
   // const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
   //   payment_methods[0].code
   // );
+  const [selectedInstallment, setSelectedInstallment] = useState(taksitler[0]);
+  const [selectedInstallmentIndex, setSelectedInstallmentIndex] = useState(0);
+
+  const handleSelectionChange = (taksit, index) => {
+    setSelectedInstallment(taksit);
+    setSelectedInstallmentIndex(index);
+  };
+
+  console.log('selectedInstallment: ', selectedInstallment);
+
+  const [kkData, setKkData] = useState(kk_data);
+
+  const handleChangeKK = (e) => {
+    const { name, value } = e.target;
+    let formattedValue = value;
+
+    // CCV için sadece sayıları kabul et ve maksimum 3 veya 4 haneli olmasını sağla
+    if (name === 'card_ccv') {
+      setKkData((prev) => ({
+        ...prev,
+        [name]: value.replace(/\D/g, '').substring(0, 4), // Varsayılan olarak 3 haneli CCV kabul edilir
+      }));
+    }
+
+    // Kart numarasını formatla
+    else if (name === 'card_number') {
+      // Sadece sayıları kabul et ve her dört rakamdan sonra bir boşluk ekle
+      formattedValue = value
+        .replace(/\D/g, '') // Non-digit karakterleri kaldır
+        .replace(/(\d{4})(?=\d)/g, '$1 '); // Her dört rakamdan sonra boşluk ekle
+    }
+
+    // Kart geçerlilik tarihini formatla
+    else if (name === 'card_valid_thru') {
+      // Sadece sayıları kabul et ve iki karakterden sonra bir slash (/) ekle
+      formattedValue = value
+        .replace(/\D/g, '') // Non-digit karakterleri kaldır
+        .replace(/^(0[1-9]|1[0-2])/, '$1/') // MM/ formatını zorla
+        .substring(0, 7); // En fazla 7 karakter: MM/YYYY
+    }
+
+    // Diğer inputlar için genel işlem
+    setKkData((prev) => ({ ...prev, [name]: formattedValue }));
+  };
+
   const [paymentMethods, setPaymentMethods] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
     payment_method || false
@@ -134,11 +206,11 @@ export default function PaymentMethods({
           </label>
         </div>
         <div className={`${selectedPaymentMethod == 0 ? 'block ' : 'hidden'}`}>
-          <div className=' ml-12 mr-8 '>
+          <div className=' mx-4 '>
             <div className='flex flex-col md:flex-row items-center gap-5 m-2'>
               <div className='w-full'>
                 <label
-                  htmlFor='cartHolder'
+                  htmlFor='card_holder'
                   className='text-gray-600 mb-2 block font-bold'
                 >
                   Kart Sahibi İsim Soyisim
@@ -146,10 +218,10 @@ export default function PaymentMethods({
                 <input
                   required
                   type='text'
-                  name='cartHolder'
-                  id='cartHolder'
-                  // value={cart.firstname}
-                  // onChange={handleChange}
+                  name='card_holder'
+                  id='card_holder'
+                  value={kkData.card_holder}
+                  onChange={handleChangeKK}
                   className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
                   placeholder='Kart Sahibi isim Soyisim'
                 />
@@ -158,7 +230,7 @@ export default function PaymentMethods({
             <div className='flex flex-col md:flex-row items-center gap-5 m-2'>
               <div className='w-full'>
                 <label
-                  htmlFor='cartNumber'
+                  htmlFor='card_number'
                   className='text-gray-600 mb-2 block font-bold'
                 >
                   Kart Numarası
@@ -166,10 +238,10 @@ export default function PaymentMethods({
                 <input
                   required
                   type='text'
-                  name='cartNumber'
-                  id='cartNumber'
-                  // value={cart.firstname}
-                  // onChange={handleChange}
+                  maxLength={19}
+                  name='card_number'
+                  value={kkData.card_number}
+                  onChange={handleChangeKK}
                   className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
                   placeholder='**** **** **** ****'
                 />
@@ -179,7 +251,7 @@ export default function PaymentMethods({
             <div className='flex flex-col md:flex-row items-center gap-5 m-2'>
               <div className='w-full'>
                 <label
-                  htmlFor='validThru'
+                  htmlFor='card_valid_thru'
                   className='text-gray-600 mb-2 block font-bold'
                 >
                   Geçerlilik Tarihi
@@ -187,17 +259,18 @@ export default function PaymentMethods({
                 <input
                   required
                   type='text'
-                  name='validThru'
-                  id='validThru'
-                  // value={cart.firstname}
-                  // onChange={handleChange}
+                  name='card_valid_thru'
+                  id='card_valid_thru'
+                  maxLength={5}
+                  value={kkData.card_valid_thru}
+                  onChange={handleChangeKK}
                   className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
                   placeholder='**/**'
                 />
               </div>
               <div className='w-full'>
                 <label
-                  htmlFor='ccv'
+                  htmlFor='card_ccv'
                   className='text-gray-600 mb-2 block font-bold'
                 >
                   Güvenlik Numarası
@@ -205,13 +278,78 @@ export default function PaymentMethods({
                 <input
                   required
                   type='text'
-                  name='ccv'
-                  id='ccv'
-                  // value={cart.firstname}
-                  // onChange={handleChange}
+                  maxLength={4}
+                  name='card_ccv'
+                  id='card_ccv'
+                  value={kkData.card_ccv}
+                  onChange={handleChangeKK}
                   className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-gray-500 placeholder-gray-400'
                   placeholder='***'
                 />
+              </div>
+            </div>
+            {console.log(
+              'kkData.card_number.length: ',
+              kkData.card_number.length
+            )}
+            <div
+              className={`${
+                kkData.card_number.length > 8 ? 'block' : 'hidden'
+              } max-w-sm pb-12 mt-12 m-2`}
+            >
+              <label
+                htmlFor='installment'
+                className='text-gray-600 mb-2 block font-bold'
+              >
+                Taksit Seçenekleri
+              </label>
+
+              <div className=' max-w-xl'>
+                <div className='flex flex-wrap gap-1 '>
+                  {taksitler.map((taksit, index) => {
+                    return (
+                      <label key={index} className='cursor-pointer border'>
+                        <input
+                          type='radio'
+                          className='peer sr-only'
+                          name='pricing'
+                          checked={selectedInstallmentIndex === index}
+                          onChange={() => handleSelectionChange(taksit, index)}
+                        />
+                        <div className='w-72 max-w-xl rounded-md bg-white p-5 text-gray-600 ring-2 ring-transparent transition-all hover:shadow peer-checked:text-sky-600 peer-checked:ring-blue-400 peer-checked:ring-offset-2'>
+                          <div className='flex flex-col gap-1'>
+                            <div className='flex items-center justify-between'>
+                              <p className='text-sm font-semibold  text-gray-500'>
+                                {taksit.taksit == 1
+                                  ? 'Tek Çekim'
+                                  : taksit.taksit + ' Taksit'}
+                              </p>
+                              <div>
+                                <svg width='24' height='24' viewBox='0 0 24 24'>
+                                  <path
+                                    fill='currentColor'
+                                    d='m10.6 13.8l-2.175-2.175q-.275-.275-.675-.275t-.7.3q-.275.275-.275.7q0 .425.275.7L9.9 15.9q.275.275.7.275q.425 0 .7-.275l5.675-5.675q.275-.275.275-.675t-.3-.7q-.275-.275-.7-.275q-.425 0-.7.275ZM12 22q-2.075 0-3.9-.788q-1.825-.787-3.175-2.137q-1.35-1.35-2.137-3.175Q2 14.075 2 12t.788-3.9q.787-1.825 2.137-3.175q1.35-1.35 3.175-2.138Q9.925 2 12 2t3.9.787q1.825.788 3.175 2.138q1.35 1.35 2.137 3.175Q22 9.925 22 12t-.788 3.9q-.787 1.825-2.137 3.175q-1.35 1.35-3.175 2.137Q14.075 22 12 22Z'
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div className='flex items-end justify-between'>
+                              <p>
+                                <span className='text-lg font-bold'>
+                                  ₺{(taksit.tutar / taksit.taksit).toFixed(2)}
+                                </span>{' '}
+                                x{taksit.taksit}
+                              </p>
+                              <p className='text-sm font-bold'>
+                                ₺{taksit.tutar.toFixed(2)}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
@@ -280,7 +418,7 @@ export default function PaymentMethods({
                       >
                         <div className='flex space-x-4'>
                           <Image
-                            className='w-32 h-12 sm:w-48 sm:h-12'
+                            className='w-24 h-8 sm:w-32 sm:h-8'
                             src={`/${paymentMethod.bank_logo}`}
                             alt={`${paymentMethod.bank_name}-logo}`}
                             width={192}
@@ -310,7 +448,7 @@ export default function PaymentMethods({
                         </h4>
 
                         <h4 className='text-lg font-semibold text-gray-600 my-4'>
-                          {paymentMethod.bank_name}
+                          {paymentMethod.account_name}
                         </h4>
                         <div className='my-2'>
                           <span className='text-lg text-gray-500'>TR</span>

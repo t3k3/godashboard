@@ -5,6 +5,7 @@ import isLogged from './app/libs/isLogged';
 import isAdmin from './app/libs/isAdmin';
 
 import { v4 as uuidv4 } from 'uuid';
+import isLoggedForMiddleware from './app/libs/isLoggedForMiddleware';
 
 export async function middleware(request) {
   const response = NextResponse.next();
@@ -31,23 +32,24 @@ export async function middleware(request) {
     });
   }
 
-  // if (request.nextUrl.pathname.startsWith('/hesap')) {
-  //   const logged = await isLogged(request);
-  //   console.log('LOGGED: ', logged);
-  //   if (!logged) {
-  //     return NextResponse.redirect(new URL('/uyelik', request.url));
-  //   }
-  //   return NextResponse.next();
-  // }
+  if (request.nextUrl.pathname.startsWith('/hesap')) {
+    const logged = await isLoggedForMiddleware(request);
 
-  // if (request.nextUrl.pathname.startsWith('/uyelik')) {
-  //   const logged = await isLogged(request);
-  //   console.log('LOGGED: ', logged);
-  //   if (logged) {
-  //     return NextResponse.redirect(new URL('/hesap', request.url));
-  //   }
-  //   return NextResponse.next();
-  // }
+    console.log('LOGGED: ', logged);
+    if (!logged) {
+      return NextResponse.redirect(new URL('/uyelik', request.url));
+    }
+    return NextResponse.next();
+  }
+
+  if (request.nextUrl.pathname.startsWith('/uyelik')) {
+    const logged = await isLoggedForMiddleware(request);
+    console.log('LOGGED: ', logged);
+    if (logged) {
+      return NextResponse.redirect(new URL('/hesap', request.url));
+    }
+    return NextResponse.next();
+  }
 
   // if (request.nextUrl.pathname.startsWith('/admin')) {
   //   //token varsa

@@ -6,6 +6,19 @@ import { redirect } from 'next/navigation';
 import PaymentPage from '@/components/store/Payment';
 import { getPayment } from '@/services/store/payment';
 
+function hasDifferences(cart, order) {
+  return cart.some((item1) => {
+    const matchingItem = order.find(
+      (item2) =>
+        item1.product_id === item2.product_id &&
+        item1.quantity === item2.quantity &&
+        item1.option_id === item2.option_id
+    );
+
+    return !matchingItem; // Eşleşme yoksa true döner
+  });
+}
+
 async function Payment({ searchParams }) {
   const cookies = await getClientHeaders();
 
@@ -13,7 +26,9 @@ async function Payment({ searchParams }) {
     redirect('/sepet');
   }
 
-  console.log('searchParams: ', searchParams.orderid);
+  // console.log('searchParams: ', searchParams.orderid);
+
+  const { checkout } = await getCheckout(cookies);
 
   const { payment } = await getPayment(cookies, searchParams.orderid);
   const isLogged = await isLoggedCustomer(cookies);
@@ -21,7 +36,18 @@ async function Payment({ searchParams }) {
   if (payment == undefined) {
     redirect('/sepet');
   }
-  console.log('payment2423423: ', payment);
+  // console.log('payment2423423: ', payment.order.order_products);
+  // console.log('checkout2423423: ', checkout.cart.cart_items);
+  // console.log(
+  //   'hasDifferences  : ',
+  //   hasDifferences(checkout.cart.cart_items, payment.order.order_products)
+  // );
+
+  //Sepetle sipariş arasında ürün farkı var mı kontrol edilir. Fark varsa checkout sayfasına yönlendirilir.
+  if (hasDifferences(checkout.cart.cart_items, payment.order.order_products)) {
+    redirect('/checkout');
+  }
+
   // if (cart.status == 404) {
   //   console.log('getCheckout 404 dondu');
   //   redirect('/sepet');
