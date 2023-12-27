@@ -19,7 +19,7 @@ function PaymentProducts({ products }) {
                 <Image
                   className='w-24 h-24 rounded-full object-cover'
                   src={
-                    product?.thumb ||
+                    `/${product.image}` ||
                     'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
                   }
                   alt={product.name}

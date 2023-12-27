@@ -44,6 +44,26 @@ function Sidebar({ isOpen, toggleSidebar }) {
           </button>
         </div>
         <nav className='mt-8'>
+          <div className='my-8'>
+            <div className='flex items-center justify-between '>
+              <h3 className='text-sm font-semibold text-gray-600 uppercase tracking-wide'>
+                SATIŞ NOKTASI
+              </h3>
+            </div>
+
+            <div className='ml-1 mt-2 -mx-3'>
+              <Link
+                href='/admin/pos'
+                className={`flex justify-between items-center px-3 py-2 my-0.5 text-gray-700 hover:text-white hover:bg-gradient-to-r hover:from-purple-700 hover:to-blue-500 hover:rounded-lg  ${
+                  pathName.startsWith('/admin/pos') &&
+                  'text-white bg-gradient-to-r from-purple-700 to-blue-500 rounded-lg '
+                }`}
+              >
+                <span className='text-sm font-medium '>Satış Noktası</span>
+              </Link>
+            </div>
+          </div>
+
           <div>
             <div className='flex items-center justify-between '>
               <h3 className='text-sm font-semibold text-gray-600 uppercase tracking-wide'>

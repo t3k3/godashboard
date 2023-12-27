@@ -244,7 +244,7 @@ function CheckoutPage(props) {
                     <Image
                       className='w-24 h-24 rounded-sm '
                       src={
-                        `/${product?.thumb}` ||
+                        `/${product.image}` ||
                         'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
                       }
                       alt={product.name}

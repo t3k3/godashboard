@@ -3,6 +3,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import AccountMenu from './AccountMenu';
 import { _BASE_URL } from '@/config/apiConfig';
+import Favoriler from './Favoriler';
+import BasketMenuIcon from './BasketMenuIcon';
 
 function Header({ headerData }) {
   return (
@@ -48,7 +50,9 @@ function Header({ headerData }) {
         </div>
         {/* icon */}
         <div className='flex  items-center space-x-4 mt-4'>
-          <Link
+          {/* Zustand Favoriler test */}
+          <Favoriler />
+          {/* <Link
             href={'#'}
             className='text-center text-gray-700 hover:text-primary transition relative'
           >
@@ -72,7 +76,8 @@ function Header({ headerData }) {
             <span className='absolute right-1 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs'>
               5
             </span>
-          </Link>
+          </Link> */}
+
           <Link
             href={'/sepet'}
             className='text-center text-gray-700 hover:text-primary transition relative'
@@ -99,6 +104,8 @@ function Header({ headerData }) {
               {headerData?.header_cart_items_count}
             </span>
           </Link>
+
+          <BasketMenuIcon headerData={headerData} />
 
           <AccountMenu
             user_id={headerData.header_user_id}

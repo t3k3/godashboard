@@ -9,7 +9,7 @@ function ImageGallery({ images }) {
     <div>
       <Image
         src={
-          images[currentImageIndex]?.thumb ||
+          `/${images[currentImageIndex]?.image}` ||
           'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
         }
         alt='product9'
@@ -25,8 +25,8 @@ function ImageGallery({ images }) {
           ? images?.map((image, index) => {
               return (
                 <Image
-                  key={image?.thumb}
-                  src={image?.thumb}
+                  key={image?.ID}
+                  src={`/${image?.image}`}
                   alt='product9'
                   width={300}
                   height={300}

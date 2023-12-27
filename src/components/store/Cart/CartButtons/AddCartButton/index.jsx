@@ -8,6 +8,8 @@ import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { addToCart } from '@/services/store/cart';
+import AddFavorilerButton from '../AddFavorilerButton';
+import CartSlider from '../../CartSlider';
 
 function findProductCombination(productCombinations, selectedOptions) {
   // Seçilen seçenekleri içeren product_combination nesnesini bul
@@ -41,6 +43,8 @@ function AddCartButton({ product }) {
   const [productCount, setProductCount] = useState(1);
   const [warnings, setWarnings] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [cart, setCart] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -132,12 +136,17 @@ function AddCartButton({ product }) {
 
     const response = await addToCart(data);
 
-    console.log('response43332443324: ', response);
+    console.log('response43332443324: ', response.cart);
 
-    if (response) {
-      // setWarnings(response.error);
+    // if (response) {
+    //   // setWarnings(response.error);
+    //   setIsUpdate(false);
+    //   return;
+    // }
+    if (response.status === 201) {
+      setOpen(true); // CartSlider'ı aç
+      setCart(response.cart);
       setIsUpdate(false);
-      return;
     }
 
     notify();
@@ -160,6 +169,9 @@ function AddCartButton({ product }) {
             );
           })
         : null}
+
+      <CartSlider cart={cart} open={open} setOpen={setOpen} />
+
       {/* QUANTITY */}
 
       {/* TOAST */}
@@ -330,7 +342,9 @@ function AddCartButton({ product }) {
             </Link>
           )}
         </div>
-        <div>
+        {/* ZUSTAND Favoriler Test  */}
+        <AddFavorilerButton />
+        {/* <div>
           <Link
             href={'#'}
             className='border border-gray-300 text-gray-600 px-4 py-2 font-medium rounded uppercase flex items-center gap-2 hover:text-primary  transition'
@@ -350,7 +364,7 @@ function AddCartButton({ product }) {
               />
             </svg>
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );

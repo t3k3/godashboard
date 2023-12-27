@@ -20,7 +20,7 @@ function ProductWrapper({ wrapperName, products }) {
               <div className='relative'>
                 <Link href={`/urun/${product.keyword}`}>
                   <Image
-                    src={product?.product_images[0]?.thumb}
+                    src={`/${product?.product_images[0]?.image}`}
                     alt='product'
                     width={100}
                     height={100}

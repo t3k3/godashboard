@@ -112,6 +112,7 @@ function CartItem({ product, removeCart }) {
           <Image
             // src={product?.thumb && `${_BASE_URL}/${product?.thumb}`}
             //Localdek ibir resmi nasılk gösteririz
+
             src={`/${product?.thumb}`}
             alt='urun'
             width={200}

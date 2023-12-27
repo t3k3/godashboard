@@ -68,14 +68,18 @@ export async function POST(request) {
 
   const response = await fetch(`${_API_URL_STORE}/cart`, requestOptions);
 
+  console.log('RESPONSE STATUS 88888: ', response.status);
+
   if (response.status === 201) {
     const res = await response.json();
+
+    console.log('RESPONSE 2213123: ', res);
 
     return new Response(
       JSON.stringify({
         status: response.status,
         statusText: response.statusText,
-        data: res,
+        cart: res,
       })
     );
   }

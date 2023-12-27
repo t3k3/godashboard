@@ -20,16 +20,20 @@ const getCartService = async (cookies = []) => {
 };
 
 const postCartService = async (data) => {
-  console.log('POST CART SERVİCEtfdgsdf: ', data);
+  // console.log('POST CART SERVİCEtfdgsdf: ', data);
 
   var requestOptions = {
     method: 'POST',
     body: JSON.stringify(data),
     redirect: 'follow',
   };
-  const response = fetch(`${_BASE_URL}/api/cart`, requestOptions);
+  const response = await fetch(`${_BASE_URL}/api/cart`, requestOptions);
 
-  console.log('RESPONSE3345345: ', response);
+  console.log('RESPONSE  11113345345: ', response.status);
+
+  const res = await response.json();
+
+  return res;
 };
 
 const editCartService = async (data) => {

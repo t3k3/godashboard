@@ -13,14 +13,14 @@ export default function AdminLayout({ children }) {
 
   // console.log('pathname: ', pathname);
 
-  const showHeader = pathname === '/admin/login' ? false : true;
+  const showHeader = pathname === '/admin/login' || pathname === '/admin/pos';
 
   return (
     <html lang='tr'>
       <body>
         <div className='flex'>
           {/* <Nav /> */}
-          <div>{showHeader && <Header />}</div>
+          <div>{!showHeader && <Header />}</div>
           <div className='w-full'>{children}</div>
         </div>
       </body>
