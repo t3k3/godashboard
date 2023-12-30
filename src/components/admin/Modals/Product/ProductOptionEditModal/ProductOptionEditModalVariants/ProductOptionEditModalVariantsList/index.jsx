@@ -36,10 +36,12 @@ function ProductOptionEditModalVariantsList(props) {
 
   const handleVariantChange = (e, id, value) => {
     let temp = [...props.variantList];
-    if (e.target.name == 'subtrack') {
+    if (e.target.name == 'subtract') {
       temp[id] = { ...temp[id], [e.target.name]: Boolean(value) };
     } else if (e.target.name == 'status') {
       temp[id] = { ...temp[id], [e.target.name]: Boolean(value) };
+    } else if (e.target.name == 'barcode') {
+      temp[id] = { ...temp[id], [e.target.name]: e.target.value };
     } else {
       temp[id] = { ...temp[id], [e.target.name]: Number(e.target.value) };
     }
@@ -145,6 +147,9 @@ function ProductOptionEditModalVariantsList(props) {
           <table className='w-full text-sm text-left text-gray-500'>
             <thead className='text-xs text-gray-700 uppercase bg-gray-50 '>
               <tr>
+                <th scope='col' className='px-4 py-3'>
+                  BARKOD
+                </th>
                 <th scope='col' className='px-4 py-3'>
                   SEÇENEKLER
                 </th>

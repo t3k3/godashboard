@@ -173,14 +173,21 @@ function OrderComp(props) {
                             })}
                         </td>
                         <td className='px-6 py-4'>
-                          ₺{Number(order_product.price).toFixed(2)}
+                          ₺
+                          {Number(order_product.price).toLocaleString('tr-TR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
                         </td>
                         <td className='px-6 py-4'>{order_product.quantity}</td>
                         <td className='px-6 py-4'>
                           ₺
                           {Number(
                             order_product.total * order_product.quantity
-                          ).toFixed(2)}
+                          ).toLocaleString('tr-TR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
                         </td>
                       </tr>
                     );
@@ -249,7 +256,10 @@ function OrderComp(props) {
                           <span className='text-xs'>
                             ₺
                             {Number(totals.sub_total)
-                              .toFixed(2)
+                              .toLocaleString('tr-TR', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })
                               .replace('.', ',')}
                           </span>
                         </div>
@@ -259,7 +269,10 @@ function OrderComp(props) {
                             {' '}
                             ₺
                             {Number(totals.shipping)
-                              .toFixed(2)
+                              .toLocaleString('tr-TR', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })
                               .replace('.', ',')}{' '}
                           </span>
                         </div>
@@ -270,14 +283,26 @@ function OrderComp(props) {
                           </span>
                           <span className='text-xs'>
                             {' '}
-                            ₺{Number(totals.vat).toFixed(2).replace('.', ',')}
+                            ₺
+                            {Number(totals.vat)
+                              .toLocaleString('tr-TR', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })
+                              .replace('.', ',')}
                           </span>
                         </div>
                         <div className='ml-1 my-3 flex justify-between border-t'>
                           <span className='text-md font-semibold'>Toplam</span>
                           <span className='text-xs'>
                             {' '}
-                            ₺{Number(totals.total).toFixed(2).replace('.', ',')}
+                            ₺
+                            {Number(totals.total)
+                              .toLocaleString('tr-TR', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })
+                              .replace('.', ',')}
                           </span>
                         </div>
                       </div>

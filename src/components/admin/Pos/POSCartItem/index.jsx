@@ -1,5 +1,5 @@
 import Image from 'next/image';
-function POSCartItem({ product }) {
+function POSCartItem({ product, increaseCartQuantity, decreaseCartQuantity }) {
   return (
     <div className=' w-full px-4 overflow-auto'>
       <div x-for='item in cart'>
@@ -21,9 +21,21 @@ function POSCartItem({ product }) {
               })}
             </p>
           </div>
+          {product.etiketler?.map((etiket, index) => (
+            <div
+              key={index}
+              className=' px-2 py-1 bg-blue-400 border-2 my-auto mx-auto text-white text-xs font-semibold rounded-2xl'
+              style={{ top: `${index * 24}px` }} // Her etiket için top değerini artır
+            >
+              {etiket}
+            </div>
+          ))}
           <div className='py-1'>
             <div className='w-28 grid grid-cols-3 gap-2 ml-2'>
-              <button className='rounded-lg text-center py-1 text-white bg-gray-600 hover:bg-gray-700 focus:outline-none'>
+              <button
+                className='rounded-lg text-center py-1 text-white bg-gray-600 hover:bg-gray-700 focus:outline-none'
+                onClick={() => decreaseCartQuantity(product)}
+              >
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   className='h-6 w-3 inline-block'
@@ -39,12 +51,17 @@ function POSCartItem({ product }) {
                   />
                 </svg>
               </button>
+
               <input
                 type='text'
                 className='bg-white rounded-lg text-center shadow focus:outline-none focus:shadow-lg text-sm px-2'
                 value={product.sold}
+                readOnly
               />
-              <button className='rounded-lg text-center py-1 text-white bg-gray-600 hover:bg-gray-700 focus:outline-none'>
+              <button
+                className='rounded-lg text-center py-1 text-white bg-gray-600 hover:bg-gray-700 focus:outline-none'
+                onClick={() => increaseCartQuantity(product)}
+              >
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   className='h-6 w-3 inline-block'

@@ -451,7 +451,10 @@ function CustomerComp(props) {
 
                             <td className='px-6 py-1'>
                               <span className='text-lg'>
-                                {totalSum.toFixed(2)}
+                                {totalSum.toLocaleString('tr-TR', {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                })}
                               </span>
                             </td>
                             <td className='px-6 py-1'>

@@ -3,11 +3,24 @@ import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function CartSlider({ cart = [], open, setOpen }) {
+  const pathName = usePathname();
   //   const [open, setOpen] = useState(isOpen);
 
   console.log('cart 555666', cart);
+
+  if (
+    pathName === '/sepet' ||
+    pathName === '/odeme' ||
+    pathName === '/checkout' ||
+    pathName === '/payment'
+  ) {
+    setOpen(false);
+    return null;
+  }
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -64,7 +77,10 @@ export default function CartSlider({ cart = [], open, setOpen }) {
                           >
                             {cart?.cart_items?.map((product) => (
                               <li key={product.ID} className='flex py-6'>
-                                <div className='h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200'>
+                                <div className='relative h-24 w-24 flex-shrink-0 overflow-visible rounded-md border border-gray-200'>
+                                  <div className='absolute top-0 right-0 inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full transform -translate-y-2 translate-x-2'>
+                                    {product.quantity}
+                                  </div>
                                   <Image
                                     src={
                                       `/${product.thumb}` ||
@@ -84,7 +100,24 @@ export default function CartSlider({ cart = [], open, setOpen }) {
                                         <a href={product.ID}>{product.name}</a>
                                       </h3>
                                       <p className='ml-4'>
-                                        ₺{product.price.toFixed(2)}
+                                        {product.quantity > 1
+                                          ? product.quantity +
+                                            ' x ' +
+                                            product.price.toLocaleString(
+                                              'tr-TR',
+                                              {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                              }
+                                            )
+                                          : product.price.toLocaleString(
+                                              'tr-TR',
+                                              {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                              }
+                                            )}{' '}
+                                        TL
                                       </p>
                                     </div>
                                     {product.option_id > 0 &&
@@ -127,18 +160,24 @@ export default function CartSlider({ cart = [], open, setOpen }) {
                     <div className='border-t border-gray-200 px-4 py-6 sm:px-6'>
                       <div className='flex justify-between text-base font-medium text-gray-900'>
                         <p>Toplam</p>
-                        <p>₺{cart.totals?.total?.toFixed(2)}</p>
+                        <p className='text-primary font-semibold text-xl'>
+                          ₺
+                          {cart.totals?.total?.toLocaleString('tr-TR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </p>
                       </div>
                       <p className='mt-0.5 text-sm text-gray-500'>
                         Vergiler dahil toplam fiyat
                       </p>
                       <div className='mt-6'>
-                        <a
-                          href='#'
+                        <Link
+                          href={'/sepet'}
                           className='flex items-center justify-center rounded-md border bg-primary focus:outline-none border-primary px-6 py-3 text-base font-medium text-white shadow-sm hover:text-primary hover:bg-transparent transition'
                         >
                           Alışverişi tamamla
-                        </a>
+                        </Link>
                       </div>
                       <div className='mt-6 flex justify-center text-center text-sm text-gray-500'>
                         <p>

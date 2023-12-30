@@ -10,23 +10,29 @@ function PaymentProducts({ products }) {
 
       {products?.map((product, index) => {
         return (
+          // console.log('product 6666: ', product),
           <div
             key={index}
             className=' border my-2 border-gray-200 p-5 gap-5 md:items-center justify-between'
           >
             <div className='f grid grid-cols-2'>
-              <div className='sm:max-w-[150px]'>
-                <Image
-                  className='w-24 h-24 rounded-full object-cover'
-                  src={
-                    `/${product.image}` ||
-                    'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
-                  }
-                  alt={product.name}
-                  width={54}
-                  height={54}
-                />
-              </div>
+              {/* PRODUCT IMAGE SECTION */}
+              {/* <div className='relative h-24 w-24 flex-shrink-0 overflow-visible rounded-md border border-gray-200'>
+                  <div className='absolute top-0 right-0 inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full transform -translate-y-2 translate-x-2'>
+                    {product.quantity}
+                  </div>
+                  <Image
+                    src={
+                      `/${product.thumb}` ||
+                      'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg'
+                    }
+                    alt={'product.imageAlt'}
+                    width={96}
+                    height={96}
+                    className='h-full w-full object-center'
+                  />
+                </div> */}
+
               <div className='max-w-sm'>
                 {/* <Link href={`/urun${product.href}`}> */}
                 <p className='text-md block mb-2 font-medium uppercase text-gray-800'>
@@ -45,7 +51,11 @@ function PaymentProducts({ products }) {
                 })}
                 <p className='text-xs'>Adet: {product.quantity}</p>
                 <p className='text-md font-medium text-primary'>
-                  ₺{product.total.toFixed(2)}
+                  ₺
+                  {product.total.toLocaleString('tr-TR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </p>
               </div>
             </div>

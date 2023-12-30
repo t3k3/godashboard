@@ -241,9 +241,19 @@ function AddCartButton({ product }) {
         ) : (
           <p className='text-3xl text-primary font-semibold'>
             {selectedCombination
-              ? selectedCombination.price.toFixed(2).replace('.', ',')
+              ? selectedCombination.price
+                  .toLocaleString('tr-TR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })
+                  .replace('.', ',')
               : product.price &&
-                product.price.toFixed(2).replace('.', ',')}{' '}
+                product.price
+                  .toLocaleString('tr-TR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })
+                  .replace('.', ',')}{' '}
             TL
           </p>
         )}

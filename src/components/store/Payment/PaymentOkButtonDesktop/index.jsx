@@ -8,21 +8,45 @@ function PaymentOkButtonDesktop({ totals, payment, handleSubmit, warning }) {
         <div className='space-y-3'>
           <div className='flex items-center justify-between'>
             <p className='font-medium'>Ara Toplam:</p>
-            <p className='font-medium'>{totals.sub_total.toFixed(2)} TL</p>
+            <p className='font-medium'>
+              {totals.sub_total.toLocaleString('tr-TR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}{' '}
+              TL
+            </p>
           </div>
           <div className='flex items-center justify-between'>
             <p className='font-medium'>KDV (%{totals.vat_rate}) </p>
-            <p className='font-medium'>{totals.vat.toFixed(2)} TL</p>
+            <p className='font-medium'>
+              {totals.vat.toLocaleString('tr-TR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}{' '}
+              TL
+            </p>
           </div>
           <div className='flex items-center justify-between'>
             <p className='font-medium'>Kargo Ücreti</p>
-            <p className='font-medium'>{totals.shipping.toFixed(2)} TL</p>
+            <p className='font-medium'>
+              {totals.shipping.toLocaleString('tr-TR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}{' '}
+              TL
+            </p>
           </div>
         </div>
 
         <h2 className='mt-4 pt-4 text-2xl font-semibold border-t border-gray-200 flex items-center justify-between'>
           <span>Toplam:</span>
-          <span>{totals.total.toFixed(2)} TL</span>
+          <span>
+            {totals.total.toLocaleString('tr-TR', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{' '}
+            TL
+          </span>
         </h2>
 
         <button

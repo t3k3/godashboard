@@ -24,6 +24,8 @@ import ProductTrendyolEditModal from '@/components/admin/Modals/Product/ProductT
 import { getProductOrderHistory } from '@/services/product';
 
 function ProductComp(props) {
+  console.log('PRODUCTCOMP PROPS 123123: ', props.product);
+
   // const ProductDataEditModal = dynamic(
   //   () => import('@/components/admin/Modals/Product/ProductDataEditModal'),
   //   { ssr: false }
@@ -916,6 +918,12 @@ function ProductComp(props) {
                 </span>
               </div>
               <div className='flex items-center justify-between px-2 pt-3 '>
+                <span className='font-medium'>Barkod Numarası:</span>
+                <span className=' pr-2'>
+                  {product?.barcode !== '' ? product?.barcode : ''}
+                </span>
+              </div>
+              <div className='flex items-center justify-between px-2 pt-3 '>
                 <span className='font-medium'>SKU:</span>
                 <span className=' pr-2'>
                   {product?.sku !== '' ? product?.sku : ''}
@@ -939,7 +947,11 @@ function ProductComp(props) {
               <div className='flex items-center justify-between px-2 pt-4 '>
                 <span className='font-medium'>Fiyat:</span>
                 <span className=' pr-2'>
-                  ₺{Number(product?.price).toFixed(2)}
+                  ₺
+                  {Number(product?.price).toLocaleString('tr-TR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </span>
               </div>
             </div>

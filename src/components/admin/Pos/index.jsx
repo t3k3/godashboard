@@ -1,86 +1,96 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import POSProductItem from './POSProductItem';
 import POSCartItem from './POSCartItem';
+import POSCheckoutModal from './POSCheckoutModal';
 
-const productsJSON = [
-  {
-    id: 1,
-    name: 'Product 1',
-    price: 100,
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg',
-  },
-  {
-    id: 2,
-    name: 'Product 2',
-    price: 200,
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg',
-  },
-  {
-    id: 3,
-    name: 'Product 3',
-    price: 300,
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg',
-  },
-  {
-    id: 4,
-    name: 'Product 4',
-    price: 400,
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg',
-  },
-  {
-    id: 5,
-    name: 'Product 5',
-    price: 500,
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg',
-  },
-  {
-    id: 6,
-    name: 'Product 6',
-    price: 600,
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg',
-  },
-  {
-    id: 7,
-    name: 'Product 7',
-    price: 700,
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg',
-  },
-  {
-    id: 8,
-    name: 'Product 8',
-    price: 800,
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg',
-  },
-  {
-    id: 9,
-    name: 'Product 9',
-    price: 900,
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg',
-  },
-  {
-    id: 10,
-    name: 'Product 10',
-    price: 1000,
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg',
-  },
-];
+import { getOptions } from '@/services/option';
 
-function POSPage() {
-  const [products, setProducts] = useState(productsJSON);
+// function processProducts(rawProducts) {
+//   let products = [];
+
+//   rawProducts.forEach((product) => {
+//     // Ana ürünü products dizisine ekle
+//     products.push(product);
+
+//     // Varyantları kontrol et
+//     product.product_combinations.forEach((variant) => {
+//       if (variant.status && variant.quantity > 0 && variant.barcode !== '') {
+//         // Varyantı ayrı bir ürün olarak ele al ve products dizisine ekle
+//         const productVariant = {
+//           ...product, // Ana ürünün özelliklerini kopyala
+//           variantId: variant.barcode, // Varyantın ID'si
+//           variantOptions: variant.options, // Varyantın seçenekleri
+//           price: variant.price, // Varyantın fiyatı
+//           quantity: variant.quantity, // Varyantın miktarı
+//           barcode: variant.barcode, // Varyantın barkodu
+//         };
+//         products.push(productVariant);
+//       }
+//     });
+//   });
+
+//   return products;
+// }
+
+function processProducts(rawProducts, options) {
+  let products = [];
+
+  rawProducts.forEach((product) => {
+    let hasValidVariants = false;
+
+    // Varyantları kontrol et
+    product.product_combinations.forEach((variant) => {
+      if (variant.status && variant.quantity > 0 && variant.barcode !== '') {
+        // Varyantın etiketlerini bul
+        const etiketler = variant.options
+          .map((optionId) => {
+            const option = options.find((o) =>
+              o.values.some((v) => v.ID === optionId)
+            );
+            return option
+              ? option.values.find((v) => v.ID === optionId).name
+              : null;
+          })
+          .filter((name) => name !== null);
+
+        // Varyantı ayrı bir ürün olarak ele al ve products dizisine ekle
+        const productVariant = {
+          ...product, // Ana ürünün özelliklerini kopyala
+          variantId: variant.barcode, // Varyantın ID'si
+          variantOptions: variant.options, // Varyantın seçenekleri
+          etiketler: etiketler, // Varyantın etiketleri
+          price: variant.price, // Varyantın fiyatı
+          quantity: variant.quantity, // Varyantın miktarı
+          barcode: variant.barcode, // Varyantın barkodu
+          subtract: variant.subtract, // Varyantın subtract değeri
+        };
+        products.push(productVariant);
+        hasValidVariants = true;
+      }
+    });
+
+    // Eğer ürünün geçerli varyantları yoksa, ana ürünü listeye ekle
+    if (!hasValidVariants) {
+      products.push(product);
+    }
+  });
+
+  return products;
+}
+
+function POSPage(props) {
+  const [products, setProducts] = useState([]);
+
+  console.log('products14134324: ', products);
+
   const [cart, setCart] = useState([]);
   const [total, setTotal] = useState(0);
   const [income, setIncome] = useState(0);
+  const [posCheckoutModal, setPosCheckoutModal] = useState(false);
+
+  const [options, setOptions] = useState([]);
 
   useEffect(() => {
     const total = cart.reduce((acc, item) => {
@@ -89,21 +99,98 @@ function POSPage() {
     setTotal(total);
   }, [cart]);
 
+  useEffect(() => {
+    const getOptionsData = async () => {
+      const { options } = await getOptions();
+      setProducts(processProducts(props.products, options));
+      setOptions(options);
+    };
+    getOptionsData();
+  }, []);
+
+  // const posAddToCart = (product) => {
+  //   const existingProduct = cart.find(
+  //     (item) => item.barcode === product.barcode
+  //   );
+
+  //   if (existingProduct) {
+  //     // Increase the sold quantity of the existing product
+  //     existingProduct.sold += 1;
+  //     setCart([...cart]);
+  //   } else {
+  //     // Add the product to the cart with a sold quantity of 1
+  //     const productWithSoldQuantity = { ...product, sold: 1 };
+  //     setCart((prevCart) => [...prevCart, productWithSoldQuantity]);
+  //   }
+  // };
+
   const posAddToCart = (product) => {
-    const existingProduct = cart.find((item) => item.id === product.id);
+    const existingProduct = cart.find(
+      (item) => item.barcode === product.barcode
+    );
 
     if (existingProduct) {
-      // Increase the sold quantity of the existing product
-      existingProduct.sold += 1;
-      setCart([...cart]);
+      // Stok kontrolü yap (subtract özelliği true ise)
+      if (product.subtract && existingProduct.sold >= product.quantity) {
+        // Stokta yeterli miktar yoksa, uyarı ver
+        alert('Yetersiz stok!');
+      } else {
+        // Stokta yeterli miktar varsa veya subtract false ise, satılan miktarı artır
+        existingProduct.sold += 1;
+        setCart([...cart]);
+      }
     } else {
-      // Add the product to the cart with a sold quantity of 1
+      // Ürün sepette yoksa, yeni ürün olarak ekle
       const productWithSoldQuantity = { ...product, sold: 1 };
       setCart((prevCart) => [...prevCart, productWithSoldQuantity]);
     }
   };
+
+  const increaseCartQuantity = (product) => {
+    const existingProduct = cart.find(
+      (item) => item.barcode === product.barcode
+    );
+
+    // Subtract özelliği true ise stok kontrolü yap
+    if (product.subtract) {
+      if (existingProduct.sold < product.quantity) {
+        // Stokta yeterli miktar varsa, satılan miktarı artır
+        existingProduct.sold += 1;
+        setCart([...cart]);
+      } else {
+        // Stokta yeterli miktar yoksa, uyarı ver
+        alert('Stok miktarı aşıldı!');
+      }
+    } else {
+      // Subtract özelliği false ise stok kontrolü yapmadan miktarı artır
+      existingProduct.sold += 1;
+      setCart([...cart]);
+    }
+  };
+
+  const decreaseCartQuantity = (product) => {
+    if (product.sold === 1) {
+      const updatedCart = cart.filter(
+        (item) => item.barcode !== product.barcode
+      );
+      setCart(updatedCart);
+      return;
+    }
+    const existingProduct = cart.find(
+      (item) => item.barcode === product.barcode
+    );
+    existingProduct.sold -= 1;
+    setCart([...cart]);
+  };
+
   return (
     <div className='flex flex-row h-screen overflow-y-scroll antialiased text-blue-800 bg-gray-100 '>
+      {posCheckoutModal && (
+        <POSCheckoutModal
+          cart={cart}
+          setPosCheckoutModal={setPosCheckoutModal}
+        />
+      )}
       <div className='flex flex-row w-auto flex-shrink-0 pl-4 pr-2 py-4 '>
         <div className='flex flex-col items-center py-4 flex-shrink-0 w-20 bg-cyan-500 rounded-3xl'>
           <a
@@ -147,8 +234,8 @@ function POSPage() {
               </a>
             </li>
           </ul>
-          <a
-            href='https://github.com/emsifa/tailwind-pos'
+          <Link
+            href='#'
             target='_blank'
             className='mt-auto flex items-center justify-center text-cyan-200 hover:text-cyan-100 h-10 w-10 focus:outline-none'
           >
@@ -164,7 +251,7 @@ function POSPage() {
                 clipRule='evenodd'
               />
             </svg>
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -192,7 +279,7 @@ function POSPage() {
             <input
               type='text'
               className='bg-white rounded-3xl text-gray-800 shadow text-lg full w-full h-16 py-4 pl-16 transition-shadow focus:shadow-2xl focus:outline-none'
-              placeholder='Cari menu ...'
+              placeholder='Ara ...'
               x-model='keyword'
             />
           </div>
@@ -241,14 +328,16 @@ function POSPage() {
                   </div>
                 </div>
               ) : (
-                <div className='grid grid-cols-4 gap-4 pb-3'>
-                  {products.map((product) => (
-                    <POSProductItem
-                      key={product.id}
-                      product={product}
-                      posAddToCart={posAddToCart}
-                    />
-                  ))}
+                <div className='grid grid-cols-6 gap-4 pb-3'>
+                  {products.length > 0 &&
+                    products.map((product) => (
+                      <POSProductItem
+                        key={product.barcode}
+                        product={product}
+                        options={options}
+                        posAddToCart={posAddToCart}
+                      />
+                    ))}
                 </div>
               )}
             </div>
@@ -324,7 +413,12 @@ function POSPage() {
                   </div>
                 </div>
                 {cart.map((product) => (
-                  <POSCartItem key={product.id} product={product} />
+                  <POSCartItem
+                    key={product.barcode}
+                    product={product}
+                    increaseCartQuantity={increaseCartQuantity}
+                    decreaseCartQuantity={decreaseCartQuantity}
+                  />
                 ))}
               </div>
             )}
@@ -370,11 +464,18 @@ function POSPage() {
               <div className='flex mb-3 text-lg font-semibold bg-pink-100 text-gray-700 rounded-lg py-2 px-3'>
                 PARA ÜSTÜ
                 <div className='text-right flex-grow text-pink-600'>
-                  ₺{(income - total).toFixed(2)}
+                  ₺
+                  {(income - total).toLocaleString('tr-TR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </div>
               </div>
 
-              <button className='text-white bg-blue-400 rounded-2xl text-lg w-full py-3 focus:outline-none'>
+              <button
+                className='text-white bg-blue-400 rounded-2xl text-lg w-full py-3 focus:outline-none'
+                onClick={() => cart.length > 0 && setPosCheckoutModal(true)}
+              >
                 ÖDEME
               </button>
             </div>

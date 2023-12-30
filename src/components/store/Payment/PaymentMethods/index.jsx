@@ -336,12 +336,22 @@ export default function PaymentMethods({
                             <div className='flex items-end justify-between'>
                               <p>
                                 <span className='text-lg font-bold'>
-                                  ₺{(taksit.tutar / taksit.taksit).toFixed(2)}
+                                  ₺
+                                  {(
+                                    taksit.tutar / taksit.taksit
+                                  ).toLocaleString('tr-TR', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                  })}
                                 </span>{' '}
                                 x{taksit.taksit}
                               </p>
                               <p className='text-sm font-bold'>
-                                ₺{taksit.tutar.toFixed(2)}
+                                ₺
+                                {taksit.tutar.toLocaleString('tr-TR', {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                })}
                               </p>
                             </div>
                           </div>

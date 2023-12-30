@@ -240,16 +240,19 @@ function CheckoutPage(props) {
                 className=' border my-2 border-gray-200 p-5 rounded flex flex-col md:flex-row gap-5 md:items-center justify-between'
               >
                 <div className='flex flex-col sm:flex-row gap-5 sm:items-center'>
-                  <div className='sm:max-w-[150px]'>
+                  <div className='relative h-24 w-24 flex-shrink-0 overflow-visible rounded-md border border-gray-200'>
+                    <div className='absolute top-0 right-0 inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full transform -translate-y-2 translate-x-2'>
+                      {product.quantity}
+                    </div>
                     <Image
-                      className='w-24 h-24 rounded-sm '
                       src={
-                        `/${product.image}` ||
-                        'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
+                        `/${product.thumb}` ||
+                        'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg'
                       }
-                      alt={product.name}
+                      alt={'product.imageAlt'}
                       width={96}
                       height={96}
+                      className='h-full w-full object-center'
                     />
                   </div>
                   <div className='max-w-sm'>
@@ -271,7 +274,14 @@ function CheckoutPage(props) {
                       );
                     })}
                     <p className='text-base font-medium text-primary'>
-                      {product.price * product.quantity} TL
+                      {(product.price * product.quantity).toLocaleString(
+                        'tr-TR',
+                        {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }
+                      )}{' '}
+                      TL
                     </p>
                     <p className='text-base'>Adet: {product.quantity}</p>
                   </div>
@@ -300,24 +310,41 @@ function CheckoutPage(props) {
                 <div className='flex items-center justify-between'>
                   <p className='font-medium'>Ara Toplam:</p>
                   <p className='font-medium'>
-                    {cart.totals.sub_total.toFixed(2)} TL
+                    {cart.totals.sub_total.toLocaleString('tr-TR', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}{' '}
+                    TL
                   </p>
                 </div>
                 <div className='flex items-center justify-between'>
                   <p className='font-medium'>KDV (%{cart.totals.vat_rate}) </p>
-                  <p className='font-medium'>{cart.totals.vat.toFixed(2)} TL</p>
+                  <p className='font-medium'>
+                    {cart.totals.vat.toLocaleString('tr-TR', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}{' '}
+                    TL
+                  </p>
                 </div>
                 <div className='flex items-center justify-between'>
                   <p className='font-medium'>Kargo Ücreti</p>
                   <p className='font-medium'>
-                    {cart.totals.shipping.toFixed(2)} TL
+                    {cart.totals.shipping.toLocaleString('tr-TR', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}{' '}
+                    TL
                   </p>
                 </div>
 
                 {/* <div className='flex items-center justify-between'>
                   <p className='font-medium'>Toplam: </p>
                   <p className='font-medium'>
-                    {cart.totals.total.toFixed(2)} TL
+                    {cart.totals.total.toLocaleString('tr-TR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })} TL
                   </p>
                 </div> */}
 
@@ -326,7 +353,13 @@ function CheckoutPage(props) {
 
               <h2 className='mt-4 pt-4 text-2xl font-semibold border-t border-gray-200 flex items-center justify-between'>
                 <span>Toplam:</span>
-                <span>{cart.totals.total.toFixed(2)} TL</span>
+                <span>
+                  {cart.totals.total.toLocaleString('tr-TR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}{' '}
+                  TL
+                </span>
               </h2>
 
               <button

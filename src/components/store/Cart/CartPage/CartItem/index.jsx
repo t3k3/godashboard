@@ -129,7 +129,11 @@ function CartItem({ product, removeCart }) {
           </Link>
 
           <p className='text-base font-medium text-primary'>
-            {product.price.toFixed(2)} TL
+            {product.price.toLocaleString('tr-TR', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{' '}
+            TL
           </p>
           {product?.option_id > 0 &&
             optionsObject.map((opt) => {
@@ -176,7 +180,11 @@ function CartItem({ product, removeCart }) {
           </div>
           <div className='mx-auto'>
             <p className='text-primary px-4 md:px-10'>
-              {(product.price * product.quantity).toFixed(2)} TL
+              {(product.price * product.quantity).toLocaleString('tr-TR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}{' '}
+              TL
             </p>
           </div>
 

@@ -19,6 +19,16 @@ function ProductWrapper({ wrapperName, products }) {
             >
               <div className='relative'>
                 <Link href={`/urun/${product.keyword}`}>
+                  {product?.product_options?.length > 0 && (
+                    <div className='absolute px-2 py-1 bottom-0 right-0 inline-flex items-center justify-center bg-white rounded-md transform -translate-y-0 -translate-x-2'>
+                      <div className='flex items-center justify-center w-5 h-5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 border-2 border-white rounded-full '></div>
+                      <div className='flex items-center justify-center w-5 h-5 bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% border-2 border-white rounded-full transform -translate-x-2'></div>
+                      <span className='text-sm font-medium'>
+                        {product.product_options.length}
+                      </span>
+                    </div>
+                  )}
+
                   <Image
                     src={`/${product?.product_images[0]?.image}`}
                     alt='product'
@@ -38,7 +48,11 @@ function ProductWrapper({ wrapperName, products }) {
                     {product.special ? (
                       <>
                         <p className='text-lg text-primary font-semibold'>
-                          ₺{product.price}
+                          ₺
+                          {product.price.toLocaleString('tr-TR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
                         </p>
                         <p className='text-sm text-gray-400 line-through'>
                           ₺{product.special}
@@ -46,7 +60,11 @@ function ProductWrapper({ wrapperName, products }) {
                       </>
                     ) : (
                       <p className='text-lg text-primary font-semibold'>
-                        ₺{product.price}
+                        ₺
+                        {product.price.toLocaleString('tr-TR', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
                       </p>
                     )}
                   </div>
@@ -129,12 +147,12 @@ function ProductWrapper({ wrapperName, products }) {
                   </div>
                 </div>
               </Link>
-              <Link
+              {/* <Link
                 href={'#'}
                 className='block mb-4 w-full rounded py-2 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition'
               >
                 Sepete Ekle
-              </Link>
+              </Link> */}
             </div>
           );
         })}

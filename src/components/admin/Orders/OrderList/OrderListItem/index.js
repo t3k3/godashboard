@@ -48,7 +48,11 @@ function OrderListItem({ order, order_statuses }) {
       </td>
       <td className='px-6 py-4'>
         <div className='flex items-center font-bold'>
-          ₺{Number(totals.total).toFixed(2)}
+          ₺
+          {Number(totals.total).toLocaleString('tr-TR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
         </div>
       </td>
       <td className='px-6 py-4'>

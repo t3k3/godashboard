@@ -60,16 +60,32 @@ function CartPage({ cart, products }) {
               <div className='flex items-center justify-between'>
                 <p className='font-medium'>Ara Toplam:</p>
                 <p className='font-medium'>
-                  {cart.totals.sub_total.toFixed(2)} TL
+                  {cart.totals.sub_total.toLocaleString('tr-TR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}{' '}
+                  TL
                 </p>
               </div>
               <div className='flex items-center justify-between'>
                 <p className='font-medium'>KDV (%{cart.totals.vat_rate}) </p>
-                <p className='font-medium'>{cart.totals.vat.toFixed(2)} TL</p>
+                <p className='font-medium'>
+                  {cart.totals.vat.toLocaleString('tr-TR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}{' '}
+                  TL
+                </p>
               </div>
               <div className='flex items-center justify-between'>
                 <p className='font-medium'>Toplam: </p>
-                <p className='font-medium'>{cart.totals.total.toFixed(2)} TL</p>
+                <p className='font-medium'>
+                  {cart.totals.total.toLocaleString('tr-TR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}{' '}
+                  TL
+                </p>
               </div>
 
               <CartCoupon />
@@ -77,7 +93,13 @@ function CartPage({ cart, products }) {
 
             <h2 className='mt-4 pt-4 text-2xl font-semibold border-t border-gray-200 flex items-center justify-between'>
               <span>Toplam:</span>
-              <span>{cart.totals.total.toFixed(2)} TL</span>
+              <span>
+                {cart.totals.total.toLocaleString('tr-TR', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}{' '}
+                TL
+              </span>
             </h2>
 
             <Link href={'/checkout'}>
@@ -98,7 +120,7 @@ function CartPage({ cart, products }) {
           </div>
         </div>
       </div>
-      {/* <ProductWrapper wrapperName={'Birlikte Alinanlar'} products={products} /> */}
+      <ProductWrapper wrapperName={'Birlikte Alinanlar'} products={products} />
     </>
   );
 }

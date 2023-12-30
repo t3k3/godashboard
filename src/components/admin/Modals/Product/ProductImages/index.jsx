@@ -146,7 +146,7 @@ export default function ProductImages(props) {
       >
         <div className='w-32 h-32'>
           <Image
-            src={file.thumb}
+            src={'/' + file.image}
             alt='test'
             width={150}
             height={150}

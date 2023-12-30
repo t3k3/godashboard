@@ -66,7 +66,11 @@ function ProductListItem({ product, selectedProducts, handleCheckboxChange }) {
       <td className='px-6 py-1'>
         <div className='flex items-center'>
           {' '}
-          ₺{Number(product.price).toFixed(2)}
+          ₺
+          {Number(product.price).toLocaleString('tr-TR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
         </div>
       </td>
       <td className='px-6 py-1'>

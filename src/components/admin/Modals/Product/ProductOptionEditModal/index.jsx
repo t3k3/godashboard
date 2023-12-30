@@ -12,6 +12,8 @@ function ProductOptionEditModal(props) {
   const [variantList, setVariantList] = useState(product?.product_combinations);
   const [newCombination, setNewCombination] = useState(false);
 
+  console.log('variantList 11222333: ', variantList);
+
   //TODO: Product bu şekilde çekilince Kapat butonu statei koruyor
   // useEffect(() => {
   //   async function fetchProduct() {
@@ -96,6 +98,8 @@ function ProductOptionEditModal(props) {
       product_id: product.ID,
     }));
 
+    console.log('updatedVariantList 22444555: ', updatedVariantList);
+
     let variants = {
       productID: product.ID,
       combinations: updatedVariantList,
@@ -139,7 +143,7 @@ function ProductOptionEditModal(props) {
 
       <div className='fixed inset-0 z-50 overflow-y-auto'>
         <div className='flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0'>
-          <div className='relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl resize'>
+          <div className='relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl resize'>
             <div className=' px-4 bg-white pb-4 pt-5 sm:p-6 sm:pb-4 '>
               <div className='sm:flex sm:items-start '>
                 <div className='mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left  w-full'>

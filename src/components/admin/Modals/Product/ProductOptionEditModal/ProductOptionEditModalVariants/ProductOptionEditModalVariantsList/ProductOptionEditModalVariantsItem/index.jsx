@@ -8,7 +8,7 @@ function ProductOptionEditModalVariantsItem(props) {
   const [isCheckedStatus, setIsCheckedStatus] = useState();
 
   const handleChange = (e, check) => {
-    if (e.target.name === 'subtrack') {
+    if (e.target.name === 'subtract') {
       if (check == 1) {
         setIsChecked(1);
       } else {
@@ -30,7 +30,7 @@ function ProductOptionEditModalVariantsItem(props) {
   };
 
   useEffect(() => {
-    setIsChecked(props.variant.subtrack);
+    setIsChecked(props.variant.subtract);
     setIsCheckedStatus(props.variant.status);
   }, []);
 
@@ -64,6 +64,28 @@ function ProductOptionEditModalVariantsItem(props) {
           isCheckedStatus == 0 ? 'bg-gray-100' : 'bg-white'
         } border-b`}
       >
+        <td className='px-4 py-1'>
+          <span className='text-xs'>
+            <div className='relative my-1 rounded-md shadow-sm'>
+              <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
+                <span className='text-gray-500 sm:text-sm'>#</span>
+              </div>
+              <input
+                type='text'
+                name='barcode'
+                value={props.variant?.barcode}
+                disabled={isCheckedStatus == 1 ? false : true}
+                onChange={(e) => {
+                  props.handleVariantChange(e, props.index);
+                }}
+                className={`${
+                  isCheckedStatus == 0 ? 'bg-gray-200' : 'bg-white'
+                } block w-32 rounded-md border-0 py-1.5 pl-7  text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+                placeholder='Barkod...`}
+              />
+            </div>
+          </span>
+        </td>
         <th
           scope='row'
           className='flex items-center px-2 py-1 my-1 text-gray-600 whitespace-nowrap'
@@ -145,7 +167,7 @@ function ProductOptionEditModalVariantsItem(props) {
             <label className='relative inline-flex items-center mr-5 cursor-pointer'>
               <input
                 type='checkbox'
-                name='subtrack'
+                name='subtract'
                 disabled={isCheckedStatus == 1 ? false : true}
                 className='sr-only peer'
                 onChange={(e) => handleChange(e, isChecked == 1 ? 0 : 1)}

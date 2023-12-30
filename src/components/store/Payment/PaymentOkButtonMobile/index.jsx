@@ -9,20 +9,33 @@ function PaymentOkButtonMobile({ totals, payment, handleSubmit }) {
           {/* <div className='space-y-3'>
             <div className='flex items-center justify-between'>
               <p className='font-medium'>Ara Toplam:</p>
-              <p className='font-medium'>{totals.sub_total.toFixed(2)} TL</p>
+              <p className='font-medium'>{totals.sub_total.toLocaleString('tr-TR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })} TL</p>
             </div>
             <div className='flex items-center justify-between'>
               <p className='font-medium'>KDV (%{totals.vat_rate}) </p>
-              <p className='font-medium'>{totals.vat.toFixed(2)} TL</p>
+              <p className='font-medium'>{totals.vat.toLocaleString('tr-TR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })} TL</p>
             </div>
             <div className='flex items-center justify-between'>
               <p className='font-medium'>Kargo Ücreti</p>
-              <p className='font-medium'>{totals.shipping.toFixed(2)} TL</p>
+              <p className='font-medium'>{totals.shipping.toLocaleString('tr-TR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })} TL</p>
             </div>
           </div> */}
 
           <h2 className='text-xl font-sans pl-2 font-semibold items-center justify-between'>
-            {totals.total.toFixed(2)} <span className='text-sm'>TL</span>
+            {totals.total.toLocaleString('tr-TR', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{' '}
+            <span className='text-sm'>TL</span>
           </h2>
         </div>
         <div className='col-span-1 '>
