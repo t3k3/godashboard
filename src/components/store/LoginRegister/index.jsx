@@ -74,6 +74,27 @@ function LoginRegister() {
       setErrorRegister('Üyelik Koşullarını kabul etmelisiniz.');
       return;
     }
+
+    if (registerFormData.first_name == '') {
+      setErrorRegister('İsim alanı boş bırakılamaz.');
+      return;
+    }
+
+    if (registerFormData.last_name == '') {
+      setErrorRegister('Soyisim alanı boş bırakılamaz.');
+      return;
+    }
+
+    if (registerFormData.email == '') {
+      setErrorRegister('Eposta alanı boş bırakılamaz.');
+      return;
+    }
+
+    if (registerFormData.password == '') {
+      setErrorRegister('Şifre alanı boş bırakılamaz.');
+      return;
+    }
+
     e.preventDefault();
 
     var data = {
@@ -83,6 +104,8 @@ function LoginRegister() {
       password: registerFormData.password,
       aggrement: registerFormData.aggrement,
     };
+
+    console.log('Register data6630: ', data);
 
     const response = await register(data);
 
@@ -249,15 +272,16 @@ function LoginRegister() {
                 <div className='space-y-4'>
                   <div>
                     <label
-                      htmlFor='firstname'
+                      htmlFor='first_name'
                       className='text-gray-600 mb-2 block'
                     >
                       İsim
                     </label>
                     <input
                       type='text'
-                      name='firstname'
-                      id='firstname'
+                      name='first_name'
+                      id='first_name'
+                      required
                       className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400'
                       placeholder='İsim...'
                       onChange={handleChangeRegister}
@@ -265,15 +289,16 @@ function LoginRegister() {
                   </div>
                   <div>
                     <label
-                      htmlFor='lastname'
+                      htmlFor='last_name'
                       className='text-gray-600 mb-2 block'
                     >
                       Soyisim
                     </label>
                     <input
                       type='text'
-                      name='lastname'
-                      id='lastname'
+                      name='last_name'
+                      id='last_name'
+                      required
                       className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400'
                       placeholder='Soyisim...'
                       onChange={handleChangeRegister}
@@ -287,6 +312,7 @@ function LoginRegister() {
                       type='email'
                       name='email'
                       id='email'
+                      required
                       className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400'
                       placeholder='mail@example.com'
                       onChange={handleChangeRegister}
@@ -303,6 +329,7 @@ function LoginRegister() {
                       type='password'
                       name='password'
                       id='password'
+                      required
                       className='block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400'
                       placeholder='Şifre'
                       onChange={handleChangeRegister}

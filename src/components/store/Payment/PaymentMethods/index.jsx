@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { savePaymentMethod } from '@/services/payment';
 import { getPaymentMethods } from '@/services/payment';
+import { paramGetBinData, paramGetRates } from '@/services/store/payment';
 
 {
   /* VAKIFBANK: 
@@ -38,52 +39,156 @@ import { getPaymentMethods } from '@/services/payment';
                   */
 }
 
-const taksitler = [
-  {
-    taksit: 1,
-    tutar: 260,
-  },
-  {
-    taksit: 3,
-    tutar: 260,
-  },
-  {
-    taksit: 6,
-    tutar: 260,
-  },
-  {
-    taksit: 12,
-    tutar: 260,
-  },
-];
+// const kk_data = {
+//   card_holder: '',
+//   card_number: '',
+//   card_valid_thru: '',
+//   card_ccv: '',
+//   installment: 1,
+// };
 
-const kk_data = {
-  card_holder: '',
-  card_number: '',
-  card_valid_thru: '',
-  card_ccv: '',
-  installment: 1,
-};
+function calculateInstallmentsByBIN(posRates, binData, totalAmount) {
+  const parser = new DOMParser();
+  const cardsXmlDoc = parser.parseFromString(posRates, 'text/xml');
+  const ratesXmlDoc = parser.parseFromString(binData, 'text/xml');
+
+  const cardInfoList = cardsXmlDoc.getElementsByTagName('Temp');
+  const ratesList = ratesXmlDoc.getElementsByTagName('DT_Ozel_Oranlar');
+
+  let matchingRatesAndCardInfo = [];
+
+  for (let j = 0; j < cardInfoList.length; j++) {
+    const cardInfo = cardInfoList[j];
+    const posIdCard =
+      cardInfo.getElementsByTagName('SanalPOS_ID')[0].textContent;
+
+    for (let i = 0; i < ratesList.length; i++) {
+      const rate = ratesList[i];
+      const posIdRate = rate.getElementsByTagName('SanalPOS_ID')[0].textContent;
+
+      if (posIdRate === posIdCard) {
+        const bankName =
+          cardInfo.getElementsByTagName('Kart_Banka')[0].textContent;
+        const cardImage = rate.getElementsByTagName(
+          'Kredi_Karti_Banka_Gorsel'
+        )[0].textContent;
+
+        let installmentRates = [];
+        for (let k = 1; k <= 18; k++) {
+          const rateTag = `MO_${k.toString().padStart(2, '0')}`;
+          const rateElement = rate.getElementsByTagName(rateTag)[0];
+          if (rateElement) {
+            const rateValue = parseFloat(rateElement.textContent);
+            // Sadece pozitif oranlar için işlem yap
+            if (rateValue >= 0) {
+              // prettier-ignore
+              const totalInstallmentAmount = totalAmount + ((totalAmount * rateValue) / 100);
+              const monthlyInstallment = totalInstallmentAmount / k;
+
+              installmentRates.push({
+                id: rateTag,
+                rate: rateValue,
+                numberOfInstallments: k,
+                monthlyAmount: monthlyInstallment.toFixed(2),
+                totalInstallmentAmount: totalInstallmentAmount.toFixed(2),
+              });
+            }
+          }
+        }
+
+        matchingRatesAndCardInfo.push({
+          posId: posIdRate,
+          bankName,
+          cardImage,
+          installmentRates,
+        });
+        break;
+      }
+    }
+  }
+
+  return matchingRatesAndCardInfo;
+}
 
 export default function PaymentMethods({
+  payment,
+  totals,
+  paymentError,
+  setTotals,
+  realTotals,
   payment_method,
   handleChangePaymentMethod,
   handleChangePaymentEFTMethod,
+  kkData,
+  setKkData,
 }) {
   // const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
   //   payment_methods[0].code
   // );
-  const [selectedInstallment, setSelectedInstallment] = useState(taksitler[0]);
+  const [selectedInstallment, setSelectedInstallment] = useState(false);
   const [selectedInstallmentIndex, setSelectedInstallmentIndex] = useState(0);
+  const [installmentRatesXML, setInstallmentRatesXML] = useState('');
+  const [oranlarListesi, setOranlarListesi] = useState([]);
 
+  useEffect(() => {
+    const getInstallment = async () => {
+      const response = await paramGetRates();
+      setInstallmentRatesXML(response);
+    };
+
+    getInstallment();
+  }, []);
+
+  useEffect(() => {
+    const getBinData = async () => {
+      const bin = kkData.card_number.replace(/\s/g, '').substring(0, 16);
+      const binData = await paramGetBinData(bin);
+      const rateList = calculateInstallmentsByBIN(
+        binData,
+        installmentRatesXML,
+        JSON.parse(realTotals).total
+      );
+
+      setOranlarListesi(rateList);
+
+      if (rateList.length > 0) {
+        setTotals((prev) => ({
+          ...prev,
+          total: rateList[0].installmentRates[0].totalInstallmentAmount,
+          fee:
+            rateList[0].installmentRates[0].totalInstallmentAmount -
+            JSON.parse(realTotals).total,
+        }));
+        setSelectedInstallment(rateList[0].installmentRates[0]);
+      }
+    };
+
+    if (kkData.card_number && kkData.card_number.length > 18) {
+      getBinData();
+    }
+  }, [kkData.card_number, installmentRatesXML, realTotals, setTotals]);
+
+  // if (installmentRatesXML != '') {
+  //   oranlarListesi = calculateInstallmentsByBIN(
+  //     ikinciXmlString,
+  //     installmentRatesXML,
+  //     totals.total
+  //   );
+  // }
   const handleSelectionChange = (taksit, index) => {
     setSelectedInstallment(taksit);
     setSelectedInstallmentIndex(index);
+    setKkData((prev) => ({
+      ...prev,
+      installment: taksit.numberOfInstallments,
+    }));
+
+    setTotals((prev) => ({
+      ...prev,
+      total: taksit.totalInstallmentAmount,
+      fee: taksit.totalInstallmentAmount - JSON.parse(realTotals).total,
+    }));
   };
-
-  console.log('selectedInstallment: ', selectedInstallment);
-
-  const [kkData, setKkData] = useState(kk_data);
 
   const handleChangeKK = (e) => {
     const { name, value } = e.target;
@@ -126,8 +231,6 @@ export default function PaymentMethods({
     payment_method || false
   );
 
-  console.log('selectedEFTMethod: ', selectedEFTMethod);
-
   useEffect(() => {
     const fetchPaymentMethods = async () => {
       const paymentMethods = await getPaymentMethods();
@@ -153,19 +256,39 @@ export default function PaymentMethods({
   const handleChangePayment = (selectedCode) => {
     setSelectedPaymentMethod(selectedCode);
     handleChangePaymentMethod(selectedCode);
-    console.log('Seçilen ödeme yöntemi: ', selectedCode);
+
+    if (selectedCode == 0) {
+      if (selectedInstallment) {
+        setTotals((prev) => ({
+          ...prev,
+          total: selectedInstallment.totalInstallmentAmount,
+        }));
+      }
+    }
+
+    if (selectedCode == 1) {
+      setTotals((prev) => ({
+        ...prev,
+        total: JSON.parse(realTotals).total,
+        fee: 0,
+      }));
+    }
+
+    console.log('Seçilen ödeme yöntemi handleChangePayment: ', selectedCode);
     // İşlem yapmak için seçilen ödeme yöntemini kullanabilirsiniz.
   };
 
   const handleChangeEFT = (selectedCode) => {
     setSelectedEFTMethod(selectedCode);
     handleChangePaymentEFTMethod(selectedCode);
-    console.log('Seçilen ödeme yöntemi: ', selectedCode);
+
+    console.log('Seçilen ödeme yöntemi handleChangeEFT: ', selectedCode);
     // İşlem yapmak için seçilen ödeme yöntemini kullanabilirsiniz.
   };
 
   return (
     <>
+      {/* {console.log('oranlar Listesi: ', oranlarListesi)} */}
       {/* Payment Methods */}
       <div className='items-center pl-4 border border-gray-200 rounded'>
         <div className='flex items-center pl-2'>
@@ -207,6 +330,18 @@ export default function PaymentMethods({
         </div>
         <div className={`${selectedPaymentMethod == 0 ? 'block ' : 'hidden'}`}>
           <div className=' mx-4 '>
+            {console.log('paymentError: ', paymentError)}
+            {paymentError ? (
+              <div className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative'>
+                <strong className='font-bold'>Hata! </strong>
+                <span className='block sm:inline'>
+                  Kart doğrulaması yapılamadı. Lütfen bilgilerinizi kontrol edip
+                  tekrar deneyiniz. <br />
+                  <strong className='font-bold'>Banka mesajı: </strong>{' '}
+                  {paymentError.bankResult}
+                </span>
+              </div>
+            ) : null}
             <div className='flex flex-col md:flex-row items-center gap-5 m-2'>
               <div className='w-full'>
                 <label
@@ -288,80 +423,169 @@ export default function PaymentMethods({
                 />
               </div>
             </div>
-            {console.log(
-              'kkData.card_number.length: ',
-              kkData.card_number.length
-            )}
-            <div
-              className={`${
-                kkData.card_number.length > 8 ? 'block' : 'hidden'
-              } max-w-sm pb-12 mt-12 m-2`}
-            >
-              <label
-                htmlFor='installment'
-                className='text-gray-600 mb-2 block font-bold'
-              >
-                Taksit Seçenekleri
-              </label>
 
-              <div className=' max-w-xl'>
-                <div className='flex flex-wrap gap-1 '>
-                  {taksitler.map((taksit, index) => {
-                    return (
-                      <label key={index} className='cursor-pointer border'>
-                        <input
-                          type='radio'
-                          className='peer sr-only'
-                          name='pricing'
-                          checked={selectedInstallmentIndex === index}
-                          onChange={() => handleSelectionChange(taksit, index)}
-                        />
-                        <div className='w-72 max-w-xl rounded-md bg-white p-5 text-gray-600 ring-2 ring-transparent transition-all hover:shadow peer-checked:text-sky-600 peer-checked:ring-blue-400 peer-checked:ring-offset-2'>
-                          <div className='flex flex-col gap-1'>
-                            <div className='flex items-center justify-between'>
-                              <p className='text-sm font-semibold  text-gray-500'>
-                                {taksit.taksit == 1
-                                  ? 'Tek Çekim'
-                                  : taksit.taksit + ' Taksit'}
-                              </p>
-                              <div>
-                                <svg width='24' height='24' viewBox='0 0 24 24'>
-                                  <path
-                                    fill='currentColor'
-                                    d='m10.6 13.8l-2.175-2.175q-.275-.275-.675-.275t-.7.3q-.275.275-.275.7q0 .425.275.7L9.9 15.9q.275.275.7.275q.425 0 .7-.275l5.675-5.675q.275-.275.275-.675t-.3-.7q-.275-.275-.7-.275q-.425 0-.7.275ZM12 22q-2.075 0-3.9-.788q-1.825-.787-3.175-2.137q-1.35-1.35-2.137-3.175Q2 14.075 2 12t.788-3.9q.787-1.825 2.137-3.175q1.35-1.35 3.175-2.138Q9.925 2 12 2t3.9.787q1.825.788 3.175 2.138q1.35 1.35 2.137 3.175Q22 9.925 22 12t-.788 3.9q-.787 1.825-2.137 3.175q-1.35 1.35-3.175 2.137Q14.075 22 12 22Z'
-                                  />
-                                </svg>
-                              </div>
-                            </div>
-                            <div className='flex items-end justify-between'>
-                              <p>
-                                <span className='text-lg font-bold'>
-                                  ₺
-                                  {(
-                                    taksit.tutar / taksit.taksit
-                                  ).toLocaleString('tr-TR', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2,
-                                  })}
-                                </span>{' '}
-                                x{taksit.taksit}
-                              </p>
-                              <p className='text-sm font-bold'>
-                                ₺
-                                {taksit.tutar.toLocaleString('tr-TR', {
-                                  minimumFractionDigits: 2,
-                                  maximumFractionDigits: 2,
-                                })}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </label>
-                    );
-                  })}
+            {oranlarListesi.length > 0 ? (
+              <div className='flex flex-col md:flex-row items-center gap-5 m-2'>
+                <div className='w-full'>
+                  <Image
+                    src={`${oranlarListesi[0].cardImage}`}
+                    alt='bank-logo'
+                    width={100}
+                    height={100}
+                  />
                 </div>
               </div>
-            </div>
+            ) : null}
+
+            {oranlarListesi.length > 0 ? (
+              <div className={` max-w-sm pb-12 mt-12 m-2`}>
+                <label
+                  htmlFor='installment'
+                  className='text-gray-600 mb-2 block font-bold'
+                >
+                  Taksit Seçenekleri
+                </label>
+
+                <div className=' max-w-xl'>
+                  <div className='flex flex-wrap gap-1 '>
+                    {oranlarListesi[0]?.installmentRates?.map(
+                      (taksit, index) => {
+                        return (
+                          <label key={index} className='cursor-pointer border'>
+                            <input
+                              type='radio'
+                              className='peer sr-only'
+                              name='pricing'
+                              checked={selectedInstallmentIndex === index}
+                              onChange={() =>
+                                handleSelectionChange(taksit, index)
+                              }
+                            />
+                            <div className='w-72 max-w-xl rounded-md bg-white p-5 text-gray-600 ring-2 ring-transparent transition-all hover:shadow peer-checked:text-sky-600 peer-checked:ring-blue-400 peer-checked:ring-offset-2'>
+                              <div className='flex flex-col gap-1'>
+                                <div className='flex items-center justify-between'>
+                                  <p className='text-sm font-semibold  text-gray-500'>
+                                    {taksit.numberOfInstallments == 1
+                                      ? 'Tek Çekim'
+                                      : taksit.numberOfInstallments + ' Taksit'}
+                                  </p>
+                                  <div>
+                                    <svg
+                                      width='24'
+                                      height='24'
+                                      viewBox='0 0 24 24'
+                                    >
+                                      <path
+                                        fill='currentColor'
+                                        d='m10.6 13.8l-2.175-2.175q-.275-.275-.675-.275t-.7.3q-.275.275-.275.7q0 .425.275.7L9.9 15.9q.275.275.7.275q.425 0 .7-.275l5.675-5.675q.275-.275.275-.675t-.3-.7q-.275-.275-.7-.275q-.425 0-.7.275ZM12 22q-2.075 0-3.9-.788q-1.825-.787-3.175-2.137q-1.35-1.35-2.137-3.175Q2 14.075 2 12t.788-3.9q.787-1.825 2.137-3.175q1.35-1.35 3.175-2.138Q9.925 2 12 2t3.9.787q1.825.788 3.175 2.138q1.35 1.35 2.137 3.175Q22 9.925 22 12t-.788 3.9q-.787 1.825-2.137 3.175q-1.35 1.35-3.175 2.137Q14.075 22 12 22Z'
+                                      />
+                                    </svg>
+                                  </div>
+                                </div>
+                                <div className='flex items-end justify-between'>
+                                  <p>
+                                    <span className='text-lg font-bold'>
+                                      ₺
+                                      {taksit.monthlyAmount.toLocaleString(
+                                        'tr-TR',
+                                        {
+                                          minimumFractionDigits: 2,
+                                          maximumFractionDigits: 2,
+                                        }
+                                      )}
+                                    </span>{' '}
+                                    x{taksit.numberOfInstallments}
+                                  </p>
+                                  <p className='text-sm font-bold'>
+                                    ₺
+                                    {taksit.totalInstallmentAmount.toLocaleString(
+                                      'tr-TR',
+                                      {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2,
+                                      }
+                                    )}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </label>
+                        );
+                      }
+                    )}
+                  </div>
+                </div>
+              </div>
+            ) : oranlarListesi.length == 0 && kkData.card_number.length > 8 ? (
+              <div className={` max-w-sm pb-12 mt-12 m-2`}>
+                <label
+                  htmlFor='installment'
+                  className='text-gray-600 mb-2 block font-bold'
+                >
+                  Taksit Seçenekleri
+                </label>
+
+                <div className=' max-w-xl'>
+                  <div className='flex flex-wrap gap-1 '>
+                    <label className='cursor-pointer border'>
+                      <input
+                        type='radio'
+                        className='peer sr-only'
+                        name='pricing'
+                        checked={selectedInstallmentIndex === 0}
+                        onChange={() =>
+                          handleSelectionChange(
+                            { numberOfInstallments: '1' },
+                            0
+                          )
+                        }
+                      />
+                      <div className='w-72 max-w-xl rounded-md bg-white p-5 text-gray-600 ring-2 ring-transparent transition-all hover:shadow peer-checked:text-sky-600 peer-checked:ring-blue-400 peer-checked:ring-offset-2'>
+                        <div className='flex flex-col gap-1'>
+                          <div className='flex items-center justify-between'>
+                            <p className='text-sm font-semibold  text-gray-500'>
+                              Tek Çekim
+                            </p>
+                            <div>
+                              <svg width='24' height='24' viewBox='0 0 24 24'>
+                                <path
+                                  fill='currentColor'
+                                  d='m10.6 13.8l-2.175-2.175q-.275-.275-.675-.275t-.7.3q-.275.275-.275.7q0 .425.275.7L9.9 15.9q.275.275.7.275q.425 0 .7-.275l5.675-5.675q.275-.275.275-.675t-.3-.7q-.275-.275-.7-.275q-.425 0-.7.275ZM12 22q-2.075 0-3.9-.788q-1.825-.787-3.175-2.137q-1.35-1.35-2.137-3.175Q2 14.075 2 12t.788-3.9q.787-1.825 2.137-3.175q1.35-1.35 3.175-2.138Q9.925 2 12 2t3.9.787q1.825.788 3.175 2.138q1.35 1.35 2.137 3.175Q22 9.925 22 12t-.788 3.9q-.787 1.825-2.137 3.175q-1.35 1.35-3.175 2.137Q14.075 22 12 22Z'
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                          <div className='flex items-end justify-between'>
+                            <p>
+                              <span className='text-lg font-bold'>
+                                ₺
+                                {JSON.parse(realTotals).total.toLocaleString(
+                                  'tr-TR',
+                                  {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                  }
+                                )}
+                              </span>
+                            </p>
+                            <p className='text-sm font-bold'>
+                              ₺
+                              {JSON.parse(realTotals).total.toLocaleString(
+                                'tr-TR',
+                                {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                }
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
@@ -465,6 +689,16 @@ export default function PaymentMethods({
                           <span className='text-2xl font-bold text-gray-700'>
                             {' '}
                             {formatIBAN(paymentMethod.iban)}
+                          </span>
+                        </div>
+
+                        <div className='my-2'>
+                          <span className='text-lg text-gray-500'>
+                            Sipariş Numarası
+                          </span>
+                          <span className='text-2xl font-bold text-gray-700'>
+                            {' '}
+                            {payment.order.ID}
                           </span>
                         </div>
                         <Image

@@ -36,12 +36,24 @@ function PaymentOkButtonDesktop({ totals, payment, handleSubmit, warning }) {
               TL
             </p>
           </div>
+          {/* {totals.fee && totals.fee > 0 && (
+            <div className='flex items-center justify-between'>
+              <p className='font-medium'>Vade Farkı</p>
+              <p className='font-medium'>
+                {totals.fee.toLocaleString('tr-TR', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}{' '}
+                TL
+              </p>
+            </div>
+          )} */}
         </div>
 
         <h2 className='mt-4 pt-4 text-2xl font-semibold border-t border-gray-200 flex items-center justify-between'>
           <span>Toplam:</span>
           <span>
-            {totals.total.toLocaleString('tr-TR', {
+            {totals?.total?.toLocaleString('tr-TR', {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}{' '}

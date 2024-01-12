@@ -292,6 +292,21 @@ function OrderComp(props) {
                               .replace('.', ',')}
                           </span>
                         </div>
+                        <div className='ml-1 my-2 flex justify-between'>
+                          <span className='text-md font-semibold'>
+                            Banka Komisyonu:
+                          </span>
+                          <span className='text-xs'>
+                            {' '}
+                            ₺
+                            {Number(totals.fee || 0)
+                              .toLocaleString('tr-TR', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })
+                              .replace('.', ',')}
+                          </span>
+                        </div>
                         <div className='ml-1 my-3 flex justify-between border-t'>
                           <span className='text-md font-semibold'>Toplam</span>
                           <span className='text-xs'>

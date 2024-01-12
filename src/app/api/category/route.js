@@ -1,70 +1,35 @@
-import axios from 'axios';
-import { API_URL_ADMIN } from '@/config/apiConfig';
+import { API_URL_ADMIN, _API_URL_STORE } from '@/config/apiConfig';
 
 export async function GET(req, res) {
-  const response = await fetch(`${API_URL_ADMIN}catalog/category`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json, text/plain, */*',
-      'Content-Type': 'application/json',
-    },
-    cache: 'no-store',
-  });
+  const categoryKeyword = req.nextUrl.searchParams.get('keyword');
 
-  return response;
-}
+  const response = await fetch(
+    `${_API_URL_STORE}/categories/${categoryKeyword}`,
+    {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+      },
+      cache: 'no-store',
+    }
+  );
+  console.log('response.status !== 200', response.status);
 
-export async function POST(request) {
-  console.log('POST ISTEK GELDİ');
-  const data = await request.json();
-
-  try {
-    const url = `${API_URL_ADMIN}catalog/category/add`;
-    const headers = { 'Content-Type': 'multipart/form-data' };
-    const response = await axios.post(url, data, { headers });
-
+  if (response.status !== 200) {
     return new Response(
       JSON.stringify({
-        status: response.status,
-        statusText: response.statusText,
-        data: response.data,
-      })
-    );
-  } catch (error) {
-    return new Response(
-      JSON.stringify({
-        status: error.response.status,
-        statusText: error.response.statusText,
-        data: error.response.data,
+        status: 404,
+        error: 'Not Found',
       })
     );
   }
 
-  // export async function POST(request) {
-  //   console.log('POST ISTEK GELDİ');
-  //   const data = await request.json();
-
-  //   try {
-  //     const url = `${API_URL_ADMIN}catalog/category/add`;
-  //     const headers = { 'Content-Type': 'multipart/form-data' };
-  //     const response = await axios.post(url, data, { headers });
-
-  //     return new Response(
-  //       JSON.stringify({
-  //         status: response.status,
-  //         statusText: response.statusText,
-  //         data: response.data,
-  //       })
-  //     );
-  //   } catch (error) {
-  //     return new Response(
-  //       JSON.stringify({
-  //         status: error.response.status,
-  //         statusText: error.response.statusText,
-  //         data: error.response.data,
-  //       })
-  //     );
-  //   }
-
-  // console.log('RES: ', res);
+  const result = await response.json();
+  return new Response(
+    JSON.stringify({
+      status: 200,
+      products: result,
+    })
+  );
 }

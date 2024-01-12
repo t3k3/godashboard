@@ -46,7 +46,7 @@ function AccountMenu({ user_id, firstname }) {
           <div className='text-xs leading-3'>Hesap</div>
         </Link>
       ) : (
-        <Menu as='div' className='relative z-50'>
+        <Menu as='div' className='relative z-20'>
           {({ open }) => (
             <>
               <Menu.Button className='text-center text-gray-700 hover:text-primary transition'>

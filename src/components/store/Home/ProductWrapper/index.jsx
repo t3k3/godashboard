@@ -3,7 +3,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 function ProductWrapper({ wrapperName, products }) {
-  // console.log(products);
+  if (products?.length === 0) {
+    return (
+      <div className='container py-16'>
+        <h2 className='text-2xl font-medium font-roboto text-gray-800 uppercase pb-6'>
+          Kategoride hiç ürün yok
+        </h2>
+      </div>
+    );
+  }
+
   return (
     <div className='container pb-16'>
       <h2 className='text-2xl font-medium font-roboto text-gray-800 uppercase pb-6'>

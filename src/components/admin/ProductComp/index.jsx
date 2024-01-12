@@ -932,7 +932,15 @@ function ProductComp(props) {
               <div className='flex items-center justify-between px-2 pt-3 '>
                 <span className='font-medium'>Stok:</span>
                 <span className=' pr-2'>
-                  {product?.quantity !== '' ? product?.quantity : ''}
+                  {product?.quantity !== '' &&
+                  product.product_combinations.length === 0
+                    ? product.quantity
+                    : product.product_combinations.reduce(
+                        (total, combination) => {
+                          return total + combination.quantity;
+                        },
+                        0
+                      )}
                 </span>
               </div>
               <div className='flex items-center justify-between px-2 pt-3 '>

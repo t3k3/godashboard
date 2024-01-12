@@ -10,21 +10,21 @@ export default function CartSlider({ cart = [], open, setOpen }) {
   const pathName = usePathname();
   //   const [open, setOpen] = useState(isOpen);
 
-  console.log('cart 555666', cart);
+  // console.log('cart 555666', cart);
 
+  // CartSlider'ı sadece belirli sayfalarda açılmasını kontrol et
   if (
     pathName === '/sepet' ||
     pathName === '/odeme' ||
     pathName === '/checkout' ||
     pathName === '/payment'
   ) {
-    setOpen(false);
-    return null;
+    return null; // Sayfa uygun değilse null döndürerek bileşeni görüntüleme
   }
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as='div' className='relative z-10' onClose={setOpen}>
+      <Dialog as='div' className='relative z-50' onClose={setOpen}>
         <Transition.Child
           as={Fragment}
           enter='ease-in-out duration-500'

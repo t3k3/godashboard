@@ -2,9 +2,9 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-function Navbar({ categoryList }) {
+function Navbar({ categoryList, headerData }) {
   return (
-    <nav className='bg-gray-800'>
+    <nav className='bg-gray-800 sticky top-0 z-10'>
       <div className='container flex'>
         {/* all categories */}
         <div className='px-8 py-4 bg-primary flex items-center cursor-pointer relative group '>
@@ -55,7 +55,7 @@ function Navbar({ categoryList }) {
               href={'/'}
               className='text-gray-200 hover:text-white transition'
             >
-              Ana Sayfa
+              Markalar
             </Link>
             <Link
               href={'/kategori/koltuk'}
@@ -64,12 +64,18 @@ function Navbar({ categoryList }) {
               Ürünler
             </Link>
           </div>
-          <Link
-            href={'/uyelik'}
-            className='text-gray-200 hover:text-white transition'
-          >
-            Giriş Yap / Üye Ol
-          </Link>
+          {headerData.header_user_id > 0 ? (
+            <div className='flex items-center space-x-6 capitalize text-white'>
+              Hoşgeldiniz {headerData.header_user_firstname}!
+            </div>
+          ) : (
+            <Link
+              href={'/uyelik'}
+              className='text-gray-200 hover:text-white transition'
+            >
+              Giriş Yap / Üye Ol
+            </Link>
+          )}
         </div>
       </div>
     </nav>

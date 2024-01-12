@@ -1,4 +1,8 @@
-import { API_URL_STORE, API_URL_STORE_WO_ROUTE } from '@/config/apiConfig';
+import {
+  API_URL_STORE,
+  API_URL_STORE_WO_ROUTE,
+  _BASE_URL,
+} from '@/config/apiConfig';
 
 const getCategoryService = async (pathname, query = '') => {
   try {
@@ -11,8 +15,8 @@ const getCategoryService = async (pathname, query = '') => {
   }
 };
 
-const getCategoryServiceBySeo = async (pathname, query = '') => {
-  const res = await fetch(`${API_URL_STORE_WO_ROUTE}/${pathname}`, {
+const getCategoryServiceBySeo = async (keyword, query = '') => {
+  const res = await fetch(`${_BASE_URL}/api/category?keyword=${keyword}`, {
     cache: 'no-store',
   });
 

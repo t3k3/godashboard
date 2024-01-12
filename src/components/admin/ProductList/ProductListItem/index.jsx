@@ -60,9 +60,17 @@ function ProductListItem({ product, selectedProducts, handleCheckboxChange }) {
           {new Date(product.CreatedAt).toLocaleString('tr')}
         </span>
       </td>
+
       <td className='px-6 py-1'>
-        <div className='flex items-center'>{product.quantity}</div>
+        <div className='flex items-center'>
+          {product.product_combinations.length === 0
+            ? product.quantity
+            : product.product_combinations.reduce((total, combination) => {
+                return total + combination.quantity;
+              }, 0)}
+        </div>
       </td>
+
       <td className='px-6 py-1'>
         <div className='flex items-center'>
           {' '}

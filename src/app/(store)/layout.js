@@ -24,11 +24,13 @@ export default async function StoreLayout({ children }) {
     layoutData && (
       <html lang='tr'>
         <body>
-          <div>
+          <div className='flex flex-col min-h-screen'>
             <Header headerData={layoutData.header_data} cookies={cookies} />
-
-            <Navbar categoryList={layoutData.layout_category_list} />
-            <div>{children}</div>
+            <Navbar
+              categoryList={layoutData.layout_category_list}
+              headerData={layoutData.header_data}
+            />
+            <main className='flex-grow'>{children}</main>
             <Footer
               footerData={layoutData.footer_data}
               logo={layoutData.footer_data.footer_logo}

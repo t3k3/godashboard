@@ -2,11 +2,39 @@
 import { useState } from 'react';
 import CartSlider from '../../Cart/CartSlider';
 import { getCart } from '@/services/store/cart';
+import { useRouter, usePathname } from 'next/navigation';
+
 function BasketMenuIcon({ headerData }) {
   const [open, setOpen] = useState(false);
   const [cart, setCart] = useState([]);
 
+  const pathName = usePathname();
+  const router = useRouter();
+
   const handleChange = async () => {
+    if (pathName.startsWith('/checkout')) {
+      router.push('/sepet');
+      setOpen(false);
+      return;
+    }
+
+    if (pathName.startsWith('/payment')) {
+      router.push('/sepet');
+      setOpen(false);
+      return;
+    }
+
+    if (pathName.startsWith('/uyelik')) {
+      router.push('/sepet');
+      setOpen(false);
+      return;
+    }
+
+    if (pathName.startsWith('/sepet')) {
+      setOpen(false);
+      return;
+    }
+
     const response = await getCart();
     setCart(response.cart);
 

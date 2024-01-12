@@ -1,10 +1,11 @@
 'use client';
 import Breadcrums from '@/components/store/Breadcrums';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 import {
   confirm,
@@ -12,18 +13,74 @@ import {
   saveShippingAndFatura,
 } from '@/services/store/checkout';
 import PaymentMethods from './PaymentMethods';
-import { savePaymentMethod } from '@/services/store/payment';
+import {
+  paramSendOrderData,
+  paramTest,
+  savePaymentMethod,
+} from '@/services/store/payment';
 import PaymentProducts from './PaymentProducts';
 import PaymentOkButtonDesktop from './PaymentOkButtonDesktop';
 import PaymentOkButtonMobile from './PaymentOkButtonMobile';
 
 import { confirmOrderEft } from '@/services/store/payment';
+import PaymentResponseHTML from './PaymentResponseHTML';
+
+// import { useModalStore } from '@/zustand_stores/kk_payment_store';
+
+const kk_data = {
+  guid: '',
+  orderID: '',
+  card_holder: '',
+  card_number: '',
+  card_valid_thru: '',
+  card_ay: '',
+  card_yil: '',
+  card_ccv: '',
+  installment: '1',
+  gsm: '',
+  type: '3D',
+  total: 0,
+  feeTotal: 0,
+  hash: '',
+  ip: '',
+  hataURL: 'https://www.example.com/hata',
+  basariliURL: 'https://www.example.com/basarili',
+};
 
 function PaymentPage(props) {
+  // const { isOpen, closeModal, errorMessage } = useModalStore();
+
   const [payment, setPayment] = useState(props.payment);
+
   const [warning, setWarning] = useState(false);
 
-  const totals = JSON.parse(payment.order.totals);
+  const [paymentError, setPaymentError] = useState(false);
+
+  useState(() => {
+    if (payment.order.result) {
+      setPaymentError(JSON.parse(payment.order.result));
+    }
+  }, [payment]);
+
+  const [kkData, setKkData] = useState(kk_data);
+
+  const [totals, setTotals] = useState(JSON.parse(payment.order.totals));
+  const [paymentModal, setPaymentModal] = useState(false);
+
+  const [soapResponse, setSoapResponse] = useState('');
+
+  // let totals = {
+  //   sub_total: 4166.666666666667,
+  //   coupon: 0,
+  //   shipping: 60,
+  //   vat: 833.333333333333,
+  //   vat_rate: 20,
+  //   total: 5060,
+  // };
+
+  // console.log('PAYMENT DATA 11231231: ', payment);
+  // console.log('TOTALS 11231231: ', totals);
+  // console.log('kkData from Payment page: ', kkData);
 
   const router = useRouter();
 
@@ -50,24 +107,46 @@ function PaymentPage(props) {
     setPayment(paymentTemp);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const creditCardPayment = async () => {
+    console.log('kkData: ', kkData);
 
+    let kkDataTemp = { ...kkData };
+    kkDataTemp.total = JSON.parse(payment.order.totals)
+      .total.toFixed(2)
+      .toString()
+      .replace('.', ',');
+    kkDataTemp.card_ay = kkData.card_valid_thru.toString().split('/')[0];
+    kkDataTemp.card_yil = kkData.card_valid_thru.toString().split('/')[1];
+
+    kkDataTemp.feeTotal = Number.parseFloat(totals.total)
+      .toFixed(2)
+      .replace('.', ',');
+
+    kkDataTemp.gsm = payment.order.phone;
+    kkDataTemp.orderID = payment.order.ID;
+    console.log('kkDataTemp: ', kkDataTemp);
+    const response = await paramSendOrderData(kkDataTemp);
+    console.log('response 3D Model send kkdatatemp: ', response);
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(response, 'text/xml');
+
+    // UCD_HTML elementini bulun ve içeriğini alın.
+    const htmlContent = xmlDoc.getElementsByTagName('UCD_HTML')[0].textContent;
+    console.log('htmlContent 33355: ', htmlContent);
+
+    setSoapResponse(htmlContent);
+
+    setPaymentModal(true);
+  };
+
+  const eftPayment = async () => {
     var response = null;
-    // 0: Kredi Kartı 1: Havale/EFT, 2: Kapıda Ödeme,
-    if (payment.order.payment_method == 1) {
-      if (payment.order.payment_code == 0) {
-        setWarning(true);
-        return;
-      } else {
-        response = await confirmOrderEft(
-          props.cookies,
-          payment.order.ID,
-          payment.order.payment_method,
-          payment.order.payment_code
-        );
-      }
-    }
+    response = await confirmOrderEft(
+      props.cookies,
+      payment.order.ID,
+      payment.order.payment_method,
+      payment.order.payment_code
+    );
 
     console.log('response.status: ', response.status);
 
@@ -84,9 +163,40 @@ function PaymentPage(props) {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // var response = null;
+    // 0: Kredi Kartı 1: Havale/EFT, 2: Kapıda Ödeme,
+    if (payment.order.payment_method == 1) {
+      if (payment.order.payment_code == 0) {
+        setWarning(true);
+        return;
+      } else {
+        eftPayment();
+      }
+    }
+
+    if (payment.order.payment_method == 0) {
+      creditCardPayment();
+    }
+  };
+
   // console.log('payment  456554656: ', payment);
+
+  // if (paymentModal)
+  //   return (
+  //     <div>
+  //       <PaymentResponseHTML soapResponse={soapResponse} />
+  //     </div>
+  //   );
+
   return (
     <>
+      {/* PRODUCT OPTION EDIT MODAL */}
+      {paymentModal ? (
+        <PaymentResponseHTML soapResponse={soapResponse} />
+      ) : null}
       <Breadcrums />
       <div className='container grid  lg:grid-cols-10 gap-10 pb-16 shadow-lg'>
         <div className='lg:col-span-6 space-y-8'>
@@ -94,9 +204,16 @@ function PaymentPage(props) {
             <div className='w-full  space-y-2 '>
               <PaymentMethods
                 // payment_methods={props.payment_methods}
+                payment={payment}
+                totals={totals}
+                setTotals={setTotals}
+                paymentError={paymentError}
+                realTotals={payment.order.totals}
                 payment_method={payment.payment_method}
                 handleChangePaymentMethod={handleChangePaymentMethod}
                 handleChangePaymentEFTMethod={handleChangePaymentEFTMethod}
+                kkData={kkData}
+                setKkData={setKkData}
               />
             </div>
           </form>

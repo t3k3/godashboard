@@ -23,7 +23,8 @@ async function Payment({ searchParams }) {
   const cookies = await getClientHeaders();
 
   if (!(searchParams.orderid > 0)) {
-    redirect('/sepet');
+    console.log('LOG NUMBER: 4587645645986745986457');
+    redirect('/sepet123123123123');
   }
 
   // console.log('searchParams: ', searchParams.orderid);
@@ -33,9 +34,15 @@ async function Payment({ searchParams }) {
   const { payment } = await getPayment(cookies, searchParams.orderid);
   const isLogged = await isLoggedCustomer(cookies);
 
-  if (payment == undefined) {
-    redirect('/sepet');
+  if (payment.order.is_complate && payment.order.dekont_id) {
+    console.log('LOG NUMBER: 4587645645986745986456');
+    redirect('/confirm?orderid=' + payment.order.ID);
   }
+
+  if (payment == undefined) {
+    redirect('/sepet098890980890890890');
+  }
+
   // console.log('payment2423423: ', payment.order.order_products);
   // console.log('checkout2423423: ', checkout.cart.cart_items);
   // console.log(

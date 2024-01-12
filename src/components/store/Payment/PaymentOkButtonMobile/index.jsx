@@ -31,7 +31,7 @@ function PaymentOkButtonMobile({ totals, payment, handleSubmit }) {
           </div> */}
 
           <h2 className='text-xl font-sans pl-2 font-semibold items-center justify-between'>
-            {totals.total.toLocaleString('tr-TR', {
+            {totals?.total?.toLocaleString('tr-TR', {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}{' '}
