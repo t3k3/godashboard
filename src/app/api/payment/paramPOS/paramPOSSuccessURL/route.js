@@ -3,6 +3,55 @@ import { paramConfirmPayment } from '@/services/store/payment';
 import crypto from 'crypto';
 import xml2js from 'xml2js';
 
+const basarisizHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ödeme Sonucu</title>
+</head>
+<body>
+    <h1>Ödeme Başarısız</h1>
+    <p>Ödemeniz başarısız. Lütfen bekleyin, yönlendiriliyorsunuz...</p>
+
+    <script>
+        window.top.location.href = "http://lesber.com:3000/payment?account=0&orderid=ORDERID&hello=basarisiz";
+    </script>
+</body>
+</html>
+`;
+
+const basariliHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ödeme Sonucu</title>
+</head>
+<body>
+    <h1>Ödeme Başarılı</h1>
+    <p>Ödemeniz başarıyla tamamlandı. Lütfen bekleyin, yönlendiriliyorsunuz...</p>
+
+    
+
+    <script>
+    
+      window.top.location.reload();
+      
+    
+
+        
+    </script>
+</body>
+</html>
+`;
+
+function OrderIDinhtml(html, orderID) {
+  let htmlContent = html.replaceAll('ORDERID', orderID);
+
+  return htmlContent;
+}
+
 export async function POST(request) {
   const data = await request.text();
 
@@ -29,7 +78,7 @@ export async function POST(request) {
   };
 
   const saveBankResultToOrder = await fetch(
-    `${_API_URL_STORE}/orders/${orderId}`,
+    `${_API_URL_STORE}/orders/updateresult/${orderId}`,
     {
       method: 'PUT',
       headers: {
@@ -39,7 +88,8 @@ export async function POST(request) {
     }
   );
 
-  console.log('saveBankResultToOrder: ', saveBankResultToOrder);
+  console.log('saveBankResultToOrder: ', saveBankResultToOrder.status);
+  console.log('saveBankResultToOrder: ', saveBankResultToOrder.statusText);
   // Diğer parametreleri de benzer şekilde alabilirsiniz.
 
   //   console.log('__________________________________________________________');
@@ -141,6 +191,33 @@ export async function POST(request) {
         console.log('param istek Bitti');
       });
 
+      const resJSON = {
+        md: md,
+        mdStatus: mdStatus,
+        orderId: orderId,
+        transactionAmount: transactionAmount,
+        islemGUID: islemGUID,
+        islemHash: islemHash,
+        bankResult: bankHostMsg,
+      };
+
+      const saveBankBResultToOrder = await fetch(
+        `${_API_URL_STORE}/orders/updateresult/${orderId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(resJSON),
+        }
+      );
+
+      console.log('saveBankBResultToOrder222: ', saveBankBResultToOrder.status);
+      console.log(
+        'saveBankBResultToOrder222: ',
+        saveBankBResultToOrder.statusText
+      );
+
       if (sonuc > 0 && dekontID > 0) {
         const setIsComplate = await fetch(
           `${_API_URL_STORE}/orders/confirmpayment`,
@@ -150,8 +227,8 @@ export async function POST(request) {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              //   order_id: Number(orderId),
-              order_id: 90,
+              order_id: Number(orderId),
+              // order_id: 90,
               dekont_id: Number(dekontID),
               transaction_amount: Number(transactionAmount.replace(/,/g, '.')),
             }),
@@ -163,40 +240,21 @@ export async function POST(request) {
         const responseOrderId = await setIsComplate.text();
         console.log('responseOrderId: ', responseOrderId);
 
-        // HTML içeriği oluşturun
-        const htmlContent = `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <title>Ödeme Sonucu</title>
-        </head>
-        <body>
-            <h1>Ödeme Başarılı</h1>
-            <p>Ödemeniz başarıyla tamamlandı. Lütfen bekleyin, yönlendiriliyorsunuz...</p>
-
-            <script>
-                // Tarayıcıda JavaScript ile yönlendirme yapma
-                console.log('LOG NUMBER: 44444444444444444444');
-                window.top.location.reload();
-                console.log('LOG NUMBER: 5555555555555555555');
-                setTimeout(function () {
-                    console.log('LOG NUMBER: 6666666666666666666666');
-                    window.top.location.reload();
-                    console.log('LOG NUMBER: 7777777777777777777777');
-                    window.location.href = "/payment/success?orderId=" + responseOrderId;
-                }, 3000); // 3 saniye sonra yönlendirme yapılır
-
-            </script>
-        </body>
-        </html>
-      `;
-
-        // HTML içeriğini döndürün
-        return new Response(htmlContent, {
+        // HTML içeriğini döndür
+        return new Response(OrderIDinhtml(basariliHTML, responseOrderId), {
           headers: { 'Content-Type': 'text/html' },
         });
       }
+
+      // sonuc < 1 ve Dekont_id < 1 ise başarısız
+      return new Response(OrderIDinhtml(basarisizHTML, orderId), {
+        headers: { 'Content-Type': 'text/html' },
+      });
     }
   }
+
+  // mdStatus 1,2,3,4 değişse başarısız
+  return new Response(OrderIDinhtml(basarisizHTML, orderId), {
+    headers: { 'Content-Type': 'text/html' },
+  });
 }

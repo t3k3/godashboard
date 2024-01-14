@@ -25,7 +25,7 @@ import PaymentOkButtonMobile from './PaymentOkButtonMobile';
 import { confirmOrderEft } from '@/services/store/payment';
 import PaymentResponseHTML from './PaymentResponseHTML';
 
-// import { useModalStore } from '@/zustand_stores/kk_payment_store';
+import { useSearchParams } from 'next/navigation';
 
 const kk_data = {
   guid: '',
@@ -48,7 +48,10 @@ const kk_data = {
 };
 
 function PaymentPage(props) {
-  // const { isOpen, closeModal, errorMessage } = useModalStore();
+  // const searchParams = params.get('hello');
+  // if (searchParams) {
+  //   console.log('HELLOOOOOO ');
+  // }
 
   const [payment, setPayment] = useState(props.payment);
 

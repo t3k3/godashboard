@@ -1,5 +1,39 @@
 import { _API_URL_ADMIN, _API_URL_STORE } from '@/config/apiConfig';
 
+const basarisizHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ödeme Sonucu</title>
+</head>
+<body>
+    <h1>Ödeme Başarısız</h1>
+    <p>Ödemeniz başarısız. Lütfen bekleyin, yönlendiriliyorsunuz...</p>
+
+    <script>
+        // Tarayıcıda JavaScript ile yönlendirme yapma
+        console.log('LOG NUMBER: 44444444444444444444');
+        window.top.location.href = "http://lesber.com:3000/payment?account=0&orderid=ORDERID&hello=basarisiz";
+       //  window.top.location.reload();
+        console.log('LOG NUMBER: 5555555555555555555');
+        setTimeout(function () {
+            console.log('LOG NUMBER: 6666666666666666666666');
+            window.top.location.reload();
+            console.log('LOG NUMBER: 7777777777777777777777');
+            window.location.href = "/payment/success?orderId=" + responseOrderId;
+        }, 3000); // 3 saniye sonra yönlendirme yapılır
+
+    </script>
+</body>
+</html>
+`;
+
+function OrderIDinhtml(html, orderID) {
+  let htmlContent = html.replace('ORDERID', orderID);
+  return htmlContent;
+}
+
 export async function POST(request) {
   const data = await request.text();
 
@@ -53,37 +87,8 @@ export async function POST(request) {
 
   console.log('saveBankResultToOrder: ', saveBankResultToOrder);
 
-  // HTML içeriği oluşturun
-  const htmlContent = `
-         <!DOCTYPE html>
-         <html lang="en">
-         <head>
-             <meta charset="UTF-8">
-             <title>Ödeme Sonucu</title>
-         </head>
-         <body>
-             <h1>Ödeme Başarılı</h1>
-             <p>Ödemeniz başarıyla tamamlandı. Lütfen bekleyin, yönlendiriliyorsunuz...</p>
- 
-             <script>
-                 // Tarayıcıda JavaScript ile yönlendirme yapma
-                 console.log('LOG NUMBER: 44444444444444444444');
-                 window.top.location.reload();
-                 console.log('LOG NUMBER: 5555555555555555555');
-                 setTimeout(function () {
-                     console.log('LOG NUMBER: 6666666666666666666666');
-                     window.top.location.reload();
-                     console.log('LOG NUMBER: 7777777777777777777777');
-                     window.location.href = "/payment/success?orderId=" + responseOrderId;
-                 }, 3000); // 3 saniye sonra yönlendirme yapılır
- 
-             </script>
-         </body>
-         </html>
-       `;
-
   // HTML içeriğini döndürün
-  return new Response(htmlContent, {
+  return new Response(OrderIDinhtml(basarisizHTML, orderId), {
     headers: { 'Content-Type': 'text/html' },
   });
 }

@@ -32,6 +32,17 @@ async function Payment({ searchParams }) {
   const { checkout } = await getCheckout(cookies);
 
   const { payment } = await getPayment(cookies, searchParams.orderid);
+
+  // if (searchParams.hello) {
+  //   return (
+  //     <PaymentPage
+  //       payment={payment}
+  //       // payment_methods={payment.payment_methods}
+  //       cookies={cookies}
+  //     />
+  //   );
+  // }
+
   const isLogged = await isLoggedCustomer(cookies);
 
   if (payment.order.is_complate && payment.order.dekont_id) {
@@ -52,6 +63,10 @@ async function Payment({ searchParams }) {
 
   //Sepetle sipariş arasında ürün farkı var mı kontrol edilir. Fark varsa checkout sayfasına yönlendirilir.
   if (hasDifferences(checkout.cart.cart_items, payment.order.order_products)) {
+    console.log('LOG NUMBER: 090998879789789789');
+    console.log('Sepetle sipariş arasında ürün farkı var');
+    console.log('checkout.cart.cart_items: ', checkout.cart.cart_items);
+    console.log('payment.order.order_products: ', payment.order.order_products);
     redirect('/checkout');
   }
 
