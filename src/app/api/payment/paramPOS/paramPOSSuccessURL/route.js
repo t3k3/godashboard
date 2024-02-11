@@ -15,7 +15,7 @@ const basarisizHTML = `
     <p>Ödemeniz başarısız. Lütfen bekleyin, yönlendiriliyorsunuz...</p>
 
     <script>
-        window.top.location.href = "http://lesber.com:3000/payment?account=0&orderid=ORDERID&hello=basarisiz";
+      window.top.location.href = "http://lesber.com:3000/payment?account=0&orderid=ORDERID&hello=basarisiz";
     </script>
 </body>
 </html>
@@ -253,7 +253,7 @@ export async function POST(request) {
     }
   }
 
-  // mdStatus 1,2,3,4 değişse başarısız
+  // mdStatus 1,2,3,4 değilse başarısız
   return new Response(OrderIDinhtml(basarisizHTML, orderId), {
     headers: { 'Content-Type': 'text/html' },
   });

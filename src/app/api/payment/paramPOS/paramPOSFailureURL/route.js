@@ -19,9 +19,9 @@ const basarisizHTML = `
         console.log('LOG NUMBER: 5555555555555555555');
         setTimeout(function () {
             console.log('LOG NUMBER: 6666666666666666666666');
-            window.top.location.reload();
+            //window.top.location.reload();
             console.log('LOG NUMBER: 7777777777777777777777');
-            window.location.href = "/payment/success?orderId=" + responseOrderId;
+            //window.location.href = "/payment/success?orderId=" + responseOrderId;
         }, 3000); // 3 saniye sonra yönlendirme yapılır
 
     </script>
